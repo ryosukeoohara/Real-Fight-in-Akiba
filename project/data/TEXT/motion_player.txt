@@ -1,0 +1,6680 @@
+SCRIPT			# この行は絶対消さないこと！
+
+#==============================================================================
+#
+#『モーションビューワ』スクリプトファイル [motion_player.txt]
+# Author : 大原怜将
+#
+#==============================================================================
+
+
+#------------------------------------------------------------------------------
+# モデル数
+#------------------------------------------------------------------------------
+NUM_MODEL = 16
+
+#------------------------------------------------------------------------------
+# モデルファイル名
+#------------------------------------------------------------------------------
+MODEL_FILENAME = data/MODEL/Player/00_neet2waist.x		    # [0]腰
+MODEL_FILENAME = data/MODEL/Player/01_neet2body.x		    # [1]体
+MODEL_FILENAME = data/MODEL/Player/02_neet2hed.x		        # [2]頭
+MODEL_FILENAME = data/MODEL/Player/03_neet2hair.x		    # [3]髪
+MODEL_FILENAME = data/MODEL/Player/04_neet2leftupperarm.x    # [4]左上腕
+MODEL_FILENAME = data/MODEL/Player/05_neet2leftforearm.x     # [5]左前腕
+MODEL_FILENAME = data/MODEL/Player/06_neet2lefthand.x	    # [6]左手
+MODEL_FILENAME = data/MODEL/Player/07_neet2rightupperarm.x	# [7]右上腕
+MODEL_FILENAME = data/MODEL/Player/08_neet2rightforearm.x	# [8]右前腕
+MODEL_FILENAME = data/MODEL/Player/09_neet2righthand.x		# [9]右手
+MODEL_FILENAME = data/MODEL/Player/10_neet2leftthigh.x		# [10]左太もも
+MODEL_FILENAME = data/MODEL/Player/11_neet2leftshin.x		# [11]左脛
+MODEL_FILENAME = data/MODEL/Player/12_neet2leftleg.x		    # [12]左足
+MODEL_FILENAME = data/MODEL/Player/13_neet2rightthigh.x	    # [13]右太もも
+MODEL_FILENAME = data/MODEL/Player/14_neet2rightshin.x	    # [14]右脛
+MODEL_FILENAME = data/MODEL/Player/15_neet2rightleg.x        # [15]右足
+
+
+#------------------------------------------------------------------------------
+# キャラクター情報
+#------------------------------------------------------------------------------
+CHARACTERSET
+	NUM_PARTS = 16					# パーツ数
+
+	PARTSSET						# [0]腰
+		INDEX = 0
+		PARENT = -1					# (親)NULL
+		POS = 0.0 43.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET						# [1]体
+		INDEX = 1
+		PARENT = 0					# (親)
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET						# [2]頭
+		INDEX = 2
+		PARENT = 1					# (親)体
+		POS = 0.0 35.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET						# [3]髪
+		INDEX = 3
+		PARENT = 2					# (親)体
+		POS = 0.0 10.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET						# [4]左上腕
+		INDEX = 4
+		PARENT = 1					# (親)体
+		POS = -8.5 29.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET						# [5]左前腕
+		INDEX = 5
+		PARENT = 4					# (親)左上腕
+		POS = -16.0 0.5 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET						# [6]左手
+		INDEX = 6
+		PARENT = 5					# (親)左前腕
+		POS = -12.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET						# [7]右上腕
+		INDEX = 7
+		PARENT = 1					# (親)体
+		POS = 8.5 29.5 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+	
+	PARTSSET						# [8]右前腕
+		INDEX = 8
+		PARENT = 7					# (親)右上腕
+		POS = 16.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+	
+	PARTSSET						# [9]右手
+		INDEX = 9
+		PARENT = 8					# (親)右前腕
+		POS = 12.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+	
+	PARTSSET						# [10]左太もも
+		INDEX = 10
+		PARENT = 0					# (親)腰
+		POS = -5.8 -1.5 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+	
+	PARTSSET						# [11]左脛
+		INDEX = 11
+		PARENT = 10					# (親)左太もも
+		POS = 0.0 -19.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+	
+	PARTSSET						# [12]左足
+		INDEX = 12
+		PARENT = 11					# (親)左脛
+		POS = 0.0 -19.0 -1.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+	
+	PARTSSET						# [13]右太もも
+		INDEX = 13
+		PARENT = 0					# (親)腰
+		POS = 5.8 -1.5 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+	
+	PARTSSET						# [14]右脛
+		INDEX = 14
+		PARENT = 13					# (親)右太もも
+		POS = 0.0 -19.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+	
+	PARTSSET						# [15]右足
+		INDEX = 15
+		PARENT = 14					# (親)左腿
+		POS = 0.0 -19.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+END_CHARACTERSET
+
+#------------------------------------------------------------------------------
+# モーション情報
+#------------------------------------------------------------------------------
+#---------------------------------------
+# ニュートラルモーション
+#---------------------------------------
+MOTIONSET
+	LOOP = 1		# ループするかどうか[0:ループしない / 1:ループする]
+	NUM_KEY = 2		# キー数
+
+	KEYSET			# --- << 0 / 2 >> ---
+		FRAME = 25
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.35 -1.48 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.09 -2.17 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.28 1.85 -0.16
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.38 0.22
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 1 / 2 >> ---
+		FRAME = 25
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.35 -0.85 0.60
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.09 -2.17 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.28 1.88 -0.25
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.38 0.22
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+	END_KEYSET
+END_MOTIONSET
+
+#---------------------------------------
+# 移動モーション
+#---------------------------------------
+MOTIONSET
+	LOOP = 1		# ループするかどうか[0:ループしない / 1:ループする]
+	NUM_KEY = 4		# キー数
+
+	KEYSET			# --- << 0 / 4 >> ---
+		FRAME = 10
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -4.50 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.48 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.35 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.54 0.00 1.29
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -1.04 -0.19
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.35 0.00 -1.29
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.41 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.82 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.57 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.14 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.38 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 1 / 4 >> ---
+		FRAME = 12
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -4.50 0.00
+			ROT = -0.03 0.53 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.47 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.16 -0.57 -0.13
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.85 0.06 0.88
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -1.07 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.32 -0.69 -1.54
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.41 -0.85
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.57 -0.60 -0.13
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.07 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.01 -0.41 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.04 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 2 / 4 >> ---
+		FRAME = 10
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -4.50 -0.40
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.48 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.35 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.62 0.00 1.32
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -1.57 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.50 0.00 -1.29
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.41 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.47 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.16 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.60 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.82 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.51 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 3 / 4 >> ---
+		FRAME = 10
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -4.50 0.00
+			ROT = 0.00 -0.28 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.47 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.28 0.44 0.16
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.19 0.19 1.38
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -2.07 0.66
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.97 0.03 -0.85
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.41 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.97 0.31 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.57 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.16 0.19 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.60 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+	END_KEYSET
+END_MOTIONSET
+
+#---------------------------------------
+# 攻撃モーション
+#---------------------------------------
+MOTIONSET
+	LOOP = 0		# ループするかどうか[0:ループしない / 1:ループする]
+	NUM_KEY = 6		# キー数
+	NUM_FRAME = 33  # 総フレーム数
+	STRAT_COLLI = 5 # 攻撃判定発生フレーム
+	END_COLLI = 10  # 攻撃判定終了フレーム
+	ATTACK = 5     # ダメージ
+	STRAT_CANCEL = 18    # キャンセル可能フレーム
+	END_CANCEL = 28      # キャンセル可能フレーム
+	BLOWAWAY = 2.0  # 吹っ飛び
+
+	KEYSET			# --- << 0 / 6 >> ---
+		FRAME = 2
+		PARTS	# ----- [ 0 ] -----
+			POS = -0.20 -11.30 0.00
+			ROT = -0.44 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.31 0.53 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.28 0.72 1.01
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.09 -1.01 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 2.58 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.47 2.16 -0.16
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.03 -0.09
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.32 -0.16 -0.53
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.60 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.53 -0.03 0.22
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.29 -0.41 0.16
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.32 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.66 0.31 -0.16
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 1 / 6 >> ---
+		FRAME = 2
+		PARTS	# ----- [ 0 ] -----
+			POS = -0.20 -11.30 0.00
+			ROT = -0.44 -0.22 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.31 0.38 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.28 0.47 1.10
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.09 -1.01 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 2.29 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.50 1.91 -0.03
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.03 -0.09
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.32 -0.16 -0.53
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.60 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.53 -0.03 0.22
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.29 -0.41 0.16
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.32 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.66 0.31 -0.16
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 2 / 6 >> ---
+		FRAME = 3
+		PARTS	# ----- [ 0 ] -----
+			POS = -0.20 -11.30 0.10
+			ROT = -0.44 -0.38 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.31 0.25 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.13 0.40 1.13
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.09 -1.01 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 2.29 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.50 1.82 0.03
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.03 -0.09
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.32 -0.16 -0.53
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.60 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.53 -0.03 0.22
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.29 -0.41 0.16
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.32 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.66 0.31 -0.16
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 3 / 6 >> ---
+		FRAME = 3
+		PARTS	# ----- [ 0 ] -----
+			POS = -0.20 -11.30 0.00
+			ROT = -0.44 -0.63 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.16 -0.19 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.25 0.25 1.26
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.06 -0.57 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 2.32 0.06 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.47 1.94 -0.16
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.03 -0.09
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.32 -0.16 -0.53
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.60 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.53 -0.03 0.22
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.29 -0.41 0.16
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.32 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.66 0.31 -0.16
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 4 / 6 >> ---
+		FRAME = 15
+		PARTS	# ----- [ 0 ] -----
+			POS = -0.20 -11.30 0.00
+			ROT = -0.44 -0.88 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.25 -0.09 0.09
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.38 0.31 0.16
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.51 -0.66 1.26
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.06 -0.57 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.76 0.06 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.29 1.06 -0.29
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.35 0.57
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.32 -0.16 -0.53
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.60 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.53 -0.03 0.22
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.29 -0.41 0.16
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.32 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.66 0.31 -0.16
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 5 / 6 >> ---
+		FRAME = 25
+		PARTS	# ----- [ 0 ] -----
+			POS = -0.20 -11.30 0.00
+			ROT = -0.44 -0.88 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.25 -0.25 0.09
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.38 0.31 0.16
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.51 -0.82 1.26
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.09 -0.66 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.79 0.06 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.29 0.94 -0.16
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.35 0.57
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.32 -0.16 -0.53
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.60 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.53 -0.03 0.22
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.29 -0.41 0.16
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.32 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.66 0.31 -0.16
+		END_PARTS
+	END_KEYSET
+END_MOTIONSET
+
+#---------------------------------------
+# 攻撃モーション
+#---------------------------------------
+MOTIONSET
+	LOOP = 0		# ループするかどうか[0:ループしない / 1:ループする]
+	NUM_KEY = 6		# キー数
+	NUM_FRAME = 33  # 総フレーム数
+	STRAT_COLLI = 10     # 攻撃判定発生フレーム
+	END_COLLI = 15       # 攻撃判定終了フレーム
+	ATTACK = 8           # ダメージ
+	STRAT_CANCEL = 15    # キャンセル可能フレーム
+	END_CANCEL = 30      # キャンセル可能フレーム
+	BLOWAWAY = 2.0       # 吹っ飛び
+
+	KEYSET			# --- << 0 / 6 >> ---
+		FRAME = 3
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -9.10 0.00
+			ROT = -0.35 -1.13 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.16 -0.22 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.41 0.35 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -1.60 0.25
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -1.26 0.35
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.22 -0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.25 0.00 -0.63
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.54 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.23 0.66 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.19 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.25 0.13 0.19
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.10 -0.31 0.38
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.04 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.19 -0.09 -0.31
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 1 / 6 >> ---
+		FRAME = 3
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -9.00 0.00
+			ROT = -0.35 -0.82 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.35 0.13 0.06
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.41 0.35 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.47 -1.35 -0.22
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -1.57 0.35
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.22 0.41 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.22 0.00 -0.38
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.98 0.25
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.23 0.66 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.19 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.25 0.13 0.19
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.41 0.38 0.57
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.04 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.57 -0.09 -0.31
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 2 / 6 >> ---
+		FRAME = 3
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -9.00 0.00
+			ROT = -0.35 -0.44 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.35 0.13 0.06
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.41 0.35 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.47 -1.35 -0.22
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -1.57 0.35
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.22 0.41 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.22 0.00 -0.38
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.98 0.25
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.32 0.47 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.38 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.25 0.13 0.19
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.22 0.09 0.57
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.69 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.57 0.16 -0.31
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 3 / 6 >> ---
+		FRAME = 3
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -9.00 0.00
+			ROT = -0.35 -0.44 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.44 0.13 0.19
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.41 0.35 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.47 0.57 0.13
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.16 0.13
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.22 0.41 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.22 0.13 0.06
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.82 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.32 0.47 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.38 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.25 0.13 0.19
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.22 0.09 0.57
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.69 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.57 0.16 -0.31
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 4 / 6 >> ---
+		FRAME = 15
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -9.00 0.00
+			ROT = -0.35 -0.44 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.50 0.53 0.09
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.41 0.35 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.47 0.57 0.13
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.16 0.13
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.22 0.41 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.22 0.72 0.35
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.79 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.03 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.32 0.47 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.38 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.25 0.13 0.19
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.22 0.09 0.57
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.69 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.57 0.16 -0.31
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 5 / 6 >> ---
+		FRAME = 5
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -9.00 0.00
+			ROT = -0.35 -0.19 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.50 0.53 0.09
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.41 0.35 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.47 0.85 0.13
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.16 0.13
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.22 0.41 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.22 1.07 0.35
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.79 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.03 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.32 0.28 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.38 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.25 0.13 0.19
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.22 0.09 0.57
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.69 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.57 0.16 -0.31
+		END_PARTS
+	END_KEYSET
+END_MOTIONSET
+
+#---------------------------------------
+# 攻撃モーション3段目
+#---------------------------------------
+MOTIONSET
+	LOOP = 0		# ループするかどうか[0:ループしない / 1:ループする]
+	NUM_KEY = 6		# キー数
+	NUM_FRAME = 33  # 総フレーム数
+	STRAT_COLLI = 20 # 攻撃判定発生フレーム
+	END_COLLI = 26  # 攻撃判定終了フレーム
+	ATTACK = 10     # ダメージ
+	BLOWAWAY = 3.0  # 吹っ飛び
+
+	KEYSET			# --- << 0 / 6 >> ---
+		FRAME = 10
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -3.50 0.00
+			ROT = 0.00 0.91 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.35 0.09 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.47 0.79
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.94 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.67 -0.60
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.41 1.23
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.82 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.38 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.47 0.03 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.04 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.28 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 1 / 6 >> ---
+		FRAME = 5
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -3.50 0.00
+			ROT = 0.00 2.32 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.35 0.09 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.47 0.79
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.94 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.67 -0.60
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.41 1.23
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.82 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.38 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.47 0.03 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.04 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.28 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 2 / 6 >> ---
+		FRAME = 5
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -3.50 0.00
+			ROT = 0.00 -2.32 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.35 0.09 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.22 1.01 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.47 -1.73 -0.38
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.94 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.57 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.01 2.61 -1.63
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.31 1.67 1.23
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.82 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.38 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.47 0.03 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.04 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.28 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 3 / 6 >> ---
+		FRAME = 5
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -3.50 0.00
+			ROT = 0.00 -2.04 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.35 0.09 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.22 1.01 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.35 -0.69 -0.63
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -1.73 -0.47
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.57 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.01 2.61 -1.63
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.31 1.67 1.23
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.44 0.19 -0.44
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.82 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.47 0.03 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.04 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.28 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 4 / 6 >> ---
+		FRAME = 10
+		PARTS	# ----- [ 0 ] -----
+			POS = -4.60 -6.10 0.00
+			ROT = -0.03 -0.03 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.35 0.09 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.31 0.22 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.19 1.01 0.88
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.38 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.57 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.91 2.89 -1.63
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.31 1.67 1.23
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.41 0.44 -0.41
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.82 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.60 -0.53 0.09
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.47 0.03 0.22
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.04 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.60 0.13 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 5 / 6 >> ---
+		FRAME = 10
+		PARTS	# ----- [ 0 ] -----
+			POS = -4.60 -6.10 0.00
+			ROT = -0.03 0.53 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.35 0.09 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.31 0.22 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.19 1.01 0.88
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.38 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.57 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.91 2.89 -1.63
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.31 1.67 1.23
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.41 0.44 -0.41
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.82 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.60 -0.53 0.09
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.57 -0.47 0.09
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.04 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.60 0.13 0.00
+		END_PARTS
+	END_KEYSET
+END_MOTIONSET
+
+#---------------------------------------
+# 回避モーション
+#---------------------------------------
+MOTIONSET
+	LOOP = 0		# ループするかどうか[0:ループしない / 1:ループする]
+	NUM_KEY = 7		# キー数
+	STRAT = 1       # 完全無敵
+	END = 30        # 完全無敵終了
+
+	KEYSET			# --- << 0 / 7 >> ---
+		FRAME = 7
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 12.00 0.00
+			ROT = -0.37 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.69 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.53 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -1.51 -0.79
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.42 1.01
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.13 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.69 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.16 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.76 -0.10 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.25 -0.03 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.75 -0.03 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.44 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 1 / 7 >> ---
+		FRAME = 5
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 12.00 0.00
+			ROT = -1.16 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.69 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.53 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -1.51 -0.79
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.01 1.01
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.29 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.38 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.16 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.41 -0.10 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.03 -0.03 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.75 -0.03 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.44 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 2 / 7 >> ---
+		FRAME = 5
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 2.40 0.00
+			ROT = -2.17 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.69 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.07 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.44 -1.51 -1.13
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.06 -0.50 -0.09
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.94
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.53 1.67 1.45
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.29 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.53 0.13 -0.06
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.72 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.16 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.41 -0.10 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.29 -0.03 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.75 -0.03 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.44 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 3 / 7 >> ---
+		FRAME = 5
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -5.50 0.00
+			ROT = -2.82 0.06 0.31
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.91 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.94 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.29 -1.51 -1.13
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.16 -1.23 -0.09
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.94
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.13 0.31 0.47
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.03 1.29 0.57
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.53 0.13 -0.06
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.20 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.16 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.41 -0.10 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.85 -0.03 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.75 -0.03 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.44 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 4 / 7 >> ---
+		FRAME = 5
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -39.10 0.00
+			ROT = 2.23 0.06 0.31
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.91 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.94 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.29 -1.51 -1.13
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.16 -1.23 -0.09
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.94
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.13 0.31 0.47
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.03 1.29 0.57
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.53 0.13 -0.06
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.20 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.16 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.41 -0.10 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.85 -0.03 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.75 -0.03 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.44 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 5 / 7 >> ---
+		FRAME = 5
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -31.30 0.00
+			ROT = 2.10 1.32 1.32
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.07 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.85 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.79 -0.63 -0.63
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.85 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.22 1.29 0.41
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.94 0.47
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.09 0.75
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.03 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.41 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.41 -0.10 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.32 0.31 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.75 -0.03 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.25 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 6 / 7 >> ---
+		FRAME = 5
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -19.70 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.98 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.60 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.79 -0.63 -0.63
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.85 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.22 1.29 0.41
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.94 0.47
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.09 0.75
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.26 1.07 -0.31
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.79 0.00 -0.72
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.41 -0.10 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.57 0.28 0.44
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.60 0.22 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.10 0.13 -0.13
+		END_PARTS
+	END_KEYSET
+END_MOTIONSET
+
+#---------------------------------------
+# 持ち上げるモーション
+#---------------------------------------
+MOTIONSET
+	LOOP = 1		# ループするかどうか[0:ループしない / 1:ループする]
+	NUM_KEY = 2		# キー数
+
+	KEYSET			# --- << 0 / 2 >> ---
+		FRAME = 50
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -6.90 0.00
+			ROT = -0.13 0.69 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.35 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.53 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.75 0.25 0.31
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.00 -1.54 0.41
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.28 0.81 -0.63
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.38 0.63
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.41 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.31 0.69 -0.35
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.01 -0.06 0.13
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.75 0.09 0.44
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.97 -0.44 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.97 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.06 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 1 / 2 >> ---
+		FRAME = 50
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -11.70 0.00
+			ROT = -0.13 0.69 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.35 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.53 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.75 0.25 0.57
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.00 -1.54 0.41
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.25 0.78 -0.79
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.38 0.63
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.57 0.03 -0.03
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.66 0.94 -0.35
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.54 -0.06 0.13
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.85 0.09 0.44
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.16 -0.44 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.38 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.31 -0.03 0.00
+		END_PARTS
+	END_KEYSET
+END_MOTIONSET
+
+#---------------------------------------
+# 投げるモーション
+#---------------------------------------
+MOTIONSET
+	LOOP = 0		# ループするかどうか[0:ループしない / 1:ループする]
+	NUM_KEY = 5		# キー数
+	STRAT_COLLI = 25 # 攻撃判定発生フレーム
+	END_COLLI = 35  # 攻撃判定終了フレーム
+	ATTACK = 50     # ダメージ
+
+	KEYSET			# --- << 0 / 5 >> ---
+		FRAME = 20
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -14.00 0.00
+			ROT = 0.25 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.22 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -2.83 0.00 1.45
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.38 0.09
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -2.83 0.31 -1.54
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.31 -0.16
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.01 0.25 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.67 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.41 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.10 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.41 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 1 / 5 >> ---
+		FRAME = 10
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.10 -8.30 -7.60
+			ROT = 0.25 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.03 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 2.95 0.00 1.38
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.38 0.09
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 3.02 0.31 -1.32
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.31 -0.16
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.57 0.25 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.35 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.53 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.63 -0.25 0.35
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.69 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.41 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 2 / 5 >> ---
+		FRAME = 8
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.10 -8.30 -7.60
+			ROT = -0.25 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.38 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 2.07 0.00 1.38
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.38 0.09
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 2.14 0.00 -1.29
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.31 -0.16
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.94 0.25 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.35 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.53 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.75 0.00 0.35
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.23 -0.03 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.69 0.00 -0.16
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 3 / 5 >> ---
+		FRAME = 5
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.10 -13.20 -7.60
+			ROT = -0.25 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.66 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.38 0.00 1.26
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.38 0.09
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.50 0.00 -1.16
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.31 -0.16
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.13 0.25 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.82 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.88 -0.09 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.19 0.00 0.35
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.67 -0.03 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.69 0.00 -0.16
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 4 / 5 >> ---
+		FRAME = 10
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.10 -13.20 -7.60
+			ROT = -0.25 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.01 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.72 0.00 1.26
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.38 0.09
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.72 0.00 -1.16
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.31 -0.16
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.13 0.25 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.82 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.88 -0.09 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.19 0.00 0.35
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.67 -0.03 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.69 0.00 -0.16
+		END_PARTS
+	END_KEYSET
+END_MOTIONSET
+
+#---------------------------------------
+# 掴んで走るモーション
+#---------------------------------------
+MOTIONSET
+	LOOP = 1		# ループするかどうか[0:ループしない / 1:ループする]
+	NUM_KEY = 4		# キー数
+
+	KEYSET			# --- << 0 / 4 >> ---
+		FRAME = 10
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -7.06 0.00
+			ROT = -0.13 0.69 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.35 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.53 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.75 0.25 0.30
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -1.54 0.41
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.27 0.80 -0.54
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.38 0.63
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.44 0.01 -0.01
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.01 -0.41 -0.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.69 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.07 -0.44 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.05 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.45 -0.01 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 1 / 4 >> ---
+		FRAME = 10
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -4.36 0.00
+			ROT = -0.13 0.69 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.35 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.53 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.75 0.25 0.36
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -1.54 0.41
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.27 0.80 -0.66
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.38 0.63
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.44 0.01 -0.01
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.51 -0.25 0.06
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.69 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.53 -0.44 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.05 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.01 -0.01 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 2 / 4 >> ---
+		FRAME = 10
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -6.56 0.00
+			ROT = -0.13 0.69 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.35 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.53 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.75 0.25 0.36
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -1.54 0.41
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.27 0.80 -0.66
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.38 0.63
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.44 0.01 -0.01
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.03 -0.50 -0.03
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.69 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.76 -0.57 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.05 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.36 0.03 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 3 / 4 >> ---
+		FRAME = 10
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -4.36 0.00
+			ROT = -0.13 0.69 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.35 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.53 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.75 0.25 0.42
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -1.54 0.41
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.27 0.80 -0.69
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.38 0.63
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.44 0.01 -0.01
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.60 -0.25 -0.19
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.69 0.00 -0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.54 -0.50 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.61 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.01 -0.01 0.00
+		END_PARTS
+	END_KEYSET
+END_MOTIONSET
+
+#---------------------------------------
+# 投げるモーション
+#---------------------------------------
+MOTIONSET
+	LOOP = 0		 # ループするかどうか[0:ループしない / 1:ループする]
+	NUM_KEY = 3		 # キー数
+	STRAT_COLLI = 10 # 攻撃判定発生フレーム
+	END_COLLI = 13   # 攻撃判定終了フレーム
+
+	KEYSET			# --- << 0 / 3 >> ---
+		FRAME = 10
+		PARTS	# ----- [ 0 ] -----
+			ROT = 0.00 0.22 0.00
+			POS = 0.00 -3.50 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			ROT = -0.03 -0.41 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			ROT = 0.00 -0.25 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			ROT = -0.41 0.09 1.01
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			ROT = 0.06 -1.32 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			ROT = 0.88 -1.04 -0.97
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			ROT = -0.19 -0.03 -0.19
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			ROT = -0.47 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			ROT = 0.54 0.13 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			ROT = 0.47 -0.35 0.22
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			ROT = -0.28 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			ROT = -0.13 0.19 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 1 / 3 >> ---
+		FRAME = 10
+		PARTS	# ----- [ 0 ] -----
+			ROT = 0.00 0.57 0.00
+			POS = 0.00 -3.50 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			ROT = -0.03 0.19 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			ROT = 0.00 -0.25 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			ROT = -0.41 0.09 0.88
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			ROT = -0.10 -0.53 -0.13
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			ROT = 0.97 -1.13 -2.32
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			ROT = -0.13 -0.03 -0.03
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			ROT = 0.16 0.41 -0.35
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			ROT = -0.50 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			ROT = 0.41 -0.25 0.09
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			ROT = 0.38 -0.22 0.31
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			ROT = -0.47 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+	END_KEYSET
+	KEYSET			# --- << 2 / 3 >> ---
+		FRAME = 15
+		PARTS	# ----- [ 0 ] -----
+			ROT = 0.00 0.88 0.00
+			POS = 0.00 -3.50 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			ROT = -0.06 0.28 -0.09
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			ROT = 0.00 -0.25 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			ROT = -0.41 0.09 0.88
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			ROT = -0.10 -0.53 -0.13
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			ROT = 0.00 0.00 0.47
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			ROT = 0.91 -0.91 -2.32
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			ROT = -0.03 0.19 -1.44
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			ROT = 0.19 0.38 -0.28
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			ROT = -0.50 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			ROT = 0.54 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			ROT = 0.29 -0.50 0.43
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			ROT = -0.47 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+	END_KEYSET
+END_MOTIONSET
+
+#---------------------------------------
+# つかみニュートラルモーション
+#---------------------------------------
+MOTIONSET
+	LOOP = 1		# ループするかどうか[0:ループしない / 1:ループする]
+	NUM_KEY = 2		# キー数
+	
+	KEYSET			# --- << 0 / 2 >> ---
+		FRAME = 20
+		PARTS	# ----- [ 0 ] -----
+			ROT = 0.00 0.76 0.00
+			POS = 0.00 -2.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			ROT = 0.00 -0.47 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			ROT = -0.09 0.22 1.04
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			ROT = -0.04 -1.16 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			ROT = 1.03 0.46 -0.35
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			ROT = 0.00 0.57 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			ROT = 0.44 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			ROT = 0.19 0.38 -0.31
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			ROT = -0.41 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			ROT = 0.35 0.00 0.19
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			ROT = -0.82 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			ROT = 0.16 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+	END_KEYSET
+
+	KEYSET			# --- << 1 / 2 >> ---
+		FRAME = 20
+		PARTS	# ----- [ 0 ] -----
+			ROT = 0.00 0.76 0.00
+			POS = 0.00 -4.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			ROT = 0.00 -0.47 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			ROT = -0.09 0.22 1.01
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			ROT = -0.04 -1.16 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			ROT = 1.03 0.55 -0.25
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			ROT = 0.00 0.57 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			ROT = 0.44 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			ROT = 0.47 0.38 -0.31
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			ROT = -0.82 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			ROT = 0.54 0.00 0.19
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			ROT = -1.07 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			ROT = 0.16 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+	END_KEYSET
+END_MOTIONSET
+
+#---------------------------------------
+# 投げるモーション
+#---------------------------------------
+MOTIONSET
+	LOOP = 0		# ループするかどうか[0:ループしない / 1:ループする]
+	NUM_KEY = 3		# キー数
+	
+	KEYSET			# --- << 0 / 3 >> ---
+		FRAME = 8
+		PARTS	# ----- [ 0 ] -----
+			ROT = 0.00 1.13 0.00
+			POS = 0.00 -7.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			ROT = -0.35 0.09 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			ROT = 0.00 -0.66 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			ROT = 0.43 0.16 0.38
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			ROT = 0.97 -1.25 -0.06
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			ROT = -0.72 1.73 -0.82
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			ROT = -0.22 1.41 1.61
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			ROT = 0.82 0.00 -0.35
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			ROT = -1.35 0.00 0.03
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			ROT = 0.41 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			ROT = 1.60 0.03 0.44
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			ROT = -1.04 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			ROT = 0.37 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+	END_KEYSET
+
+	KEYSET			# --- << 1 / 3 >> ---
+		FRAME = 8
+		PARTS	# ----- [ 0 ] -----
+			ROT = 0.00 0.03 0.00
+			POS = 0.00 -7.00 -19.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			ROT = -0.32 0.47 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			ROT = 0.19 -0.50 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			ROT = 0.69 -0.50 0.29
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			ROT = 0.66 -1.22 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			ROT = -0.72 0.63 -0.82
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			ROT = -0.38 1.41 1.52
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			ROT = 0.28 0.25 -0.51
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			ROT = -1.38 0.22 0.03
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			ROT = 0.41 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			ROT = 0.65 0.69 0.44
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			ROT = -1.04 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			ROT = 0.37 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+	END_KEYSET
+
+	KEYSET			# --- << 2 / 3 >> ---
+		FRAME = 5
+		PARTS	# ----- [ 0 ] -----
+			ROT = -0.63 -0.79 0.00
+			POS = 0.00 -4.00 -44.50
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			ROT = 0.03 -0.19 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			ROT = 0.31 0.76 0.28
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			ROT = 1.13 -0.44 1.05
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			ROT = 0.09 0.00 1.23
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			ROT = 0.00 0.03 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			ROT = -0.47 1.23 -1.64
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			ROT = -0.60 1.38 1.52
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			ROT = 1.48 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			ROT = 0.98 0.50 -0.07
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			ROT = -0.69 0.22 0.03
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			ROT = 0.06 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			ROT = 0.77 0.12 0.38
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			ROT = -0.66 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			ROT = 0.53 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+	END_KEYSET
+
+END_MOTIONSET
+
+#---------------------------------------
+# 敵をつかんで歩くモーション
+#---------------------------------------
+MOTIONSET
+	LOOP = 1		# ループするかどうか[0:ループしない / 1:ループする]
+	NUM_KEY = 4		# キー数
+	
+	KEYSET			# --- << 0 / 4 >> ---
+		FRAME = 15
+		PARTS	# ----- [ 0 ] -----
+			ROT = 0.00 0.47 0.00
+			POS = 0.00 -6.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			ROT = 0.00 -0.47 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			ROT = -0.32 0.25 1.26
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			ROT = -0.03 -0.94 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			ROT = 1.29 -0.25 -1.41
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			ROT = 0.09 0.63 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			ROT = 0.79 -0.79 -0.06
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			ROT = -0.85 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			ROT = 0.15 0.06 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			ROT = -0.26 -0.66 0.10
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			ROT = -0.82 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			ROT = 0.57 0.00 -0.13
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+	END_KEYSET
+
+	KEYSET			# --- << 1 / 4 >> ---
+		FRAME = 15
+		PARTS	# ----- [ 0 ] -----
+			ROT = 0.00 0.47 0.00
+			POS = 0.00 -1.50 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			ROT = 0.00 -0.47 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			ROT = -0.41 0.00 1.07
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			ROT = -0.03 -0.94 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			ROT = 1.13 -0.25 -1.41
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			ROT = 0.09 0.63 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			ROT = 0.35 -0.70 -0.03
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			ROT = -0.73 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			ROT = 0.31 0.06 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			ROT = 0.14 -0.66 0.10
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			ROT = -0.44 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			ROT = 0.22 0.00 -0.13
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+	END_KEYSET
+
+	KEYSET			# --- << 2 / 4 >> ---
+		FRAME = 15
+		PARTS	# ----- [ 0 ] -----
+			ROT = 0.00 0.47 0.00
+			POS = 0.00 -6.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			ROT = 0.00 -0.47 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			ROT = -0.44 0.13 1.26
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			ROT = -0.03 -0.94 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			ROT = 1.29 -0.25 -1.41
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			ROT = 0.09 0.63 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			ROT = -0.28 -0.70 -0.03
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			ROT = -0.85 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			ROT = 0.37 0.06 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			ROT = 0.74 -0.66 0.10
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			ROT = -0.91 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			ROT = 0.10 0.00 -0.13
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+	END_KEYSET
+
+	KEYSET			# --- << 3 / 4 >> ---
+		FRAME = 15
+		PARTS	# ----- [ 0 ] -----
+			ROT = 0.00 0.47 0.00
+			POS = 0.00 -1.50 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			ROT = 0.00 -0.47 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			ROT = -0.41 0.00 1.07
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			ROT = -0.03 -0.94 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			ROT = 1.13 -0.25 -1.41
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			ROT = 0.09 0.63 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			ROT = 0.19 -0.70 -0.03
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			ROT = -0.48 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			ROT = 0.24 0.06 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			ROT = -0.11 -0.66 0.10
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			ROT = -0.69 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			ROT = 0.22 0.00 -0.13
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+	END_KEYSET
+END_MOTIONSET
+
+#---------------------------------------
+# 地面にたたきつけるモーション
+#---------------------------------------
+MOTIONSET
+	LOOP = 0		# ループするかどうか[0:ループしない / 1:ループする]
+	NUM_KEY = 5	    # キー数
+
+		KEYSET			# --- << 0 / 5 >> ---
+		FRAME = 10
+		PARTS	# ----- [ 0 ] -----
+			ROT = 0.01 0.38 0.00
+			POS = 0.00 -7.50 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			ROT = 0.16 0.44 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			ROT = 0.00 -0.57 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			ROT = 0.29 0.16 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			ROT = 0.13 -1.85 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			ROT = -0.10 -0.31 -0.41
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			ROT = -0.66 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			ROT = 0.54 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			ROT = 0.66 -0.57 0.31
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			ROT = -1.13 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			ROT = 0.41 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+	END_KEYSET
+
+	KEYSET			# --- << 1 / 5 >> ---
+		FRAME = 3
+		PARTS	# ----- [ 0 ] -----
+			ROT = -0.12 0.38 -0.22
+			POS = 0.00 -10.50 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			ROT = -0.19 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			ROT = 0.00 -0.57 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			ROT = 0.29 0.16 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			ROT = 0.13 -1.85 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			ROT = -0.10 -0.31 -0.41
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			ROT = -0.66 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			ROT = -0.25 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			ROT = 1.29 -0.57 0.31
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			ROT = -1.44 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			ROT = 0.41 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+	END_KEYSET
+
+	KEYSET			# --- << 2 / 5 >> ---
+		FRAME = 3
+		PARTS	# ----- [ 0 ] -----
+			ROT = -0.09 0.04 -0.16
+			POS = 0.00 -11.50 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			ROT = -0.47 -0.35 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			ROT = 0.00 -0.57 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			ROT = 0.23 -0.75 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			ROT = 0.13 -1.13 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			ROT = 0.00 0.09 -0.82
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			ROT = 0.13 -0.28 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			ROT = 0.00 1.32 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			ROT = -0.01 -0.31 -0.41
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			ROT = -0.77 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			ROT = -0.25 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			ROT = 1.44 -0.57 0.21
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			ROT = -1.22 0.13 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			ROT = 0.06 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+	END_KEYSET
+
+	KEYSET			# --- << 3 / 5 >> ---
+		FRAME = 30
+		PARTS	# ----- [ 0 ] -----
+			ROT = -0.44 -0.31 -0.16
+			POS = 0.00 -18.50 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			ROT = -0.75 -0.41 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			ROT = 0.00 -0.07 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			ROT = 0.16 -1.29 0.13
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			ROT = 0.26 -0.59 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			ROT = -0.22 0.03 -1.26
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			ROT = 0.19 -0.63 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			ROT = -0.06 1.54 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			ROT = -0.17 -0.31 -0.41
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			ROT = -0.77 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			ROT = -0.25 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			ROT = 2.10 -1.26 -0.70
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			ROT = -1.91 -0.22 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			ROT = 0.38 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+	END_KEYSET
+
+	KEYSET			# --- << 4 / 5 >> ---
+		FRAME = 30
+		PARTS	# ----- [ 0 ] -----
+			ROT = -0.44 -0.31 -0.16
+			POS = 0.00 -18.50 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			ROT = -0.75 -0.41 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			ROT = 0.00 -0.07 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			ROT = 0.16 -1.29 0.13
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			ROT = 0.26 -0.59 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			ROT = -0.22 0.03 -1.26
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			ROT = 0.19 -0.63 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			ROT = -0.06 1.54 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			ROT = -0.17 -0.31 -0.41
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			ROT = -0.77 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			ROT = -0.25 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			ROT = 2.10 -1.26 -0.70
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			ROT = -1.91 -0.22 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			ROT = 0.38 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+	END_KEYSET
+END_MOTIONSET
+
+#---------------------------------------
+# ダメージモーション
+#---------------------------------------
+MOTIONSET
+	LOOP = 0		# ループするかどうか[0:ループしない / 1:ループする]
+	NUM_KEY = 2		# キー数
+
+	KEYSET			# --- << 0 / 2 >> ---
+		FRAME = 10
+		PARTS	# ----- [ 0 ] -----
+			ROT = 0.13 0.00 0.00
+			POS = 0.00 -2.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			ROT = 0.13 0.35 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			ROT = 0.38 0.53 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			ROT = 0.00 0.79 0.97
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			ROT = 0.00 -1.70 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			ROT = 0.31 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			ROT = -0.03 2.01 -0.09
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			ROT = -0.13 0.91 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			ROT = 0.06 0.31 -0.35
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			ROT = -0.44 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			ROT = 0.25 -0.16 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			ROT = 0.34 -0.25 0.18
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			ROT = -0.69 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			ROT = 0.13 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 1 / 2 >> ---
+		FRAME = 10
+		PARTS	# ----- [ 0 ] -----
+			ROT = 0.13 0.00 0.00
+			POS = 0.00 -2.50 2.50
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			ROT = 0.22 0.54 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			ROT = 0.38 0.53 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			ROT = 0.00 0.95 0.94
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			ROT = 0.00 -1.70 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			ROT = 0.31 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			ROT = 0.00 2.14 -0.09
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			ROT = -0.13 0.91 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			ROT = 0.00 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			ROT = 0.25 0.31 -0.22
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			ROT = -0.44 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			ROT = 0.25 -0.16 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			ROT = 0.28 -0.25 0.18
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			ROT = -0.94 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			ROT = 0.13 0.00 0.00
+			POS = 0.00 0.00 0.00
+			SCALE = 1.00 1.00 1.00
+		END_PARTS
+	END_KEYSET
+END_MOTIONSET
+
+#---------------------------------------
+# オタ芸モーション
+#---------------------------------------
+MOTIONSET
+	LOOP = 1		# ループするかどうか[0:ループしない / 1:ループする]
+	NUM_KEY = 11		# キー数
+
+	KEYSET			# --- << 1 / 8 >> ---
+		FRAME = 10
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -15.80 0.00
+			ROT = 0.00 -0.28 0.28
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.06 0.13
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.79 -0.69 1.29
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.19 -0.32
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.09 -1.06
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.66 -0.47 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.44 0.66 1.10
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.60
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.53
+		END_PARTS
+
+		PARTS	# ----- [ 16 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 2 / 8 >> ---
+		FRAME = 10
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -17.30 0.00
+			ROT = 0.00 -0.50 0.57
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.25 -0.16 0.25
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.38 0.38
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.60 0.88 2.67
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.28 0.16 1.41
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.16 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.09 -0.75 1.54
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.28 -0.63 0.35
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 2.51 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.29 -1.39
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.66 -0.47 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.16 0.88 0.94
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.44 0.38
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.25 -0.35 -0.69
+		END_PARTS
+
+		PARTS	# ----- [ 16 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 3 / 8 >> ---
+		FRAME = 15
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -15.80 0.00
+			ROT = 0.00 -0.50 0.22
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.25 -0.16 0.12
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.19 0.19
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.60 0.88 1.92
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.28 0.16 0.50
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.16 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.09 -0.75 1.54
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.28 -0.63 0.35
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 2.51 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.29 -1.01
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.66 -0.47 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.44 0.53 1.16
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.44 0.72
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.25 -0.38 -0.66
+		END_PARTS
+
+		PARTS	# ----- [ 16 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 4 / 8 >> ---
+		FRAME = 10
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -15.80 0.00
+			ROT = 0.00 -0.34 0.13
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.06 -0.16 -0.06
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.66 0.97 2.74
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.06 0.13 1.66
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.16 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.31 -1.00 1.54
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.28 -0.63 0.35
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 2.51 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.29 -0.91
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.66 -0.47 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.44 0.53 1.16
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.44 0.78
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.25 -0.38 -0.66
+		END_PARTS
+
+		PARTS	# ----- [ 16 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 5 / 8 >> ---
+		FRAME = 10
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -15.80 0.00
+			ROT = 0.00 0.28 -0.41
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.10 -0.03
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.25 -0.09
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.00 -0.19 0.31
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 1.82 -0.75
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.06 -0.19 -0.47
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.85
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.03 -0.19 1.32
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.63 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.03 -0.47 -0.88
+		END_PARTS
+
+		PARTS	# ----- [ 16 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 6 / 8 >> ---
+		FRAME = 10
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -18.00 0.00
+			ROT = 0.00 0.28 -0.56
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.22 -0.18
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.03 0.44 -0.38
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.44 -1.35
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.63
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.04 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.04 -0.29 -2.30
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.22 1.26 -1.01
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.06 -0.19 -0.38
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.85
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.03 -0.19 1.54
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.63 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.03 -0.47 -0.88
+		END_PARTS
+
+		PARTS	# ----- [ 16 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 7 / 8 >> ---
+		FRAME = 15
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -15.80 0.00
+			ROT = 0.00 0.28 -0.19
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.22 -0.15
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.44 -1.35
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.63
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 1.04 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.63 -0.29 -1.73
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.01 1.26 -1.23
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.06 -0.19 -0.72
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.85
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.03 -0.19 1.06
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.63 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.03 -0.47 -0.88
+		END_PARTS
+
+		PARTS	# ----- [ 16 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+	END_KEYSET
+	
+	KEYSET			# --- << 0 / 4 >> ---
+		FRAME = 12
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -15.80 0.00
+			ROT = 0.00 0.00 0.22
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.35 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.82 0.00 -0.22
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.44 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.03 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.25 2.04 -0.63
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.72 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.35 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -1.19
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.72
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.66
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.63
+		END_PARTS
+
+		PARTS	# ----- [ 16 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 17 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 1 / 4 >> ---
+		FRAME = 12
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -15.80 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.25 -1.51 0.91
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.03 -0.91 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.53 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.26 1.41 -0.91
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.72 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.35 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.91
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.85
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.94
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.38
+		END_PARTS
+
+		PARTS	# ----- [ 16 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 17 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- << 2 / 4 >> ---
+		FRAME = 12
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -15.80 0.00
+			ROT = 0.00 0.00 -0.22
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.31 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.60 -1.66 0.85
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.47 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.06 -0.09 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -1.29 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.47 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.09 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.69
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.85
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 1.19
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.72
+		END_PARTS
+
+		PARTS	# ----- [ 16 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 17 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+	END_KEYSET
+
+	KEYSET			# --- <<3 / 4 >> ---
+		FRAME = 15
+		PARTS	# ----- [ 0 ] -----
+			POS = 0.00 -15.80 0.00
+			ROT = 0.00 0.00 0.22
+		END_PARTS
+
+		PARTS	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.35 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.82 0.00 -0.22
+		END_PARTS
+
+		PARTS	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 -0.44 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.03 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.25 2.04 -0.63
+		END_PARTS
+
+		PARTS	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.72 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.35 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -1.19
+		END_PARTS
+
+		PARTS	# ----- [ 11 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 12 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.72
+		END_PARTS
+
+		PARTS	# ----- [ 13 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.66
+		END_PARTS
+
+		PARTS	# ----- [ 14 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 15 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.63
+		END_PARTS
+
+		PARTS	# ----- [ 16 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+
+		PARTS	# ----- [ 17 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_PARTS
+	END_KEYSET
+END_MOTIONSET
+
+END_SCRIPT		# この行は絶対消さないこと！
