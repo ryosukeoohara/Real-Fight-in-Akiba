@@ -103,7 +103,6 @@ void CGame::WaveControll(void)
 	{
 	case CGame::WAVE_00:
 
-		m_Wave = WAVE_01;
 		if (m_pPlayer != nullptr)
 		{
 			m_pPlayer->SetLife(200);
@@ -124,8 +123,12 @@ void CGame::WaveControll(void)
 		if (pFade->Get() != pFade->FADE_BLACK)
 			pFade->Set();
 
-		m_pEnemyManager->SetBossEnemy();
-
+		if (pFade->GetCol() >= 1.0f)
+		{
+			m_pEnemyManager->SetBossEnemy();
+			m_Wave = WAVE_01;
+		}
+		
 		break;
 
 	case CGame::WAVE_01:

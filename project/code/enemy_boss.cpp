@@ -148,6 +148,32 @@ void CEnemyBoss::Attack(void)
 			}
 		}
 	}
+	else
+	{
+		switch (m_nAttackType)
+		{
+		case ATTACKTYPE_GURUGURU:  // ぐるぐるパンチ
+
+			RollingPunch();
+
+			break;
+
+		case ATTACKTYPE_PUNCH:  // 普通のパンチ
+
+			NormalPunch();
+
+			break;
+
+		case ATTACKTYPE_FLY:  // 飛んでおなかから落ちる
+
+			Fly();
+
+			break;
+
+		default:
+			break;
+		}
+	}
 }
 
 //===========================================================

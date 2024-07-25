@@ -159,7 +159,7 @@ void CHeatAction::BikeCrash(CPlayer* pPlayer, CEnemy* pEnemy)
 				pPlayer->SetbHeatActFlag(false);
 
 				// エフェクトの再生
-				CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::m_apEfkName[CMyEffekseer::TYPE_IMPACT], ::Effekseer::Vector3D(Enempos.x, Enempos.y, Enempos.z),
+				CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_IMPACT, ::Effekseer::Vector3D(Enempos.x, Enempos.y, Enempos.z),
 					::Effekseer::Vector3D(0.0f, 0.0f, 0.0f), ::Effekseer::Vector3D(25.0f, 25.0f, 25.0f));
 			}
 		}

@@ -282,7 +282,7 @@ void CPlayer::Damage(int nDamage, float fKnockBack)
 		m_Info.nLife -= nDamage;
 		m_Info.move = D3DXVECTOR3(sinf(CManager::GetInstance()->GetCamera()->GetRotation().y) * -fKnockBack, fKnockBack, cosf(CManager::GetInstance()->GetCamera()->GetRotation().y) * -fKnockBack);
 
-		CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::m_apEfkName[CMyEffekseer::TYPE_HIT], ::Effekseer::Vector3D(m_Info.pos.x, m_Info.pos.y + 50.0f, m_Info.pos.z),
+		CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(m_Info.pos.x, m_Info.pos.y + 50.0f, m_Info.pos.z),
 			::Effekseer::Vector3D(0.0f, 0.0f, 0.0f), ::Effekseer::Vector3D(25.0f, 25.0f, 25.0f));
 	}
 }

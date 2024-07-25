@@ -25,6 +25,7 @@ const char* CMyEffekseer::m_apEfkName[CMyEffekseer::TYPE_MAX] =
 	"",                                                // なんもない
 	"data\\EFFEKSEER\\Effect\\impact.efkefc",          // 衝撃波
 	"data\\EFFEKSEER\\Effect\\hit.efkefc",             // ヒット
+	"data\\EFFEKSEER\\Effect\\attack_impact.efkefc",   // 攻撃の予兆
 };
 
 //===========================================================
@@ -193,7 +194,7 @@ void CMyEffekseer::Draw(void)
 //===========================================================
 // 設定
 //===========================================================
-void CMyEffekseer::Set(const char* FileName, ::Effekseer::Vector3D pos, ::Effekseer::Vector3D rot, ::Effekseer::Vector3D scale)
+void CMyEffekseer::Set(TYPE type, ::Effekseer::Vector3D pos, ::Effekseer::Vector3D rot, ::Effekseer::Vector3D scale)
 {
 	for (int i = 0; i < MAX_EFK; i++)
 	{
@@ -201,14 +202,14 @@ void CMyEffekseer::Set(const char* FileName, ::Effekseer::Vector3D pos, ::Effeks
 		{
 			// char16_tに変換
 			std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> converter;
-			std::u16string string16t = converter.from_bytes(FileName);
+			std::u16string string16t = converter.from_bytes(m_apEfkName[type]);
 
 			m_Info[i].pos = pos;
 			m_Info[i].rot = rot;
 			m_Info[i].scale = scale;
 			m_Info[i].time = 0;
 
-			//std::char_16
+			// std::char_16
 			// Load an effect
 			// エフェクトの読込
 			m_Info[i].effect = Effekseer::Effect::Create(m_EfkManager, string16t.c_str());
@@ -217,7 +218,7 @@ void CMyEffekseer::Set(const char* FileName, ::Effekseer::Vector3D pos, ::Effeks
 			// エフェクトの再生
 			m_Info[i].efkHandle = m_EfkManager->Play(m_Info[i].effect, 0, 0, 0);
 
-			m_Info[i].EfkName = FileName;
+			m_Info[i].EfkName = m_apEfkName[type];
 
 			// 位置、向き、大きさ設定
 			m_EfkManager->SetLocation(m_Info[i].efkHandle, m_Info[i].pos);

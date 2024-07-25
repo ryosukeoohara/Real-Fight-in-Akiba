@@ -25,8 +25,7 @@
 #include "particle.h"
 #include "item.h"
 #include "animation.h"
-#include <time.h>
-#include  <assert.h>
+#include "MyEffekseer.h"
 
 //===========================================================
 // 定数定義
@@ -180,14 +179,23 @@ void CEnemyWeak::Attack(void)
 			// 攻撃状態にする
 			m_Info.state = STATE_ATTACK;
 			GetMotion()->Set(TYPE_ATTACK);
+		}
+	}
+	else
+	{
+		if (GetMotion()->GetNowFrame() == GetMotion()->GetAttackOccurs())
+		{
+			D3DXMATRIX mtx = *GetCharcter()[0]->GetMtxWorld();
+			CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_ATTACK, ::Effekseer::Vector3D(mtx._41, mtx._42, mtx._43), ::Effekseer::Vector3D(0.0f, 0.0f, 0.0f), ::Effekseer::Vector3D(25.0f, 25.0f, 25.0f));
+		}
 
-			if (GetMotion()->GetAttackOccurs() <= GetMotion()->GetNowFrame() && GetMotion()->GetAttackEnd() >= GetMotion()->GetNowFrame())
-			{// 現在のフレームが攻撃判定発生フレーム以上かつ攻撃判定終了フレームない
 
-				if (CGame::GetCollision()->Circle(m_Info.pos, pPlayer->GetPosition(), ATTACKLENGHT, pPlayer->GetRadius()) == true)
-				{
-					pPlayer->Damage(GetMotion()->GetAttackDamege(), GetMotion()->GetKnockBack());
-				}
+		if (GetMotion()->GetAttackOccurs() <= GetMotion()->GetNowFrame() && GetMotion()->GetAttackEnd() >= GetMotion()->GetNowFrame())
+		{// 現在のフレームが攻撃判定発生フレーム以上かつ攻撃判定終了フレームない
+
+			if (CGame::GetCollision()->Circle(m_Info.pos, pPlayer->GetPosition(), ATTACKLENGHT, pPlayer->GetRadius()) == true)
+			{
+				pPlayer->Damage(GetMotion()->GetAttackDamege(), GetMotion()->GetKnockBack());
 			}
 		}
 	}

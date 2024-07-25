@@ -24,6 +24,7 @@ public:
 		TYPE_NONE = 0,  // なんもない
 		TYPE_IMPACT,    // 衝撃波
 		TYPE_HIT,       // ヒット
+		TYPE_ATTACK,    // 攻撃の予兆
 		TYPE_MAX
 	};
 
@@ -45,7 +46,14 @@ public:
 	void Draw(void);                   // 描画処理
 
 	// 設定
-	void Set(const char* FileName, ::Effekseer::Vector3D pos, ::Effekseer::Vector3D rot, ::Effekseer::Vector3D scale);  // エフェクト
+	void Set
+	(
+		TYPE type, 
+		::Effekseer::Vector3D pos = {0.0f, 0.0f, 0.0f}, 
+		::Effekseer::Vector3D rot = { 0.0f, 0.0f, 0.0f }, 
+		::Effekseer::Vector3D scale = { 1.0f, 1.0f, 1.0f }
+	);  // エフェクト
+
 	void SetupEffekseerModules(::Effekseer::ManagerRef efkManager);                                                     // モジュール
 
 	// 取得

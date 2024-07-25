@@ -644,7 +644,7 @@ MOTIONSET
 	BLOWAWAY = 2.0  # êÅÇ¡îÚÇ—
 	
 	KEYSET			# --- << 0 / 6 >> ---
-		FRAME = 20
+		FRAME = 40
 		PARTS	# ----- [ 0 ] -----
 			POS = 0.00 -3.90 -0.20
 			ROT = -0.25 0.09 0.00

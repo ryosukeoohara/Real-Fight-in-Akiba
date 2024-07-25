@@ -403,9 +403,7 @@ void CEnemy::Controll(void)
 	else
 	{
 		if (m_Info.state != STATE_GRAP && m_Mobility == Mobile)
-		{
 			Move();
-		}
 	}
 
 	if (m_Info.nLife <= 0)
@@ -425,9 +423,8 @@ void CEnemy::Controll(void)
 		m_Info.pos.z += m_Info.move.z;
 
 		if (m_Info.pos.y <= 0.0f)
-		{
 			m_Info.pos.y = 0.0f;
-		}
+
 	}
 
 	//デバッグプロックの情報を取得
@@ -544,7 +541,7 @@ void CEnemy::ReadText(const char *fliename)
 									}
 									else
 									{
-										m_apModel[nCntParts2]->SetParent(NULL);
+										m_apModel[nCntParts2]->SetParent(nullptr);
 									}
 								}
 
