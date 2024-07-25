@@ -129,9 +129,9 @@ void CMyEffekseer::Update(void)
 
 			// Update a time
 			// 時間を更新する
-			m_EfkRenderer->SetTime(m_Info[i].time / 60.0f);
-			m_Info[i].time++;
-
+			m_EfkRenderer->SetTime(m_time / 60.0f);
+			//m_Info[i].time++;
+			
 			// 毎フレーム、エフェクトが再生終了しているか確認する
 			if (m_EfkManager->Exists(m_Info[i].efkHandle) == false)
 			{
@@ -142,6 +142,8 @@ void CMyEffekseer::Update(void)
 			}
 		}
 	}
+
+	m_time++;
 }
 
 //===========================================================

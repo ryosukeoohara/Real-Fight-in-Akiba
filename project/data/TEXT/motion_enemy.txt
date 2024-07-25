@@ -722,7 +722,7 @@ MOTIONSET
 	END_KEYSET
 
 	KEYSET			# --- << 1 / 6 >> ---
-		FRAME = 15
+		FRAME = 10
 		PARTS	# ----- [ 0 ] -----
 			POS = 0.00 -5.90 -7.70
 			ROT = -0.25 0.09 0.00
@@ -800,7 +800,7 @@ MOTIONSET
 	END_KEYSET
 
 	KEYSET			# --- << 2 / 6 >> ---
-		FRAME = 10
+		FRAME = 5
 		PARTS	# ----- [ 0 ] -----
 			POS = 0.00 -9.90 -7.70
 			ROT = -0.25 -0.35 0.00

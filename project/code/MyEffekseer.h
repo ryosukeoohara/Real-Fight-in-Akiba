@@ -74,6 +74,7 @@ private:
 	::Effekseer::ManagerRef m_EfkManager;
 	::Effekseer::Vector3D m_ViewerPosition;
 	int m_nNum;
+	int32_t m_time = 0;                  // ŽžŠÔ
 };
 
 #endif
