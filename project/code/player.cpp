@@ -668,7 +668,7 @@ void CPlayer::Move(void)
 			m_bDesh = true;
 		}
 
-		m_fDest = atan2f(-m_Info.move.x, -m_Info.move.z);
+		m_fDest = atan2f(m_Info.move.z, m_Info.move.x);
 
 		// Šp“x‚Ì’l‚ğC³‚·‚é
 		m_fDest = utility::CorrectAngle(m_fDest);
