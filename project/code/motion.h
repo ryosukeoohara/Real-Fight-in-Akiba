@@ -82,6 +82,7 @@ public:
 	void SetInfoBlendON(void);                                 // 情報
 	void SetInfoBlendOFF(KEY key);
 	void SetModel(CCharacter **ppModel, int nNumModel); // キャラクターのモデル
+	void InitPose(int type);
 
 	// 取得系
 	int GetType(void);                                  // 種類

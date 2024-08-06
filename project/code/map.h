@@ -47,8 +47,8 @@ private:
 	
 
 	void TextLoad(void);
-	CObjectX **m_appObjectX;
 
+	CObjectX **m_appObjectX;
 	int m_nNumModel;
 	int m_nNumItem;
 

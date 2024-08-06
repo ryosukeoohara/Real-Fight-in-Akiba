@@ -99,6 +99,13 @@ public:
 		TYPE_MAX
 	};
 
+	enum MOBILITY
+	{
+		Mobile = 0,  // 動ける
+		Immobile,    // 動けない
+		MAX
+	};
+
 private:
 
 	enum DAMEGESTATE
@@ -128,13 +135,6 @@ private:
 	{
 		CItem *pItem;                     // アイテム
 		CEnemy *pEnemy;                   // 敵
-	};
-
-	enum MOBILITY
-	{
-		Mobile = 0,  // 動ける
-		Immobile,    // 動けない
-		MAX
 	};
 
 	INFO m_Info;                          // 情報
@@ -190,6 +190,7 @@ public:
 	int GetDefeat(void) { return m_nDefeat; }
 	HEAT GetHeatAct(void) { return m_HeatAct; }
 	bool GetHeatActFlag(void) { return m_bHeatActFlag; }
+	MOBILITY GetMobility(void) { return m_Mobility; }
 
 private:
 
@@ -202,6 +203,7 @@ private:
 	void State(void);                     // 状態
 	void Heat(void);                      // ヒートアクション
 	void SetHeatActType(void);
+	bool IsHeatAct(D3DXVECTOR3 TargetPos);
 	void ReadText(const char *fliename);  // テキストファイル読み込み
 	float EnemyDistance(void);              // 敵との距離
 	float ItemDistance(void);

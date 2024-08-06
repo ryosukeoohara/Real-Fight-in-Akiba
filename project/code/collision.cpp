@@ -341,18 +341,36 @@ bool CCollision::Item(D3DXVECTOR3 *pos)
 //=============================================================================
 void CCollision::ItemAttack(CObjectX * pobj)
 {
+	if (pobj == nullptr)
+		return;
+
 	int nNum = 0;
 	float PlayerfRadius = 50.0f;
 	float fRadius = 75.0f;
-	CEnemy **ppEnemy = nullptr;
+	CEnemy* pEnemy = CEnemy::GetTop();
 
-	if (CGame::GetEnemyManager() != nullptr)
+	while (pEnemy != nullptr)
 	{
-		ppEnemy = CGame::GetEnemyManager()->GetEnemy();
-		nNum = CGame::GetEnemyManager()->GetNum();
+		CEnemy* pEnemyNext = pEnemy->GetNext();
+
+		float circleX = pEnemy->GetPosition().x - (CGame::GetPlayer()->GetPosition().x + pobj->GetPosition().x);
+		float circleZ = pEnemy->GetPosition().z - (CGame::GetPlayer()->GetPosition().z + pobj->GetPosition().z);
+		float c = 0.0f;
+
+		c = (float)sqrt(circleX * circleX + circleZ * circleZ);
+
+		if (c <= fRadius + PlayerfRadius)
+		{
+			pEnemy->SetRotition(-CGame::GetPlayer()->GetRotition());
+			pEnemy->SetMove(D3DXVECTOR3(sinf(CGame::GetPlayer()->GetRotition().y) * -3.0f, 1.0f, cosf(CGame::GetPlayer()->GetRotition().y) * -3.0f));
+			pEnemy->SetState(CEnemy::STATE_DAMEGE);
+			int nLife = pEnemy->GetLife();
+			nLife -= 1;
+			pEnemy->SetLife(nLife);
+		}
 	}
 
-	if (pobj != nullptr)
+	/*if (pobj != nullptr)
 	{
 		for (int nCount = 0; nCount < nNum; nCount++)
 		{
@@ -375,7 +393,7 @@ void CCollision::ItemAttack(CObjectX * pobj)
 				}
 			}
 		}
-	}
+	}*/
 }
 
 //=============================================================================
@@ -393,7 +411,6 @@ bool CCollision::ItemEnemy(CItem *pItem, CEnemy *pEnemy, float fMyRadius, float 
 
 		if (c <= fMyRadius + fTargetRadius && (pItem->GetPosition().y >= pEnemy->GetPosition().y && pItem->GetPosition().y <= pEnemy->GetPosition().y + fHeight) && pEnemy->GetState() != CEnemy::STATE_DAMEGE && pEnemy->GetState() != CEnemy::STATE_HEATDAMEGE)
 		{
-			// “G‚Ì”Ô†‚ð•Û‘¶
 			pEnemy->Damege(CPlayer::GetInstance()->GetMotion()->GetAttackDamege(), CPlayer::GetInstance()->GetMotion()->GetKnockBack(), CPlayer::GetInstance()->GetActType());
 
 			CParticle::Create(pEnemy->GetPosition(), CParticle::TYPE_BLOOD);

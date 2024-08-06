@@ -274,13 +274,6 @@ void CCamera::Mode(void)
 	//ƒQ[ƒ€ƒpƒbƒh‚ðŽæ“¾
 	CInputJoyPad* pInputJoyPad = CManager::GetInstance()->GetInputJoyPad();
 
-	if ((CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_GAME || CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_TUTORIAL)
-	 && InputKeyboard->GetTrigger(DIK_R) == true || pInputJoyPad->GetTrigger(CInputJoyPad::BUTTON_RB, 0) == true)
-	{
-		m_mode = MODE_TARGET;
-		Target();
-	}
-
 	//Œü‚«‚ðÝ’è
 	SetRotation(m_rot);
 
@@ -491,16 +484,11 @@ void CCamera::CameraV(void)
 		m_rot.y -= 0.05f;
 	}
 
-	m_rot.y += MousePos.x * 0.005f;
+	if(pPlayer->GetMobility() == CPlayer::Mobile)
+	   m_rot.y += MousePos.x * 0.005f;
 
-	if (m_rot.y > D3DX_PI)
-	{
-		m_rot.y -= D3DX_PI * 2.0f;
-	}
-	else if (m_rot.y < -D3DX_PI)
-	{
-		m_rot.y += D3DX_PI * 2.0f;
-	}
+	// Šp“x‚Ì’l‚ðC³‚·‚é
+	m_rot.y = utility::CorrectAngle(m_rot.y);
 
 	m_posV.x = m_posR.x - sinf(m_rot.y) * -m_fLen;
 	m_posV.z = m_posR.z - cosf(m_rot.y) * -m_fLen;

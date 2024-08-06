@@ -251,7 +251,7 @@ void CEnemy::Update(void)
 {
 	if (m_Info.bDraw == true)
 	{
-		if (/*m_Info.state != STATE_BIRIBIRI && m_Info.state != STATE_BIRI && m_Info.state != STATE_FAINTING && */m_Info.state != STATE_DEATH)
+		if (m_Info.state != STATE_HEATACTELECTROWAIT && m_Info.state != STATE_HEATACTELECTRO && m_Info.state != STATE_HEATACTFAINTING && m_Info.state != STATE_DEATH)
 		{
 			Controll();
 		}
@@ -597,7 +597,9 @@ void CEnemy::ReadText(const char *fliename)
 		//‰Šú‰»ˆ—
 		m_pMotion->ReadText(fliename);
 
-		m_pMotion->Set(CEnemy::TYPE_NEUTRAL);
+		m_pMotion->InitPose(TYPE_NEUTRAL);
+
+		//m_pMotion->Set(TYPE_NEUTRAL);
 	}
 }
 

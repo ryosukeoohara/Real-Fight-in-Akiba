@@ -484,6 +484,9 @@ void CPlayer::Update(void)
 		if (m_bHeatActFlag == false)
 			m_pHeatAct = nullptr;
 	}
+
+	// 行動制限
+	MoveLimit();
 }
 
 //================================================================
@@ -604,6 +607,9 @@ void CPlayer::Move(void)
 				// 移動量
 				m_Info.move.x -= sinf(CameraRot.y + (D3DX_PI * 0.25f)) * fSpeed;
 				m_Info.move.z -= cosf(CameraRot.y + (D3DX_PI * 0.25f)) * fSpeed;
+
+				// 向き
+				m_fDest = (CameraRot.y + (D3DX_PI * 0.25f));
 			}
 			else if (InputKeyboard->GetPress(DIK_A) == true || pInputJoyPad->GetLXStick(CInputJoyPad::STICK_LX, 0) < 0)
 			{//Aキーも押した 左上に移動
@@ -611,6 +617,9 @@ void CPlayer::Move(void)
 				// 移動量
 				m_Info.move.x += sinf(CameraRot.y + (D3DX_PI * 0.75f)) * fSpeed;
 				m_Info.move.z += cosf(CameraRot.y + (D3DX_PI * 0.75f)) * fSpeed;
+
+				// 向き
+				m_fDest = (CameraRot.y + (-D3DX_PI * 0.25f));
 			}
 			else
 			{//Wキーだけ押した	真上に移動
@@ -618,6 +627,9 @@ void CPlayer::Move(void)
 				// 移動量
 				m_Info.move.x -= sinf(CameraRot.y) * fSpeed;
 				m_Info.move.z -= cosf(CameraRot.y) * fSpeed;
+
+				// 向き
+				m_fDest = (CameraRot.y + (D3DX_PI * 0.0f));
 			}
 
 			m_bDesh = true;
@@ -631,6 +643,9 @@ void CPlayer::Move(void)
 				// 移動量
 				m_Info.move.x += sinf(CameraRot.y + (-D3DX_PI * 0.25f)) * fSpeed;
 				m_Info.move.z += cosf(CameraRot.y + (-D3DX_PI * 0.25f)) * fSpeed;
+
+				// 向き
+				m_fDest = (CameraRot.y + (D3DX_PI * 0.75f));
 			}
 			else if (InputKeyboard->GetPress(DIK_A) == true || pInputJoyPad->GetLXStick(CInputJoyPad::STICK_LX, 0) < 0)
 			{//Aキーも押した 左下に移動
@@ -638,6 +653,9 @@ void CPlayer::Move(void)
 				// 移動量
 				m_Info.move.x += sinf(CameraRot.y + (D3DX_PI * 0.25f)) * fSpeed;
 				m_Info.move.z += cosf(CameraRot.y + (D3DX_PI * 0.25f)) * fSpeed;
+
+				// 向き
+				m_fDest = (CameraRot.y + (-D3DX_PI * 0.75f));
 			}
 			else
 			{//Sキーだけ押した 真下に移動
@@ -645,6 +663,9 @@ void CPlayer::Move(void)
 				// 移動量
 				m_Info.move.x += sinf(CameraRot.y) * fSpeed;
 				m_Info.move.z += cosf(CameraRot.y) * fSpeed;
+
+				// 向き
+				m_fDest = CameraRot.y + D3DX_PI;
 			}
 
 			m_bDesh = true;
@@ -656,6 +677,9 @@ void CPlayer::Move(void)
 			m_Info.move.x -= sinf(CameraRot.y + (D3DX_PI * 0.5f)) * fSpeed;
 			m_Info.move.z -= cosf(CameraRot.y + (D3DX_PI * 0.5f)) * fSpeed;
 
+			// 向き
+			m_fDest = (CameraRot.y + (D3DX_PI * 0.5f));
+
 			m_bDesh = true;
 		}
 		else if (InputKeyboard->GetPress(DIK_A) == true || pInputJoyPad->GetLXStick(CInputJoyPad::STICK_LX, 0) < 0)
@@ -665,13 +689,16 @@ void CPlayer::Move(void)
 			m_Info.move.x += sinf(CameraRot.y + (D3DX_PI * 0.5f)) * fSpeed;
 			m_Info.move.z += cosf(CameraRot.y + (D3DX_PI * 0.5f)) * fSpeed;
 
+			// 向き
+			m_fDest = (CameraRot.y + (D3DX_PI * -0.5f));
+
 			m_bDesh = true;
 		}
 
-		m_fDest = atan2f(m_Info.move.z, m_Info.move.x);
+		//m_fDest = atan2f(m_Info.move.z, m_Info.move.x);
 
 		// 角度の値を修正する
-		m_fDest = utility::CorrectAngle(m_fDest);
+		//m_fDest = utility::CorrectAngle(m_fDest);
 
 		m_fDiff = m_fDest - m_Info.rot.y;
 
@@ -1039,29 +1066,13 @@ void CPlayer::Heat(void)
 	{
 		// 距離を測って一番近くの敵を覚える
 		EnemyDistance();
-			
-		if (m_pEnemy != nullptr && CGame::GetCollision()->Circle(m_Info.pos, m_pEnemy->GetPosition(), 50.0f, 50.0f) == true)
-		{// 範囲内に入ったらYボタンが出てくる
 
+		if (m_pEnemy == nullptr)
+			return;
+
+		if (IsHeatAct(m_pEnemy->GetPosition()))
 			m_HeatAct = HEAT_SMASH;
 
-			// Xボタンが出てくる
-			if (m_pBotton == nullptr)
-			{
-				m_pBotton = CObject2D::Create();
-				m_pBotton->SetPosition(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.8f, 0.0f));
-				m_pBotton->SetSize(HEATACT_BUTTON_SIZE.x, HEATACT_BUTTON_SIZE.y);
-				m_pBotton->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist("data\\TEXTURE\\Xbutton.png"));
-				m_pBotton->SetDraw(true);
-			}
-
-			if (pInputKeyboard->GetTrigger(DIK_E) == true || pInputJoyPad->GetTrigger(CInputJoyPad::BUTTON_X, 0) == true)
-			{// ヒートアクションする
-
-				// 種類設定
-				SetHeatActType();
-			}
-		}
 	}
 
 	// 電子レンジ
@@ -1080,34 +1091,9 @@ void CPlayer::Heat(void)
 			pItem = pItemNext;
 		}
 
-		if (CGame::GetCollision()->Circle(m_Info.pos, m_pItemMicro->GetPosition(), 30.0f, 40.0f))
-		{// 範囲内
-
+		if (IsHeatAct(m_pItemMicro->GetPosition()))
 			m_HeatAct = HEAT_FIRE;
 
-			// Xボタンが出てくる
-			if (m_pBotton == nullptr)
-			{
-				m_pBotton = CObject2D::Create();
-				m_pBotton->SetPosition(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.8f, 0.0f));
-				m_pBotton->SetSize(HEATACT_BUTTON_SIZE.x, HEATACT_BUTTON_SIZE.y);
-				m_pBotton->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist("data\\TEXTURE\\Xbutton.png"));
-				m_pBotton->SetDraw(true);
-			}
-				
-			if (pInputKeyboard->GetTrigger(DIK_E) == true || pInputJoyPad->GetTrigger(CInputJoyPad::BUTTON_X, 0) == true)
-			{// ヒートアクションする
-
-				// 種類設定
-				SetHeatActType();
-			}
-		}
-	}
-
-	if (m_pBotton != nullptr)
-	{
-		m_pBotton->Uninit();
-		m_pBotton = nullptr;
 	}
 }
 
@@ -1135,11 +1121,6 @@ void CPlayer::SetHeatActType(void)
 		// ヒートアクションしている
 		m_bHeatActFlag = true;
 
-		if (m_pBotton != nullptr)
-		{
-			m_pBotton->Uninit();
-			m_pBotton = nullptr;
-		}
 		break;
 
 	case CPlayer::HEAT_FIRE:
@@ -1162,12 +1143,6 @@ void CPlayer::SetHeatActType(void)
 		// 敵を離す
 		m_bGrap = false;
 
-		if (m_pBotton != nullptr)
-		{
-			m_pBotton->Uninit();
-			m_pBotton = nullptr;
-		}
-
 		break;
 
 	case CPlayer::HEAT_MAX:
@@ -1178,6 +1153,58 @@ void CPlayer::SetHeatActType(void)
 		break;
 	}
 	
+	if (m_pBotton != nullptr)
+	{
+		m_pBotton->Uninit();
+		m_pBotton = nullptr;
+	}
+}
+
+//================================================================
+// ヒートアクションの種類設定
+//================================================================
+bool CPlayer::IsHeatAct(D3DXVECTOR3 TargetPos)
+{
+	CInputKeyboard* pInputKeyboard = CManager::GetInstance()->GetKeyBoard();
+	CInputJoyPad* pInputJoyPad = CManager::GetInstance()->GetInputJoyPad();
+
+	if (pInputKeyboard == nullptr)
+		return false;
+
+	if (pInputJoyPad == nullptr)
+		return false;
+
+	if (CGame::GetCollision()->Circle(m_Info.pos, TargetPos, 30.0f, 40.0f))
+	{// 範囲内
+
+		m_HeatAct = HEAT_FIRE;
+
+		// Xボタンが出てくる
+		if (m_pBotton == nullptr)
+		{
+			m_pBotton = CObject2D::Create();
+			m_pBotton->SetPosition(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.8f, 0.0f));
+			m_pBotton->SetSize(HEATACT_BUTTON_SIZE.x, HEATACT_BUTTON_SIZE.y);
+			m_pBotton->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist("data\\TEXTURE\\Xbutton.png"));
+			m_pBotton->SetDraw(true);
+		}
+
+		if (pInputKeyboard->GetTrigger(DIK_R) == true || pInputJoyPad->GetTrigger(CInputJoyPad::BUTTON_X, 0) == true)
+		{
+			SetHeatActType();  // 種類設定
+			return true;
+		}
+	}
+	else
+	{
+		if (m_pBotton != nullptr)
+		{
+			m_pBotton->Uninit();
+			m_pBotton = nullptr;
+		}
+	}
+
+	return false;
 }
 
 //================================================================
@@ -1318,8 +1345,8 @@ void CPlayer::ReadText(const char *fliename)
 		// 初期化処理
 		m_pMotion->ReadText(fliename);
 
-		// セット(待機)
-		m_pMotion->Set(TYPE_NEUTRAL);
+		// プレイヤーの初期モーション設定
+		m_pMotion->InitPose(TYPE_NEUTRAL);
 	}
 }
 
@@ -1338,8 +1365,7 @@ float CPlayer::EnemyDistance(void)
 		CEnemy *pEnemyNext = pEnemy->GetNext();
 
 		// 自分と敵の距離を取得
-		if (CManager::GetInstance()->GetUtility() != nullptr)
-			fLenghtDiff = utility::Distance(m_Info.pos, pEnemy->GetPosition());
+		fLenghtDiff = utility::Distance(m_Info.pos, pEnemy->GetPosition());
 
 		// 距離を比較
 		if (fLenght >= fLenghtDiff)
@@ -1373,8 +1399,7 @@ float CPlayer::ItemDistance(void)
 		if (pItem->GetType() == CItem::TYPE_BIKE)
 		{
 			// 自分とアイテムの距離を取得
-			if (CManager::GetInstance()->GetUtility() != nullptr)
-				fLenghtDiff = utility::Distance(m_Info.pos, pItem->GetPosition());
+			fLenghtDiff = utility::Distance(m_Info.pos, pItem->GetPosition());
 
 			// 距離を比較
 			if (fLenght >= fLenghtDiff)

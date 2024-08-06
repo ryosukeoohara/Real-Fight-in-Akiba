@@ -32,11 +32,11 @@ namespace utility
 	{
 		if (fAngle > D3DX_PI)
 		{
-			fAngle = -D3DX_PI;
+			fAngle -= D3DX_PI * 2.0f;
 		}
 		else if (fAngle < -D3DX_PI)
 		{
-			fAngle = D3DX_PI;
+			fAngle += D3DX_PI * 2.0f;
 		}
 
 		return fAngle;

@@ -103,20 +103,6 @@ void CGame::WaveControll(void)
 	{
 	case CGame::WAVE_00:
 
-		if (m_pPlayer != nullptr)
-		{
-			m_pPlayer->SetLife(200);
-			m_pPlayer->SetImmobile();
-			m_pPlayer->SetState(CPlayer::STATE_NEUTRAL);
-			m_pPlayer->SetUseMicroCount(0);
-			m_pPlayer->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 500.0f));
-			m_pPlayer->SetRotition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-
-			if (m_pPlayer->GetMotion() != nullptr)
-				m_pPlayer->GetMotion()->Set(CPlayer::TYPE_NEUTRAL);
-
-		}
-
 		CManager::GetInstance()->GetCamera()->Reset();
 		m_bOnStage = false;
 
@@ -126,6 +112,21 @@ void CGame::WaveControll(void)
 		if (pFade->GetCol() >= 1.0f)
 		{
 			m_pEnemyManager->SetBossEnemy();
+
+			if (m_pPlayer != nullptr)
+			{
+				m_pPlayer->SetLife(200);
+				m_pPlayer->SetImmobile();
+				m_pPlayer->SetState(CPlayer::STATE_NEUTRAL);
+				m_pPlayer->SetUseMicroCount(0);
+				m_pPlayer->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 500.0f));
+				m_pPlayer->SetRotition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+				if (m_pPlayer->GetMotion() != nullptr)
+					m_pPlayer->GetMotion()->Set(CPlayer::TYPE_NEUTRAL);
+
+			}
+
 			m_Wave = WAVE_01;
 		}
 		

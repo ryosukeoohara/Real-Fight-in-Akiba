@@ -216,6 +216,28 @@ void CMotion::SetModel(CCharacter **ppModel, int nNumModel)
 }
 
 //===========================================================
+// 初期モーション設定
+//===========================================================
+void CMotion::InitPose(int type)
+{
+	if (m_ppModel == nullptr)
+		return;
+
+	for (int nCount = 0; nCount < m_nNumModel; nCount++)
+	{
+		//D3DXVECTOR3 pos = m_aInfo[type].KeySet[0].aKey[nCount].pos;
+		D3DXVECTOR3 rot = m_aInfo[type].KeySet[0].aKey[nCount].rot;
+
+		//m_ppModel[nCount]->SetPosition(pos);
+		m_ppModel[nCount]->SetRot(rot);
+	}
+
+	SetInfoBlendON();
+
+	m_bBlend = true;
+}
+
+//===========================================================
 // 外部ファイル読み込み
 //===========================================================
 void CMotion::ReadText(const char *TextFilename)
