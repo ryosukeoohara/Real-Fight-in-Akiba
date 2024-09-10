@@ -21,12 +21,14 @@
 #include "item.h"
 #include "tutorial.h"
 
-// 無名名前空間を定義
+//===========================================================
+// 定数定義
+//===========================================================
 namespace
 {
-	const int MICROWAVE = 3600;  // ヒートアクション:電子レンジが再度利用可能になるまでの時間
-	const int MICRO = 60;
-
+	const int MICROWAVE = 3600;        // ヒートアクション:電子レンジが再度利用可能になるまでの時間
+	const int SHOCK_COUNT_TIMER = 60;  // ヒートアクション:電子レンジで敵がびりびりしだすまでのカウント
+	const int STUN_COUNT_TIMER = 120;  // ヒートアクション:電子レンジで敵が気絶するまでのカウント
 
 	const D3DXVECTOR3 CAMERA_ROT[CPlayer::HEAT_MAX] =
 	{
@@ -57,6 +59,18 @@ namespace
 		D3DXVECTOR3(-10.0f, -10.0f, 60.0f),
 		D3DXVECTOR3(-15.0f, -10.0f, 80.0f),
 	};
+
+	const D3DXVECTOR3 TUTORIAL_PLAYER_POSITION = { -160.0f, 0.0f, 210.0f };  // ヒートアクション:チュートリアルで電子レンジを使用した際の位置
+	const D3DXVECTOR3 GAME_PLAYER_POSITION = { -720.0f, 0.0f, 580.0f };      // ヒートアクション:ゲームで電子レンジを使用した際の位置
+	const D3DXVECTOR3 ENEMY_POSITION = { 0.0f, -70.0f, -30.0f };             // ヒートアクション:電子レンジを使用した際の敵の位置
+}
+
+CHeatAction::CHeatAction()
+{
+}
+
+CHeatAction::~CHeatAction()
+{
 }
 
 //===========================================================
@@ -72,7 +86,11 @@ void CHeatAction::Init(void)
 //===========================================================
 void CHeatAction::Uninit(void)
 {
+	if (m_pPlayer != nullptr)
+		m_pPlayer = nullptr;
 
+	if (m_pEnemy != nullptr)
+		m_pEnemy = nullptr;
 }
 
 //===========================================================
@@ -80,31 +98,72 @@ void CHeatAction::Uninit(void)
 //===========================================================
 void CHeatAction::Updata(void)
 {
-	switch (m_pPlayer->GetHeatAct())
+	// ビヘイビアの更新
+	if (m_pBehaviour != nullptr)
+		m_pBehaviour->Update(this);
+}
+
+//===========================================================
+// 行うアクションを設定
+//===========================================================
+void CHeatAction::SetAction(CHeatActionBehaviour* Behaviour, CPlayer* pPlayer, CEnemy* pEnemy)
+{
+	m_pPlayer = pPlayer;
+	m_pEnemy = pEnemy;
+
+	pPlayer->SetMove(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+	pEnemy->SetChase(CEnemy::CHASE_OFF);
+	pEnemy->SetMove(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+	// ヒートアクションのカメラモードにする
+	CManager::GetInstance()->GetCamera()->ChangeBehaviour(new HeatActionCamera);
+	
+	ChangeBehaviour(Behaviour);
+}
+
+//===========================================================
+// ビヘイビアの切り替え
+//===========================================================
+void CHeatAction::ChangeBehaviour(CHeatActionBehaviour* Behaviour)
+{
+	if (m_pBehaviour != nullptr)
 	{
-	case CPlayer::HEAT_NONE:  // なんもない
-		break;
-	case CPlayer::HEAT_SMASH: // 自転車たたきつけ
+		delete m_pBehaviour;
+		m_pBehaviour = nullptr;
+	}
 
-		BikeCrash(m_pPlayer, m_pEnemy);
-		break;
-	case CPlayer::HEAT_FIRE:  // 電子レンジ
+	m_pBehaviour = Behaviour;
+}
 
-		MicroWave(m_pPlayer, m_pEnemy, nullptr);
-		break;
-	case CPlayer::HEAT_MAX:
-		break;
-	default:
-		break;
+//===========================================================
+// 自転車を使ったヒートアクションをする処理
+//===========================================================
+BikeCrash::BikeCrash()
+{
+	CManager::GetInstance()->GetCamera()->SetDistnce(CAMERA_DISTNCE[1]);
+
+	if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_TUTORIAL)
+	{
+		CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(TUTORIALCAMERAROT[1].x, TUTORIALCAMERAROT[1].y, TUTORIALCAMERAROT[1].z));
+	}
+
+	if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_GAME)
+	{
+		CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(CAMERA_ROT[1].x, CAMERA_ROT[1].y, CAMERA_ROT[1].z));
 	}
 }
 
 //===========================================================
 // 自転車を使ったヒートアクションをする処理
 //===========================================================
-void CHeatAction::BikeCrash(CPlayer* pPlayer, CEnemy* pEnemy)
+void BikeCrash::Update(CHeatAction* pHeatAct)
 {
-	if (pEnemy != nullptr)
+	CPlayer* pPlayer = pHeatAct->GetPlayer();
+
+	CEnemy* pEnemy = pHeatAct->GetEnemy();
+
+	if (pEnemy != nullptr && pPlayer != nullptr)
 	{
 		// プレイヤーの向き取得
 		D3DXVECTOR3 PlayerRot = pPlayer->GetRotition();
@@ -142,14 +201,13 @@ void CHeatAction::BikeCrash(CPlayer* pPlayer, CEnemy* pEnemy)
 						CGame::GetItemManager()->Release(pPlayer->GetGrapItem()->GetID());
 
 					// ターゲット以外の敵の描画を再開
-					if (CGame::GetEnemyManager() )
+					if (CGame::GetEnemyManager())
 						CGame::GetEnemyManager()->SetTrue(pEnemy->GetIdxID());
 				}
-				
 
 				if (pEnemy->GetMotion())
 					pEnemy->GetMotion()->Set(CEnemy::TYPE_HEATACTDAMEGE);
-				
+
 				// 持っていたアイテムを消す
 				pPlayer->SetGrapItem(nullptr);
 
@@ -159,18 +217,39 @@ void CHeatAction::BikeCrash(CPlayer* pPlayer, CEnemy* pEnemy)
 				pPlayer->SetbHeatActFlag(false);
 
 				// エフェクトの再生
-				CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_IMPACT, ::Effekseer::Vector3D(Enempos.x, Enempos.y, Enempos.z),
-					::Effekseer::Vector3D(0.0f, 0.0f, 0.0f), ::Effekseer::Vector3D(25.0f, 25.0f, 25.0f));
+				CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_IMPACT, ::Effekseer::Vector3D(Enempos.x, Enempos.y, Enempos.z));
 			}
 		}
 	}
 }
 
 //===========================================================
+// 自転車を使ったヒートアクションをする処理
+//===========================================================
+MicroWave::MicroWave()
+{
+	CManager::GetInstance()->GetCamera()->SetDistnce(CAMERA_DISTNCE[2]);
+
+	if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_TUTORIAL)
+	{
+		CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(TUTORIALCAMERAROT[2].x, TUTORIALCAMERAROT[2].y, TUTORIALCAMERAROT[2].z));
+	}
+
+	if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_GAME)
+	{
+		CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(CAMERA_ROT[2].x, CAMERA_ROT[2].y, CAMERA_ROT[2].z));
+	}
+}
+
+//===========================================================
 // 電子レンジを使ったヒートアクションをする処理
 //===========================================================
-void CHeatAction::MicroWave(CPlayer* pPlayer, CEnemy* pEnemy, CItem* pItem)
+void MicroWave::Update(CHeatAction* pHeatAct)
 {
+	CPlayer* pPlayer = pHeatAct->GetPlayer();
+
+	CEnemy* pEnemy = pHeatAct->GetEnemy();
+
 	if (m_bInMicroWave == false && pPlayer->GetMotion()->IsFinish() == true)
 	{
 		// プレイヤーの向き取得
@@ -179,15 +258,15 @@ void CHeatAction::MicroWave(CPlayer* pPlayer, CEnemy* pEnemy, CItem* pItem)
 		// 電子レンジの方向に向かせる
 		PlayerRot.y += utility::MoveToPosition(pPlayer->GetPosition(), pEnemy->GetPosition(), pPlayer->GetRotition().y);
 		PlayerRot.y = utility::CorrectAngle(PlayerRot.y);
-		
+
 		if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_TUTORIAL)
 		{
-			pPlayer->SetPosition(D3DXVECTOR3(-160.0f, 0.0f, 210.0f));
+			pPlayer->SetPosition(TUTORIAL_PLAYER_POSITION);
 		}
 
 		if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_GAME)
 		{
-			pPlayer->SetPosition(D3DXVECTOR3(-720.0f, 0.0f, 580.0f));
+			pPlayer->SetPosition(GAME_PLAYER_POSITION);
 		}
 
 		// プレイヤーとの関係を切る
@@ -208,9 +287,9 @@ void CHeatAction::MicroWave(CPlayer* pPlayer, CEnemy* pEnemy, CItem* pItem)
 			// アイテム：電子レンジがなかった場合処理抜ける
 			if (pPlayer->GetItem() == nullptr)
 				return;
-			
+
 			pEnemy->SetCurrent(pPlayer->GetItem()->GetMtxWorld());
-			pEnemy->SetPosition(D3DXVECTOR3(0.0f, -70.0f, -30.0f));
+			pEnemy->SetPosition(ENEMY_POSITION);
 			pEnemy->SetRotition(D3DXVECTOR3(0.0f, D3DX_PI, 0.0f));
 
 			// 状態とモーションを設定
@@ -234,7 +313,7 @@ void CHeatAction::MicroWave(CPlayer* pPlayer, CEnemy* pEnemy, CItem* pItem)
 			}
 		}
 	}
-	
+
 	if (m_bInMicroWave == true)
 	{
 		m_nHeatActTime++;
@@ -242,7 +321,7 @@ void CHeatAction::MicroWave(CPlayer* pPlayer, CEnemy* pEnemy, CItem* pItem)
 
 	if (pEnemy->GetState() == CEnemy::STATE_HEATACTELECTROWAIT)
 	{
-		if (m_nHeatActTime > 60)
+		if (m_nHeatActTime > SHOCK_COUNT_TIMER)
 		{
 			if (pEnemy->GetState() != CEnemy::STATE_HEATACTELECTRO)
 			{
@@ -259,21 +338,21 @@ void CHeatAction::MicroWave(CPlayer* pPlayer, CEnemy* pEnemy, CItem* pItem)
 				{
 					CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(CAMERA_ROT[0].x, CAMERA_ROT[0].y, CAMERA_ROT[0].z));
 				}
-				
+
 			}
 
 			m_nHeatActTime = 0;
 		}
 	}
 
-	if (m_nHeatActTime > 120 && pEnemy->GetState() == CEnemy::STATE_HEATACTELECTRO)
+	if (m_nHeatActTime > STUN_COUNT_TIMER && pEnemy->GetState() == CEnemy::STATE_HEATACTELECTRO)
 	{
 		if (pEnemy->GetState() != CEnemy::STATE_HEATACTFAINTING)
 		{
 			pEnemy->SetState(CEnemy::STATE_HEATACTFAINTING);
 			pEnemy->GetMotion()->Set(CEnemy::TYPE_HEATACTFAINTING);
 			pEnemy->Damege(100, 0.0f, CPlayer::TYPE_HEATACTMICROWAVE);
-			CManager::GetInstance()->GetCamera()->SetMode(CCamera::MODE_RETURN);
+			CManager::GetInstance()->GetCamera()->ChangeBehaviour(new ReturnPlayerBehindCamera);
 			pPlayer->SetState(CPlayer::STATE_NEUTRAL);
 			pPlayer->SetUseMicroCount(3600);
 			CGame::GetEnemyManager()->SetTrue(CPlayer::GetInstance()->GetGrapEnemy()->GetIdxID());
@@ -292,56 +371,5 @@ void CHeatAction::MicroWave(CPlayer* pPlayer, CEnemy* pEnemy, CItem* pItem)
 		{
 			CParticle::Create(CPlayer::GetInstance()->GetItem()->GetPosition(), CParticle::TYPE_SMOOK);
 		}
-	}
-}
-
-//===========================================================
-// 行うアクションを設定
-//===========================================================
-void CHeatAction::SetAction(CPlayer::HEAT heatact, CPlayer* pPlayer, CEnemy* pEnemy)
-{
-	m_pPlayer = pPlayer;
-	m_pEnemy = pEnemy;
-
-	pPlayer->SetMove(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-
-	pEnemy->SetChase(CEnemy::CHASE_OFF);
-	//pEnemy->SetDraw()
-	pEnemy->SetMove(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-
-	// ヒートアクションのカメラモードにする
-	CManager::GetInstance()->GetCamera()->SetMode(CCamera::MODE_HEAT);
-	
-	CManager::GetInstance()->GetCamera()->SetDistnce(CAMERA_DISTNCE[heatact]);
-
-	if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_TUTORIAL)
-	{
-		CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(TUTORIALCAMERAROT[heatact].x, TUTORIALCAMERAROT[heatact].y, TUTORIALCAMERAROT[heatact].z));
-	}
-
-	if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_GAME)
-	{
-		CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(CAMERA_ROT[heatact].x, CAMERA_ROT[heatact].y, CAMERA_ROT[heatact].z));
-	}
-
-	switch (heatact)
-	{
-	case CPlayer::HEAT_NONE:  // なんもない
-		break;
-	case CPlayer::HEAT_SMASH: // 自転車たたきつけ
-
-		if(pPlayer->GetMotion())
-		pPlayer->GetMotion()->Set(CPlayer::TYPE_THROW);
-
-		//BikeCrash(pPlayer, pEnemy);
-		break;
-	case CPlayer::HEAT_FIRE:  // 電子レンジ
-
-		//MicroWave(pPlayer, pEnemy, nullptr);
-		break;
-	case CPlayer::HEAT_MAX:
-		break;
-	default:
-		break;
 	}
 }

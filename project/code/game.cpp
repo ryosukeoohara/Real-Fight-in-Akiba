@@ -298,9 +298,9 @@ void CGame::Update(void)
 		return;
 	}
 
-	if (pFade->Get() != pFade->FADE_BLACK &&  pFade->GetCol() == 0.0f && m_bOnStage == false && CManager::GetInstance()->GetCamera()->GetMode() == CCamera::MODE_GAME)
+	if (pFade->Get() != pFade->FADE_BLACK &&  pFade->GetCol() == 0.0f && m_bOnStage == false)
 	{
-		CManager::GetInstance()->GetCamera()->SetMode(CCamera::MODE_ONSTAGE);
+		CManager::GetInstance()->GetCamera()->ChangeBehaviour(new CutSceneCamera);
 		m_bOnStage = true;
 	}
 

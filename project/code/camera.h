@@ -11,6 +11,7 @@
 // 前方宣言
 //===========================================================
 class CEnemy;
+class CCameraBehaviour;
 
 //===========================================================
 // カメラクラスの定義
@@ -20,6 +21,26 @@ class CCamera
 public:
 	CCamera();
 	~CCamera();
+
+	struct Info
+	{
+		D3DXMATRIX mtxView;        // ビューマトリックス
+		D3DXMATRIX mtxProjection;  // プロジェクションマトリックス
+		D3DXVECTOR3 posV;          // 視点
+		D3DXVECTOR3 OldposV;       // 前回の視点の位置
+		D3DXVECTOR3 posR;          // 注視点
+		D3DXVECTOR3 OldposR;       // 前回の注視点の位置
+		D3DXVECTOR3 posU;          // 上方向ベクトル
+		D3DXVECTOR3 posVDest;      // 目的の視点
+		D3DXVECTOR3 posRDest;      // 目的の注視点
+		D3DXVECTOR3 rot;           // 向き
+		D3DXVECTOR3 Oldrot;        // 前回の向き 
+		D3DXVECTOR3 move;          // 移動
+
+		int nCounter;              // カメラが切り替わっている時間
+		float fLength;             // 距離
+		float fOldLength;          // 前回の距離
+	};
 
 	enum MODE
 	{
@@ -57,18 +78,22 @@ public:
 
 	void Boss(void);
 
+	//void GetInstance(void);
+
 	// 設定系
 	void SetMode(MODE type);
 	void SetPositionR(D3DXVECTOR3 pos);
 	void SetPositionV(D3DXVECTOR3 pos);
 	void SetRotation(D3DXVECTOR3 Rot);
 	void SetDistnce(float fLen);
+	void ChangeBehaviour(CCameraBehaviour* pBehaviour);
 
 	// 取得系
 	MODE GetMode(void);
-	D3DXVECTOR3 GetRotation(void) { return m_rot; }
-	D3DXMATRIX GetView(void) { return m_mtxView; }
-	D3DXMATRIX GetProjection(void) { return m_mtxProjection; }
+	D3DXVECTOR3 GetRotation(void) { return m_Info.rot; }
+	D3DXMATRIX GetView(void) { return m_Info.mtxView; }
+	D3DXMATRIX GetProjection(void) { return m_Info.mtxProjection; }
+	Info *GetInfo(void) { return &m_Info; }
 
 private:
 	void Mode(void);
@@ -78,32 +103,113 @@ private:
 	void OnStage(void);
 	void Target(void);
 
-	D3DXMATRIX m_mtxView;        // ビューマトリックス
-	D3DXMATRIX m_mtxProjection;  // プロジェクションマトリックス
-	D3DXVECTOR3 m_posV;          // 視点
-	D3DXVECTOR3 m_OldposV;       // 前回の視点の位置
-	D3DXVECTOR3 m_posR;          // 注視点
-	D3DXVECTOR3 m_OldposR;       // 前回の注視点の位置
-	D3DXVECTOR3 m_posU;          // 上方向ベクトル
-	D3DXVECTOR3 m_posVDest;      // 目的の視点
-	D3DXVECTOR3 m_posRDest;      // 目的の注視点
-	D3DXVECTOR3 m_rot;           // 向き
-	D3DXVECTOR3 m_Oldrot;        // 前回の向き 
-	D3DXVECTOR3 m_move;          // 移動
+	Info m_Info;
 	MODE m_mode;
 
-	int m_nCounter;     // カメラが切り替わっている時間
-	float m_fLen;       // 距離
-	float m_fOldLen;    // 前回の距離
 	bool m_bTarget = false;
-
+	CCameraBehaviour *m_pBehaviour = nullptr;
 	CEnemy* m_pEnemy;
+	static CCamera* m_pCamera;
 
 	// デバッグ用
 	D3DXVECTOR3 m_DebugPosR = {};
 
 };
 
+//===========================================================
+// ビヘイビア
+//===========================================================
+class CCameraBehaviour
+{
+public:
+	CCameraBehaviour();
+	~CCameraBehaviour();
+
+	virtual void Update(CCamera* pCamera) = 0;
+
+private:
+
+};
+
+//===========================================================
+// 追従するカメラ
+//===========================================================
+class FollowPlayerCamera : public CCameraBehaviour
+{
+public:
+	FollowPlayerCamera();
+	~FollowPlayerCamera();
+
+	void Update(CCamera* pCamera) override;
+
+private:
+
+};
+
+//===========================================================
+// 固定カメラ
+//===========================================================
+class FixedCamera : public CCameraBehaviour
+{
+public:
+	FixedCamera();
+	~FixedCamera();
+
+	void Update(CCamera* pCamera) override;
+
+private:
+
+};
+
+//===========================================================
+// キャラクター登場演出用カメラ
+//===========================================================
+class CutSceneCamera : public CCameraBehaviour
+{
+public:
+	CutSceneCamera();
+	~CutSceneCamera();
+
+	void Update(CCamera* pCamera) override;
+
+private:
+
+};
+
+//===========================================================
+// キャラクター登場演出用カメラ
+//===========================================================
+class ReturnPlayerBehindCamera : public CCameraBehaviour
+{
+public:
+	ReturnPlayerBehindCamera();
+	~ReturnPlayerBehindCamera();
+
+	void Update(CCamera* pCamera) override;
+
+private:
+
+};
+
+//===========================================================
+// ヒートアクションカメラ
+//===========================================================
+class HeatActionCamera : public CCameraBehaviour
+{
+public:
+	HeatActionCamera();
+	~HeatActionCamera();
+
+	void Update(CCamera* pCamera) override;
+
+private:
+
+};
+
+namespace camera
+{
+	CCamera *GetInstance(void);
+}
 
 
 #endif

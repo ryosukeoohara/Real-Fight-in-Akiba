@@ -1003,7 +1003,7 @@ void CPlayer::State(void)
 
 	// モーションが終了かつヒートアクション中、カメラをもとの位置に戻す
 	if (m_pMotion->IsFinish() == true && m_Info.state == STATE_HEAT)
-		CManager::GetInstance()->GetCamera()->SetMode(CCamera::MODE_RETURN);
+		CManager::GetInstance()->GetCamera()->ChangeBehaviour(new ReturnPlayerBehindCamera);
 
 	// モーションが終了かつ敵を投げるモーション
 	if (m_pMotion->IsFinish() == false && m_pMotion->GetType() == STATE_ENEMYGRAP && m_Grap.pEnemy != nullptr)
@@ -1111,7 +1111,7 @@ void CPlayer::SetHeatActType(void)
 
 		m_pHeatAct = new CHeatAction;
 		if (m_pHeatAct != nullptr)
-			m_pHeatAct->SetAction(m_HeatAct, this, m_pEnemy);
+			m_pHeatAct->SetAction(new BikeCrash, this, m_pEnemy);
 
 		if (CGame::GetEnemyManager() != nullptr)
 			CGame::GetEnemyManager()->SetTarget(m_pEnemy->GetIdxID());
@@ -1121,6 +1121,8 @@ void CPlayer::SetHeatActType(void)
 		// ヒートアクションしている
 		m_bHeatActFlag = true;
 
+		m_pMotion->Set(TYPE_THROW);
+
 		break;
 
 	case CPlayer::HEAT_FIRE:
@@ -1128,7 +1130,7 @@ void CPlayer::SetHeatActType(void)
 		m_pHeatAct = new CHeatAction;
 
 		if (m_pHeatAct != nullptr)
-			m_pHeatAct->SetAction(m_HeatAct, this, m_pEnemy);
+			m_pHeatAct->SetAction(new MicroWave, this, m_pEnemy);
 
 		if (CGame::GetEnemyManager() != nullptr)
 			CGame::GetEnemyManager()->SetTarget(m_pEnemy->GetIdxID());
@@ -1176,8 +1178,6 @@ bool CPlayer::IsHeatAct(D3DXVECTOR3 TargetPos)
 
 	if (CGame::GetCollision()->Circle(m_Info.pos, TargetPos, 30.0f, 40.0f))
 	{// 範囲内
-
-		m_HeatAct = HEAT_FIRE;
 
 		// Xボタンが出てくる
 		if (m_pBotton == nullptr)
@@ -1524,21 +1524,23 @@ void CPlayer::GrapItem(bool value)
 //================================================================
 void CPlayer::MoveLimit(void)
 {
-	if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_TUTORIAL)
+	// マップの制限
+	if (m_Info.pos.x >= MAP_LIMIT_MAX.x)
 	{
-		// マップの制限
-		if (m_Info.pos.x >= MAP_LIMIT_MAX.x)
-		{
-			m_Info.pos.x = MAP_LIMIT_MAX.x;
-		}
-		if (m_Info.pos.x <= MAP_LIMIT_MIN.x)
-		{
-			m_Info.pos.x = MAP_LIMIT_MIN.x;
-		}
-		if (m_Info.pos.z >= MAP_LIMIT_MAX.z)
-		{
-			m_Info.pos.z = MAP_LIMIT_MAX.z;
-		}
+		m_Info.pos.x = MAP_LIMIT_MAX.x;
+	}
+	if (m_Info.pos.x <= MAP_LIMIT_MIN.x)
+	{
+		m_Info.pos.x = MAP_LIMIT_MIN.x;
+	}
+	if (m_Info.pos.z >= MAP_LIMIT_MAX.z)
+	{
+		m_Info.pos.z = MAP_LIMIT_MAX.z;
+	}
+
+	if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_TUTORIAL)
+	{// チュートリアルのマップ制限
+
 		if (m_Info.pos.z <= TUTORIAL_MAP_LIMITZ)
 		{
 			m_Info.pos.z = TUTORIAL_MAP_LIMITZ;
@@ -1546,20 +1548,8 @@ void CPlayer::MoveLimit(void)
 	}
 
 	if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_GAME)
-	{
-		// マップの制限
-		if (m_Info.pos.x >= MAP_LIMIT_MAX.x)
-		{
-			m_Info.pos.x = MAP_LIMIT_MAX.x;
-		}
-		if (m_Info.pos.x <= MAP_LIMIT_MIN.x)
-		{
-			m_Info.pos.x = MAP_LIMIT_MIN.x;
-		}
-		if (m_Info.pos.z >= MAP_LIMIT_MAX.z)
-		{
-			m_Info.pos.z = MAP_LIMIT_MAX.z;
-		}
+	{// ゲームのマップ制限
+
 		if (m_Info.pos.z <= MAP_LIMIT_MIN.z)
 		{
 			m_Info.pos.z = MAP_LIMIT_MIN.z;

@@ -23,6 +23,7 @@ CEnemy *CEnemyManager::m_pTop = nullptr;
 CEnemy *CEnemyManager::m_pCur = nullptr;
 CEnemy *CEnemyManager::m_pSNext = nullptr;
 int CEnemyManager::m_nNum = 0;
+CEnemyManager *CEnemyManager::m_pEnemyManager;
 
 //===========================================================
 // ’è”’è‹`
@@ -45,6 +46,8 @@ CEnemyManager::CEnemyManager()
 	m_nNum = 0;
 	m_Readpos = { 0.0f,0.0f,0.0f };
 	m_Readrot = { 0.0f,0.0f,0.0f };
+
+	m_pEnemyManager = this;
 }
 
 //===========================================================

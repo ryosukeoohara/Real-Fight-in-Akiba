@@ -179,7 +179,10 @@ void CAppearanceUI::Update(void)
 			utility::Color_A2D(m_pBackObj2D, -0.03f);
 		}
 
-		if (CManager::GetInstance()->GetCamera()->GetMode() == CCamera::MODE_GAME)
+		float col_a = m_pBackObj2D->GetColor().a;
+		
+
+		if (col_a <= 0.0f)
 		{
 			D3DXVECTOR3 pos = m_pFrontObj2D->GetPosition();
 

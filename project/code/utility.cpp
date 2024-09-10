@@ -105,7 +105,8 @@ namespace utility
 		// “§–¾“xŽæ“¾
 		float fColor_a = pObj->GetColor().a;
 
-		fColor_a = fColor_a + fValue;
+		if(fColor_a <= 1.0f && fColor_a >= 0.0f)
+		   fColor_a = fColor_a + fValue;
 
 		// FÝ’è
 		pObj->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, fColor_a));

@@ -21,6 +21,11 @@
 #include "utility.h"
 
 //===========================================================
+// 静的メンバ変数
+//===========================================================
+CCamera* CCamera::m_pCamera = nullptr;
+
+//===========================================================
 // 定数定義
 //===========================================================
 namespace
@@ -31,6 +36,8 @@ namespace
 	const float CAMERA_DISTNCE = 200.0f;  // 距離
 	const float CAMERA_MOVE = 2.0f;       // 移動量
 	const float CAMERA_ROT_Y = 0.03f;     // Y軸の回転量
+	const float CORRECT_TO_FACT = 0.05f;  // 補正する値
+	const int TIME_TO_CORRECT = 90;       // 補正する時間
 }
 
 //================================================================
@@ -38,17 +45,18 @@ namespace
 //================================================================
 CCamera::CCamera()
 {
-	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_posV = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_posU = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_posRDest = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_Info.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_Info.posV = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_Info.posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_Info.posU = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_Info.move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_Info.posRDest = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_mode = MODE_NONE;
-	m_nCounter = 0;
-	m_fLen = 0.0f;
+	m_Info.nCounter = 0;
+	m_Info.fLength = 0.0f;
 
 	m_pEnemy = nullptr;
+	m_pCamera = this;
 }
 
 //================================================================
@@ -68,14 +76,14 @@ void CCamera::Init(void)
 
 	if (pScene->GetMode() == CScene::MODE_TITLE)
 	{
-		m_posV = D3DXVECTOR3(0.0f, 200.0f, -500.0f);
-		m_posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		m_posU = D3DXVECTOR3(0.0f, 5.0f, 0.0f);
-		m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		m_Info.posV = D3DXVECTOR3(0.0f, 200.0f, -500.0f);
+		m_Info.posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		m_Info.posU = D3DXVECTOR3(0.0f, 5.0f, 0.0f);
+		m_Info.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	}
 
 	// 距離
-	m_fLen = CAMERA_DISTNCE;
+	m_Info.fLength = CAMERA_DISTNCE;
 }
 
 //================================================================
@@ -83,7 +91,7 @@ void CCamera::Init(void)
 //================================================================
 void CCamera::Uninit(void)
 {
-	
+	m_pCamera = nullptr;
 }
 
 //================================================================
@@ -91,7 +99,10 @@ void CCamera::Uninit(void)
 //================================================================
 void CCamera::Update(void)
 {
-	Mode();
+	
+
+	if (m_pBehaviour != nullptr)
+		m_pBehaviour->Update(this);
 } 
 
 //================================================================
@@ -104,26 +115,26 @@ void CCamera::SetCamera(void)
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 
 	//プロジェクションマトリックスの初期化
-	D3DXMatrixPerspectiveFovLH(&m_mtxProjection,
+	D3DXMatrixPerspectiveFovLH(&m_Info.mtxProjection,
 		D3DXToRadian(45.0f),
 		(float)SCREEN_WIDTH / (float)SCREEN_HEIGHT,
 		10.0f,
 		100000.0f);
 
 	//プロジェクションマトリックスの設定
-	pDevice->SetTransform(D3DTS_PROJECTION, &m_mtxProjection);
+	pDevice->SetTransform(D3DTS_PROJECTION, &m_Info.mtxProjection);
 
 	//ビューマトリックスの初期化
-	D3DXMatrixIdentity(&m_mtxView);
+	D3DXMatrixIdentity(&m_Info.mtxView);
 
 	//ビューマトリックスの作成
-	D3DXMatrixLookAtLH(&m_mtxView,
-		&m_posV,
-		&m_posR,
-		&m_posU);
+	D3DXMatrixLookAtLH(&m_Info.mtxView,
+		&m_Info.posV,
+		&m_Info.posR,
+		&m_Info.posU);
 
 	//ビューマトリックスの設定
-	pDevice->SetTransform(D3DTS_VIEW, &m_mtxView);
+	pDevice->SetTransform(D3DTS_VIEW, &m_Info.mtxView);
 }
 
 //================================================================
@@ -131,7 +142,7 @@ void CCamera::SetCamera(void)
 //================================================================
 void CCamera::Reset(void)
 {
-	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_Info.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 }
 
 //================================================================
@@ -147,7 +158,7 @@ void CCamera::SetMode(MODE type)
 //================================================================
 void CCamera::SetPositionR(D3DXVECTOR3 pos)
 {
-	m_posR = pos;
+	m_Info.posR = pos;
 }
 
 //================================================================
@@ -155,7 +166,7 @@ void CCamera::SetPositionR(D3DXVECTOR3 pos)
 //================================================================
 void CCamera::SetPositionV(D3DXVECTOR3 pos)
 {
-	m_posV = pos;
+	m_Info.posV = pos;
 }
 
 //================================================================
@@ -163,16 +174,9 @@ void CCamera::SetPositionV(D3DXVECTOR3 pos)
 //================================================================
 void CCamera::SetRotation(D3DXVECTOR3 Rot)
 {
-	m_rot = Rot;
+	m_Info.rot = Rot;
 
-	if (m_rot.y > D3DX_PI)
-	{
-		m_rot.y -= D3DX_PI * 2.0f;
-	}
-	else if (m_rot.y < -D3DX_PI)
-	{
-		m_rot.y += D3DX_PI * 2.0f;
-	}
+	m_Info.rot.y = utility::CorrectAngle(m_Info.rot.y);
 }
 
 //================================================================
@@ -180,7 +184,21 @@ void CCamera::SetRotation(D3DXVECTOR3 Rot)
 //================================================================
 void CCamera::SetDistnce(float fLen)
 {
-	m_fLen = fLen;
+	m_Info.fLength = fLen;
+}
+
+//================================================================
+// ビヘイビアの変更
+//================================================================
+void CCamera::ChangeBehaviour(CCameraBehaviour* pBehaviour)
+{
+	if (m_pBehaviour != nullptr)
+	{
+		delete m_pBehaviour;
+		m_pBehaviour = nullptr;
+	}
+		
+	m_pBehaviour = pBehaviour;
 }
 
 //================================================================
@@ -191,445 +209,296 @@ CCamera::MODE CCamera::GetMode(void)
 	return m_mode;
 }
 
+//=============================================================================
+// カメラのビヘイビア
+//=============================================================================
 //================================================================
-// モード
+// コンストラクタ
 //================================================================
-void CCamera::Mode(void)
+CCameraBehaviour::CCameraBehaviour()
 {
-	//シーンの情報を寿徳
-	CScene *pScene = CManager::GetInstance()->GetScene();
 
-	switch (m_mode)
-	{
-	case MODE_NONE:
-		break;
+}
 
-	case MODE_TITLE:
+//================================================================
+// デストラクタ
+//================================================================
+CCameraBehaviour::~CCameraBehaviour()
+{
 
-		Title();
-		break;
+}
 
-	case MODE_TUTORIAL:
+//================================================================
+// コンストラクタ
+//================================================================
+FollowPlayerCamera::FollowPlayerCamera()
+{// 追従するカメラ
 
-		m_OldposR = m_posR;
-		m_OldposV = m_posV;
-		m_Oldrot = m_rot;
-		m_fOldLen = m_fLen;
-		CameraV();
-		break;
+}
 
-	case MODE_GAME:
+//================================================================
+// デストラクタ
+//================================================================
+FollowPlayerCamera::~FollowPlayerCamera()
+{
 
-		m_OldposR = m_posR;
-		m_OldposV = m_posV;
-		m_Oldrot = m_rot;
-		m_fOldLen = m_fLen;
+}
 
-		CameraV();
-		break;
-
-	case MODE_RESULT:
-
-		break;
-
-	case MODE_HEAT:
-
-		Heat();
-		break;
-
-	case MODE_RETURN:
-		
-		Return();
-		break;
-
-	case MODE_DEBUG:
-
-		Debug();
-		break;
-
-	case MODE_ONSTAGE:
-
-		OnStage();
-		break;
-
-	case MODE_TARGET:
-
-		m_OldposR = m_posR;
-		m_OldposV = m_posV;
-		m_Oldrot = m_rot;
-		m_fOldLen = m_fLen;
-		CameraV();
-		break;
-
-	case MODE_MAX:
-		break;
-
-	default:
-		break;
-	}
-
-	//キーボードを取得
-	CInputKeyboard* InputKeyboard = CManager::GetInstance()->GetKeyBoard();
-
-	//ゲームパッドを取得
-	CInputJoyPad* pInputJoyPad = CManager::GetInstance()->GetInputJoyPad();
-
-	//向きを設定
-	SetRotation(m_rot);
-
-	CDebugProc *pDebugProc = CManager::GetInstance()->GetDebugProc();
-
-	if (pDebugProc == nullptr)
+//================================================================
+// 更新
+//================================================================
+void FollowPlayerCamera::Update(CCamera* pCamera)
+{
+	if (pCamera == nullptr)
 		return;
 
-	pDebugProc->Print("\n---カメラの情報---");
-	pDebugProc->Print("\nカメラの位置視点：X軸<%f>,Y軸<%f>,Z軸<%f>", m_posV.x, m_posV.y, m_posV.z);
-	pDebugProc->Print("\nカメラの位置注視点：X軸<%f>,Y軸<%f>,Z軸<%f>", m_posR.x, m_posR.y, m_posR.z);
-	pDebugProc->Print("\nカメラの向き ：X軸<%f>,Y軸<%f>,Z軸<%f>", m_rot.x, m_rot.y, m_rot.z);
-}
-
-//================================================================
-// 激アツアクション
-//================================================================
-void CCamera::Heat(void)
-{
-	m_posV.x = m_posR.x - sinf(m_rot.y) * -m_fLen;
-	m_posV.z = m_posR.z - cosf(m_rot.y) * -m_fLen;
-
-	D3DXVECTOR3 pos = CPlayer::GetInstance()->GetPosition();
-
-	m_posV = D3DXVECTOR3(0.0f + m_posV.x, 150.0f, 30.0f + m_posV.z);
-	m_posR = D3DXVECTOR3(pos.x, 50.0f, pos.z + 10.0f);
-	m_posU = D3DXVECTOR3(0.0f, 5.0f, 0.0f);
-
-	//目標の注視点を設定
-	m_posRDest.x = pos.x;
-	m_posRDest.z = pos.z;
-
-	//カメラの移動量
-	m_move.x = m_posRDest.x - m_posR.x;
-	m_move.z = m_posRDest.z - m_posR.z;
-
-	//位置に移動量を保存
-	m_posR.x += m_move.x;
-	m_posR.z += m_move.z;
-}
-
-//================================================================
-// 元の位置に戻ってくる
-//================================================================
-void CCamera::Return(void)
-{
-	if (m_nCounter <= 90)
-	{
-		// カメラを目標の向きまで回転させる
-		D3DXVECTOR3 rotDest = m_Oldrot - m_rot;
-		SetRotation(m_rot + rotDest * 0.05f);
-
-		D3DXVECTOR3 posDestR = m_OldposR - m_posR;
-		SetPositionR(m_posR + posDestR * 0.05f);
-
-		D3DXVECTOR3 posDestV = m_OldposV - m_posV;
-		SetPositionV(m_posV + posDestV * 0.05f);
-
-		float fLenDest = m_fOldLen - m_fLen;
-		SetDistnce(m_fLen + fLenDest * 0.05f);
-
-		m_nCounter++;
-	}
-	else
-	{
-		// カウンターをリセット
-		m_nCounter = 0;
-
-		if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_GAME)
-		{
-			// カメラモードをゲーム
-			m_mode = MODE_GAME;
-
-			CGame::GetPlayer()->SetMobile();
-
-			CGame::GetEnemyManager()->SetMobility();
-		}
-		else if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_TUTORIAL)
-		{
-			// カメラモードをゲーム
-			m_mode = MODE_TUTORIAL;
-
-			CTutorial::GetPlayer()->SetMobile();
-		}
-	}
-}
-
-//================================================================
-// ちょーせい
-//================================================================
-void CCamera::Debug(void)
-{
-	
-}
-
-//================================================================
-// 登場
-//================================================================
-void CCamera::OnStage(void)
-{
-	if (m_nCounter <= 80)
-	{
-		D3DXVECTOR3 posDestR = ONSTAGE_POSR - m_posR;
-		SetPositionR(m_posR + posDestR * 0.05f);
-
-		D3DXVECTOR3 posDestV = ONSTAGE_POSV - m_posV;
-		SetPositionV(m_posV + posDestV * 0.05f);
-
-		m_posV.x = m_posR.x - sinf(m_rot.y) * -m_fLen;
-		m_posV.z = m_posR.z - cosf(m_rot.y) * -m_fLen;
-
-		m_nCounter++;
-	}
-	/*else if (m_nCounter <= 80 && m_nCounter <= 140)
-	{
-		if (CGame::GetWave() == CGame::WAVE_00)
-		{
-			CAppearanceUI::Create(CAppearanceUI::TYPE_WEAKNAME);
-		}
-		else if (CGame::GetWave() == CGame::WAVE_01)
-		{
-			CAppearanceUI::Create(CAppearanceUI::TYPE_BOSSNAME);
-		}
-
-		m_nCounter++;
-	}*/
-	else
-	{
-		// カメラモードをゲーム
-		m_mode = MODE_RETURN;
-
-		// カウンターをリセット
-		m_nCounter = 0;
-
-		if (CGame::GetWave() == CGame::WAVE_00)
-		{
-			CAppearanceUI::Create(CAppearanceUI::TYPE_WEAKNAME);
-		}
-		else if (CGame::GetWave() == CGame::WAVE_01)
-		{
-			CAppearanceUI::Create(CAppearanceUI::TYPE_BOSSNAME);
-		}
-	}
-}
-
-//===========================================================
-// 敵をターゲットするカメラ処理
-//===========================================================
-void CCamera::Target(void)
-{
-	float fLenght = 10000.0f;
-	float fLenghtDiff = 0.0f;  // 比較用
-
-	CEnemy* pEnemy = CEnemy::GetTop();
-
-	// プレイヤーと最も近い敵を探索
-	while (pEnemy != nullptr)
-	{
-		CEnemy* pEnemyNext = pEnemy->GetNext();
-
-		CPlayer* pPlayer = CPlayer::GetInstance();
-		D3DXVECTOR3 PlayerPos = pPlayer->GetPosition();
-
-		if (CManager::GetInstance()->GetUtility() != nullptr)
-			fLenghtDiff = utility::Distance(PlayerPos, pEnemy->GetPosition());
-
-		// 距離を比較
-		if (fLenght >= fLenghtDiff)
-		{
-			fLenght = fLenghtDiff;
-
-			// 一番近くの敵を覚える
-			m_pEnemy = pEnemy;
-		}
-
-		pEnemy = pEnemyNext;
-	}
-
-	m_posR = m_pEnemy->GetPosition();
-	m_bTarget = true;
-}
-
-//================================================================
-// 視点の移動
-//================================================================
-void CCamera::CameraV(void)
-{
-	//キーボードの情報を取得
-	CInputKeyboard *InputKeyboard = CManager::GetInstance()->GetKeyBoard();
+	// カメラの情報取得
+	CCamera::Info *pCameraInfo = pCamera->GetInfo();
 
 	//マウスの情報を取得
-	CInputMouse *pInputMouse = CManager::GetInstance()->GetInputMouse();
+	CInputMouse* pInputMouse = CManager::GetInstance()->GetInputMouse();
 
 	//マウスの位置を取得
 	D3DXVECTOR2 MousePos = pInputMouse->GetMouseMove();
 
 	//ゲームパッドを取得
-	CInputJoyPad *pInputJoyPad = CManager::GetInstance()->GetInputJoyPad();
+	CInputJoyPad* pInputJoyPad = CManager::GetInstance()->GetInputJoyPad();
 
 	CPlayer* pPlayer = CPlayer::GetInstance();
 
 	if (pInputJoyPad->GetRXStick(CInputJoyPad::STICK_RX, 0) > 0)
 	{
-		m_rot.y += 0.05f;
+		pCameraInfo->rot.y += 0.05f;
 	}
 	else if (pInputJoyPad->GetRXStick(CInputJoyPad::STICK_RX, 0) < 0)
 	{
-		m_rot.y -= 0.05f;
+		pCameraInfo->rot.y -= 0.05f;
 	}
 
-	if(pPlayer->GetMobility() == CPlayer::Mobile)
-	   m_rot.y += MousePos.x * 0.005f;
+	if (pPlayer->GetMobility() == CPlayer::Mobile)
+		pCameraInfo->rot.y += MousePos.x * 0.005f;
 
 	// 角度の値を修正する
-	m_rot.y = utility::CorrectAngle(m_rot.y);
+	pCameraInfo->rot.y = utility::CorrectAngle(pCameraInfo->rot.y);
 
-	m_posV.x = m_posR.x - sinf(m_rot.y) * -m_fLen;
-	m_posV.z = m_posR.z - cosf(m_rot.y) * -m_fLen;
+	pCameraInfo->posV.x = pCameraInfo->posR.x - sinf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
+	pCameraInfo->posV.z = pCameraInfo->posR.z - cosf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
 
-	if (m_bTarget == true)
+	D3DXVECTOR3 pos = {};
+
+	if(pPlayer != nullptr)
+	   pos = pPlayer->GetPosition();
+
+	pCameraInfo->posV = D3DXVECTOR3(0.0f + pCameraInfo->posV.x, 150.0f, 0.0f + pCameraInfo->posV.z);
+	pCameraInfo->posR = D3DXVECTOR3(pos.x, 75.0f, pos.z);
+
+	//目標の注視点を設定
+	pCameraInfo->posRDest.x = pos.x;
+	pCameraInfo->posRDest.z = pos.z;
+
+	//カメラの移動量
+	pCameraInfo->move.x = pCameraInfo->posRDest.x - pCameraInfo->posR.x;
+	pCameraInfo->move.z = pCameraInfo->posRDest.z - pCameraInfo->posR.z;
+
+	//位置に移動量を保存
+	pCameraInfo->posR.x += pCameraInfo->move.x;
+	pCameraInfo->posR.z += pCameraInfo->move.z;
+
+	pCameraInfo->OldposR = pCameraInfo->posR;
+	pCameraInfo->OldposV = pCameraInfo->posV;
+	pCameraInfo->Oldrot = pCameraInfo->rot;
+	pCameraInfo->fOldLength = pCameraInfo->fLength;
+}
+
+//================================================================
+// コンストラクタ
+//================================================================
+FixedCamera::FixedCamera()
+{// 固定カメラ
+
+}
+
+//================================================================
+// デストラクタ
+//================================================================
+FixedCamera::~FixedCamera()
+{
+
+}
+
+//================================================================
+// 更新
+//================================================================
+void FixedCamera::Update(CCamera* pCamera)
+{
+	// カメラの情報取得
+	CCamera::Info* pCameraInfo = pCamera->GetInfo();
+
+	pCameraInfo->posV.x = pCameraInfo->posR.x - sinf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
+	pCameraInfo->posV.z = pCameraInfo->posR.z - cosf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
+
+	pCameraInfo->posV = D3DXVECTOR3(100.0f, 50.0f, 100.0f);
+	pCameraInfo->posR = D3DXVECTOR3(50.0f, 50.0f, 10.0f);
+}
+
+//================================================================
+// コンストラクタ
+//================================================================
+CutSceneCamera::CutSceneCamera()
+{// キャラクター登場演出用カメラ
+
+}
+
+//================================================================
+// デストラクタ
+//================================================================
+CutSceneCamera::~CutSceneCamera()
+{
+
+}
+
+//================================================================
+// 更新
+//================================================================
+void CutSceneCamera::Update(CCamera* pCamera)
+{
+	// カメラの情報取得
+	CCamera::Info* pCameraInfo = pCamera->GetInfo();
+
+	if (pCameraInfo->nCounter <= TIME_TO_CORRECT)
 	{
-		m_posV = D3DXVECTOR3(0.0f + m_posV.x, 150.0f, 0.0f + m_posV.z);
-		m_posU = D3DXVECTOR3(0.0f, 5.0f, 0.0f);
+		D3DXVECTOR3 posDestR = ONSTAGE_POSR - pCameraInfo->posR;
+		pCamera->SetPositionR(pCameraInfo->posR + posDestR * CORRECT_TO_FACT);
 
-		//カメラの移動量
-		m_move.x = m_posRDest.x - m_posR.x;
-		m_move.z = m_posRDest.z - m_posR.z;
+		D3DXVECTOR3 posDestV = ONSTAGE_POSV - pCameraInfo->posV;
+		pCamera->SetPositionV(pCameraInfo->posV + posDestV * CORRECT_TO_FACT);
+
+		pCameraInfo->posV.x = pCameraInfo->posR.x - sinf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
+		pCameraInfo->posV.z = pCameraInfo->posR.z - cosf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
+
+		pCameraInfo->nCounter++;
 	}
 	else
 	{
-		D3DXVECTOR3 pos = pPlayer->GetPosition();
+		// カウンターをリセット
+		pCameraInfo->nCounter = 0;
 
-		m_posV = D3DXVECTOR3(0.0f + m_posV.x, 150.0f, 0.0f + m_posV.z);
-		m_posR = D3DXVECTOR3(pos.x, 75.0f + m_DebugPosR.y, pos.z + m_DebugPosR.z);
-		m_posU = D3DXVECTOR3(0.0f, 5.0f, 0.0f);
+		if (CGame::GetWave() == CGame::WAVE_00)
+		{
+			CAppearanceUI::Create(CAppearanceUI::TYPE_WEAKNAME);
+		}
+		else if (CGame::GetWave() == CGame::WAVE_01)
+		{
+			CAppearanceUI::Create(CAppearanceUI::TYPE_BOSSNAME);
+		}
 
-		//目標の注視点を設定
-		m_posRDest.x = pos.x;
-		m_posRDest.z = pos.z;
-
-		//カメラの移動量
-		m_move.x = m_posRDest.x - m_posR.x;
-		m_move.z = m_posRDest.z - m_posR.z;
-
-		//位置に移動量を保存
-		m_posR.x += m_move.x;
-		m_posR.z += m_move.z;
+		// カメラモードを変更
+		pCamera->ChangeBehaviour(new ReturnPlayerBehindCamera);
 	}
-
-	if (InputKeyboard->GetPress(DIK_I) == true)
-		m_DebugPosR.y += 0.05f;
-
-	if (InputKeyboard->GetPress(DIK_K) == true)
-		m_DebugPosR.y -= 0.05f;
-
-	if (InputKeyboard->GetPress(DIK_J) == true)
-		m_DebugPosR.z += 0.05f;
-
-	if (InputKeyboard->GetPress(DIK_L) == true)
-		m_DebugPosR.z -= 0.05f;
-	
 }
 
 //================================================================
-// チュートリアル
+// コンストラクタ
 //================================================================
-void CCamera::Tutorial(void)
+ReturnPlayerBehindCamera::ReturnPlayerBehindCamera()
+{// プレイヤーの背後にカメラが戻ってくる
+
+}
+
+//================================================================
+// デストラクタ
+//================================================================
+ReturnPlayerBehindCamera::~ReturnPlayerBehindCamera()
 {
-	//キーボードの情報を取得
-	CInputKeyboard *InputKeyboard = CManager::GetInstance()->GetKeyBoard();
 
-	//マウスの情報を取得
-	CInputMouse *pInputMouse = CManager::GetInstance()->GetInputMouse();
+}
 
-	//マウスの位置を取得
-	D3DXVECTOR2 MousePos = pInputMouse->GetMouseMove();
+//================================================================
+// 更新
+//================================================================
+void ReturnPlayerBehindCamera::Update(CCamera* pCamera)
+{
+	// カメラの情報取得
+	CCamera::Info* pCameraInfo = pCamera->GetInfo();
 
-	//ゲームパッドを取得
-	CInputJoyPad *pInputJoyPad = CManager::GetInstance()->GetInputJoyPad();
+	if (pCameraInfo->nCounter <= TIME_TO_CORRECT)
+	{// カウンターが一定になるまで
 
-	CPlayer *pPlayer = CTutorial::GetPlayer();
+		// カメラを目標の向きまで補正する
+		D3DXVECTOR3 rotDest = pCameraInfo->Oldrot - pCameraInfo->rot;
+		pCamera->SetRotation(pCameraInfo->rot + rotDest * CORRECT_TO_FACT);
 
-	if (pInputJoyPad->GetRXStick(CInputJoyPad::STICK_RX, 0) > 0)
-	{
-		m_rot.y += 0.05f;
+		// カメラを目標の位置まで補正する
+		D3DXVECTOR3 posDestR = pCameraInfo->OldposR - pCameraInfo->posR;
+		pCamera->SetPositionR(pCameraInfo->posR + posDestR * CORRECT_TO_FACT);
+
+		D3DXVECTOR3 posDestV = pCameraInfo->OldposV - pCameraInfo->posV;
+		pCamera->SetPositionV(pCameraInfo->posV + posDestV * CORRECT_TO_FACT);
+
+		// カメラを目標の距離まで補正する
+		float fLenDest = pCameraInfo->fOldLength - pCameraInfo->fLength;
+		pCamera->SetDistnce(pCameraInfo->fLength + fLenDest * CORRECT_TO_FACT);
+
+		// カウンター加算
+		pCameraInfo->nCounter++;
 	}
-	else if (pInputJoyPad->GetRXStick(CInputJoyPad::STICK_RX, 0) < 0)
+	else
 	{
-		m_rot.y -= 0.05f;
+		// カウンターをリセット
+		pCameraInfo->nCounter = 0;
+
+		// カメラモードを変更
+		pCamera->ChangeBehaviour(new FollowPlayerCamera);
+
+		// プレイヤーを行動可能にする
+		CPlayer::GetInstance()->SetMobile();
+
+		// プレイヤーを行動可能にする
+		CEnemyManager::GetInstance()->SetMobility();
 	}
+}
 
-	m_rot.y += MousePos.x * 0.005f;
+//================================================================
+// コンストラクタ
+//================================================================
+HeatActionCamera::HeatActionCamera()
+{// ヒートアクションカメラ
 
-	if (m_rot.y > D3DX_PI)
-	{
-		m_rot.y -= D3DX_PI * 2.0f;
-	}
-	else if (m_rot.y < -D3DX_PI)
-	{
-		m_rot.y += D3DX_PI * 2.0f;
-	}
+}
 
-	m_posV.x = m_posR.x - sinf(m_rot.y) * -m_fLen;
-	m_posV.z = m_posR.z - cosf(m_rot.y) * -m_fLen;
+//================================================================
+// デストラクタ
+//================================================================
+HeatActionCamera::~HeatActionCamera()
+{
 
-	D3DXVECTOR3 pos = pPlayer->GetPosition();
+}
 
-	m_posV = D3DXVECTOR3(0.0f + m_posV.x, 150.0f, 30.0f + m_posV.z);
-	m_posR = D3DXVECTOR3(pos.x, 50.0f, pos.z + 10.0f);
-	m_posU = D3DXVECTOR3(0.0f, 5.0f, 0.0f);
+//================================================================
+// 更新
+//================================================================
+void HeatActionCamera::Update(CCamera* pCamera)
+{
+	// カメラの情報取得
+	CCamera::Info* pCameraInfo = pCamera->GetInfo();
+
+	pCameraInfo->posV.x = pCameraInfo->posR.x - sinf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
+	pCameraInfo->posV.z = pCameraInfo->posR.z - cosf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
+
+	D3DXVECTOR3 pos = CPlayer::GetInstance()->GetPosition();
+
+	pCameraInfo->posV = D3DXVECTOR3(0.0f + pCameraInfo->posV.x, 150.0f, 30.0f + pCameraInfo->posV.z);
+	pCameraInfo->posR = D3DXVECTOR3(pos.x, 50.0f, pos.z + 10.0f);
 
 	//目標の注視点を設定
-	m_posRDest.x = pos.x;
-	m_posRDest.z = pos.z;
+	pCameraInfo->posRDest.x = pos.x;
+	pCameraInfo->posRDest.z = pos.z;
 
 	//カメラの移動量
-	m_move.x = m_posRDest.x - m_posR.x;
-	m_move.z = m_posRDest.z - m_posR.z;
+	pCameraInfo->move.x = pCameraInfo->posRDest.x - pCameraInfo->posR.x;
+	pCameraInfo->move.z = pCameraInfo->posRDest.z - pCameraInfo->posR.z;
 
 	//位置に移動量を保存
-	m_posR.x += m_move.x;
-	m_posR.z += m_move.z;
-}
-
-//================================================================
-// 視点の移動
-//================================================================
-void CCamera::CameraR(void)
-{
-	
-}
-
-//================================================================
-// 視点の移動
-//================================================================
-void CCamera::Title(void)
-{
-	/*m_rot.y -= 0.002f;
-
-	m_posV.x = m_posR.x - sinf(m_rot.y) * -300.0f;
-	m_posV.z = m_posR.z - cosf(m_rot.y) * -300.0f;
-
-	m_posV = D3DXVECTOR3(m_posV.x, 50.0f, 30.0f + m_posV.z);
-	m_posR = D3DXVECTOR3(0.0f, 50.0f, 500.0f);*/
-
-	m_posV.x = m_posR.x - sinf(m_rot.y) * -m_fLen;
-	m_posV.z = m_posR.z - cosf(m_rot.y) * -m_fLen;
-
-	CPlayer *pPlayer = CPlayer::GetInstance();
-
-	if (pPlayer != nullptr)
-	{
-		D3DXVECTOR3 pos = pPlayer->GetPosition();
-
-		m_posV = D3DXVECTOR3(100.0f, 50.0f, 100.0f);
-		m_posR = D3DXVECTOR3(50.0f, 50.0f, 10.0f);
-		m_posU = D3DXVECTOR3(0.0f, 5.0f, 0.0f);
-	}
+	pCameraInfo->posR.x += pCameraInfo->move.x;
+	pCameraInfo->posR.z += pCameraInfo->move.z;
 }

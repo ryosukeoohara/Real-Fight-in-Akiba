@@ -190,16 +190,12 @@ void CCollision::Map(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, float fRadius)
 					&& posOld->x + -fRadius >= Mappos.x + vtxMax.x)
 				{
 					pos->x = (Mappos.x + vtxMax.x) - -fRadius;
-
-					//return true;
 				}
 				//ブロックの左側面==================================
 				if (pos->x + fRadius >= Mappos.x + vtxMin.x
 					&& posOld->x + fRadius <= Mappos.x + vtxMin.x)
 				{
 					pos->x = (Mappos.x + vtxMin.x) - fRadius;
-
-					//return true;
 				}
 			}
 
@@ -211,8 +207,6 @@ void CCollision::Map(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, float fRadius)
 				 && posOld->z + -fRadius >= Mappos.z + vtxMax.z)
 				{
 					pos->z = (Mappos.z + vtxMax.z) - -fRadius;
-
-					//return true;
 				}
 
 				//ブロックの下======================================
@@ -220,69 +214,10 @@ void CCollision::Map(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, float fRadius)
 				 && posOld->z + fRadius <= Mappos.z + vtxMin.z)
 				{
 					pos->z = (Mappos.z + vtxMin.z) - fRadius;
-
-					//return true;
 				}
 			}
 		}
 	}
-
-	//return false;
-}
-
-//=============================================================================
-//剣の当たり判定
-//=============================================================================
-bool CCollision::Sword(D3DXMATRIX matrix1, D3DXMATRIX matrix2, float flength, CEnemy *pEnemy)
-{
-	CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();
-	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
-
-	D3DXMATRIX Matrix;
-	D3DXVECTOR3 offPos = { 0.0f, 0.0f, -flength };
-	D3DXVECTOR3 Pos = { 0.0f, 0.0f, 0.0f };
-	D3DXVECTOR3 offRot = { 0.0f, 0.0f, 0.0f };
-
-	//計算用マトリックス
-	D3DXMATRIX m_mtxRot, m_mtxTrans;
-
-	//ワールドマトリックスの初期化
-	D3DXMatrixIdentity(&Matrix);
-
-	//向きを反映
-	D3DXMatrixRotationYawPitchRoll(&m_mtxRot, offRot.y, offRot.x, offRot.z);
-
-	D3DXMatrixMultiply(&Matrix, &Matrix, &m_mtxRot);
-
-	//位置を反映
-	D3DXMatrixTranslation(&m_mtxTrans, offPos.x, offPos.y, offPos.z);
-
-	D3DXMatrixMultiply(&Matrix, &Matrix, &m_mtxTrans);
-
-	//算出したパーツのワールドマトリックスと親のマトリックスを掛け合わせる
-	D3DXMatrixMultiply(&Matrix, &Matrix, &matrix2);
-
-	Pos.x = Matrix._41;
-	Pos.y = Matrix._42;
-	Pos.z = Matrix._43;
-
-	//ワールドマトリックスの設定
-	pDevice->SetTransform(D3DTS_WORLD, &Matrix);
-
-	if (pEnemy != nullptr)
-	{
-		D3DXVECTOR3 Enemypos = pEnemy->GetPosition();
-
-		if ((matrix1._41 >= Enemypos.x - 30.0f && Pos.x <= Enemypos.x + 30.0f || matrix1._41 <= Enemypos.x + 30.0f && Pos.x >= Enemypos.x - 30.0f)
-		&& ( matrix1._43 >= Enemypos.z - 30.0f && Pos.z <= Enemypos.z + 30.0f || matrix1._43 <= Enemypos.z + 30.0f && Pos.z >= Enemypos.z - 30.0f))
-		{
-			pEnemy->SetState(CEnemy::STATE_DAMEGE);
-			pEnemy->SetMove(D3DXVECTOR3(sinf(CGame::GetPlayer()->GetRotition().y), 1.0f, cosf(CGame::GetPlayer()->GetRotition().y)));
-			return true;
-		}
-	}
-	
-	return false;
 }
 
 //=============================================================================
@@ -337,7 +272,7 @@ bool CCollision::Item(D3DXVECTOR3 *pos)
 }
 
 //=============================================================================
-// マップにある建物との当たり判定
+// アイテムを持って攻撃する際の当たり判定
 //=============================================================================
 void CCollision::ItemAttack(CObjectX * pobj)
 {
@@ -369,31 +304,6 @@ void CCollision::ItemAttack(CObjectX * pobj)
 			pEnemy->SetLife(nLife);
 		}
 	}
-
-	/*if (pobj != nullptr)
-	{
-		for (int nCount = 0; nCount < nNum; nCount++)
-		{
-			if (ppEnemy[nCount] != nullptr)
-			{
-				float circleX = ppEnemy[nCount]->GetPosition().x - (CGame::GetPlayer()->GetPosition().x + pobj->GetPosition().x);
-				float circleZ = ppEnemy[nCount]->GetPosition().z - (CGame::GetPlayer()->GetPosition().z + pobj->GetPosition().z);
-				float c = 0.0f;
-
-				c = (float)sqrt(circleX * circleX + circleZ * circleZ);
-
-				if (c <= fRadius + PlayerfRadius)
-				{
-					ppEnemy[nCount]->SetRotition(-CGame::GetPlayer()->GetRotition());
-					ppEnemy[nCount]->SetMove(D3DXVECTOR3(sinf(CGame::GetPlayer()->GetRotition().y) * -3.0f, 1.0f, cosf(CGame::GetPlayer()->GetRotition().y) * -3.0f));
-					ppEnemy[nCount]->SetState(CEnemy::STATE_DAMEGE);
-					int nLife = ppEnemy[nCount]->GetLife();
-					nLife -= 1;
-					ppEnemy[nCount]->SetLife(nLife);
-				}
-			}
-		}
-	}*/
 }
 
 //=============================================================================

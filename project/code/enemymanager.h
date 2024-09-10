@@ -39,6 +39,9 @@ public:
 	// Žæ“¾Œn
 	CEnemy **GetEnemy(void) { return m_appEnemy; }
 	static int GetNum(void) { return m_nNum; }
+	static CEnemyManager* GetInstance(void) { return m_pEnemyManager; }
+
+	static CEnemyManager* m_pEnemyManager;
 							       
 private:
 	

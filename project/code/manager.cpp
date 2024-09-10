@@ -487,7 +487,7 @@ HRESULT CScene::Init(void)
 
 			m_Title->Init();
 
-			CManager::GetInstance()->GetCamera()->SetMode(CCamera::MODE_TITLE);
+			CManager::GetInstance()->GetCamera()->ChangeBehaviour(new FixedCamera);
 			CManager::GetInstance()->GetCamera()->Reset();
 		}
 
@@ -501,7 +501,7 @@ HRESULT CScene::Init(void)
 
 			m_Tutorial->Init();
 
-			CManager::GetInstance()->GetCamera()->SetMode(CCamera::MODE_TUTORIAL);
+			CManager::GetInstance()->GetCamera()->ChangeBehaviour(new FollowPlayerCamera);
 			CManager::GetInstance()->GetCamera()->Reset();
 		}
 
@@ -515,7 +515,7 @@ HRESULT CScene::Init(void)
 
 			m_Game->Init();
 
-			CManager::GetInstance()->GetCamera()->SetMode(CCamera::MODE_GAME);
+			CManager::GetInstance()->GetCamera()->ChangeBehaviour(new FollowPlayerCamera);
 			CManager::GetInstance()->GetCamera()->Reset();
 		}
 
@@ -529,7 +529,7 @@ HRESULT CScene::Init(void)
 
 			m_Result->Init();
 
-			CManager::GetInstance()->GetCamera()->SetMode(CCamera::MODE_RESULT);
+			CManager::GetInstance()->GetCamera()->ChangeBehaviour(new FixedCamera);
 			CManager::GetInstance()->GetCamera()->Reset();
 		}
 
