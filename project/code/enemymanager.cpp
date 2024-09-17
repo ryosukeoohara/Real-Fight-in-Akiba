@@ -242,6 +242,8 @@ void CEnemyManager::SetTarget(int idx)
 
 		if (Idx != idx)
 		{
+			pEnemy->SetImmobile();
+
 			// •`‰æ’âŽ~
 			pEnemy->SetDraw(false);
 		}
@@ -279,16 +281,16 @@ void CEnemyManager::SetTrue(int idx)
 //===========================================================
 void CEnemyManager::SetMobility(void)
 {
-	CEnemy *pEnem = CEnemy::GetTop();
+	CEnemy *pEnemy = CEnemy::GetTop();
 
-	while (pEnem != nullptr)
+	while (pEnemy != nullptr)
 	{
-		CEnemy *pEnemNext = pEnem->GetNext();
+		CEnemy *pEnemNext = pEnemy->GetNext();
 
 		// s“®‰Â”\‚É‚·‚é
-		pEnem->SetMobile();
+		pEnemy->SetMobile();
 
-		pEnem = pEnemNext;
+		pEnemy = pEnemNext;
 	}
 }
 
@@ -298,4 +300,22 @@ void CEnemyManager::SetMobility(void)
 void CEnemyManager::SetBossEnemy(void)
 {
 	ReadText(BOSSTEXT);
+}
+
+//===========================================================
+// •`‰æ‚ðÄŠJ‚·‚éˆ—
+//===========================================================
+void CEnemyManager::RestartDrawing(void)
+{
+	CEnemy* pEnemy = CEnemy::GetTop();
+
+	while (pEnemy != nullptr)
+	{
+		CEnemy* pEnemyNext = pEnemy->GetNext();
+
+		// •`‰æÄŠJ
+		pEnemy->SetDraw(true);
+
+		pEnemy = pEnemyNext;
+	}
 }

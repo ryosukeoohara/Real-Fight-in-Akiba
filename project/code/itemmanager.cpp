@@ -22,6 +22,7 @@ const char *CItemManager::m_apTexName[CItem::TYPE_MAX] =
 	"data\\MODEL\\table.x",         // デーブル
 	"data\\MODEL\\poster.x",        // 看板
 };
+CItemManager* CItemManager::m_pItemManager = nullptr;
 
 //===========================================================
 // コンストラクタ
@@ -30,6 +31,7 @@ CItemManager::CItemManager()
 {
 	// 値をクリア
 	m_nNum = 0;
+	m_pItemManager = this;
 }
 
 //===========================================================

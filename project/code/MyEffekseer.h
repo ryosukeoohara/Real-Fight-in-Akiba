@@ -51,7 +51,7 @@ public:
 		TYPE type, 
 		::Effekseer::Vector3D pos = {0.0f, 0.0f, 0.0f}, 
 		::Effekseer::Vector3D rot = { 0.0f, 0.0f, 0.0f }, 
-		::Effekseer::Vector3D scale = { 1.0f, 1.0f, 1.0f }
+		::Effekseer::Vector3D scale = { 25.0f, 25.0f, 25.0f }
 	);  // エフェクト
 
 	void SetupEffekseerModules(::Effekseer::ManagerRef efkManager);                                                     // モジュール

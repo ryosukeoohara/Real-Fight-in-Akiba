@@ -251,7 +251,7 @@ void CEnemy::Update(void)
 {
 	if (m_Info.bDraw == true)
 	{
-		if (m_Info.state != STATE_HEATACTELECTROWAIT && m_Info.state != STATE_HEATACTELECTRO && m_Info.state != STATE_HEATACTFAINTING && m_Info.state != STATE_DEATH)
+		if (m_Info.state != STATE_HEATDAMEGE && m_Info.state != STATE_HEATACTELECTROWAIT && m_Info.state != STATE_HEATACTELECTRO && m_Info.state != STATE_HEATACTFAINTING && m_Info.state != STATE_DEATH)
 		{
 			Controll();
 		}
@@ -286,13 +286,18 @@ void CEnemy::Update(void)
 		}
 	}
 
-	if (GetMotion()->IsFinish() == true && (m_Info.state == STATE_HEATDAMEGE || m_Info.state == STATE_PAINFULDAMAGE || m_Info.state == STATE_HEATACTFAINTING) && m_Info.state != STATE_GETUP)
+	if (GetMotion()->IsFinish() == false)
+		return;
+
+	if ((m_Info.state == STATE_HEATDAMEGE || m_Info.state == STATE_PAINFULDAMAGE || m_Info.state == STATE_HEATACTFAINTING) && m_Info.state != STATE_GETUP)
 	{
 		m_Info.state = STATE_GETUP;
 		GetMotion()->Set(TYPE_GETUP);
 		
+		if (m_Chase == CHASE_OFF)
+			m_Chase = CHASE_ON;
 	}
-	else if (m_pMotion->IsFinish() == true && m_Info.state == STATE_DEATH)
+	else if (m_Info.state == STATE_DEATH)
 	{// Ž€–S
 
 		// “G‚Ì‘”‚ðŒ¸‚ç‚·
@@ -310,15 +315,13 @@ void CEnemy::Update(void)
 
 		return;
 	}
-	else if (GetMotion()->IsFinish() == true)
+	else
 	{
 		m_Info.state = STATE_NEUTRAL;
 		GetMotion()->Set(TYPE_NEUTRAL);
 
-		if (m_Chase != CHASE_ON)
-		{
+		if (m_Chase == CHASE_OFF)
 			m_Chase = CHASE_ON;
-		}
 	}
 }
 
@@ -390,7 +393,7 @@ void CEnemy::Controll(void)
 	int nNum = 0;
 	CEnemy **ppEnemy = nullptr;
 
-	if (m_Info.state == STATE_DAMEGE)
+	if (m_Info.state == STATE_DAMEGE || m_Info.state == STATE_HEATDAMEGE)
 	{
 		m_nDamegeCounter--;
 

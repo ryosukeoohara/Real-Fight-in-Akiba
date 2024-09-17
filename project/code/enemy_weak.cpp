@@ -302,29 +302,32 @@ void CEnemyWeak::Damege(int damege, float blowaway, CPlayer::ATTACKTYPE act)
 		m_Info.nLife -= damege;
 		m_Info.move = D3DXVECTOR3(sinf(CPlayer::GetInstance()->GetRotition().y) * -blowaway, blowaway, cosf(CPlayer::GetInstance()->GetRotition().y) * -blowaway);
 
-		if (act == CPlayer::ATTACKTYPE::TYPE_HEATACTBIKE || act == CPlayer::ATTACKTYPE::TYPE_HEATACTREF || act == CPlayer::ATTACKTYPE::TYPE_HEATACTMICROWAVE)
+		if (m_Info.nLife > 0)
 		{
-			if (m_Info.state != STATE_HEATDAMEGE)
+			if (act == CPlayer::ATTACKTYPE::TYPE_HEATACTBIKE || act == CPlayer::ATTACKTYPE::TYPE_HEATACTREF || act == CPlayer::ATTACKTYPE::TYPE_HEATACTMICROWAVE)
 			{
-				m_Info.state = STATE_HEATDAMEGE;
-				GetMotion()->Set(TYPE_HEATACTDAMEGE);
-			}
-		}
-		else
-		{
-			if (m_Info.state != STATE_DAMEGE)
-			{
-				int a = rand() % 60;
-				if (m_Info.nLife <= a && CPlayer::GetInstance()->GetActType() == CPlayer::TYPE_ATTACK3)
+				if (m_Info.state != STATE_HEATDAMEGE)
 				{
-					m_Info.state = STATE_PAINFULDAMAGE;
+					m_Info.state = STATE_HEATDAMEGE;
 					GetMotion()->Set(TYPE_HEATACTDAMEGE);
-					m_Chase = CHASE_OFF;
 				}
-				else
+			}
+			else
+			{
+				if (m_Info.state != STATE_DAMEGE)
 				{
-					m_Info.state = STATE_DAMEGE;
-					GetMotion()->Set(TYPE_DAMEGE);
+					int a = rand() % 60;
+					if (m_Info.nLife <= a && CPlayer::GetInstance()->GetActType() == CPlayer::TYPE_ATTACK3)
+					{
+						m_Info.state = STATE_PAINFULDAMAGE;
+						GetMotion()->Set(TYPE_HEATACTDAMEGE);
+						m_Chase = CHASE_OFF;
+					}
+					else
+					{
+						m_Info.state = STATE_DAMEGE;
+						GetMotion()->Set(TYPE_DAMEGE);
+					}
 				}
 			}
 		}

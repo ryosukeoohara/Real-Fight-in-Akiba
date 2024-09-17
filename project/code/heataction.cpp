@@ -141,17 +141,10 @@ void CHeatAction::ChangeBehaviour(CHeatActionBehaviour* Behaviour)
 //===========================================================
 BikeCrash::BikeCrash()
 {
-	CManager::GetInstance()->GetCamera()->SetDistnce(CAMERA_DISTNCE[1]);
+	CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(CAMERA_ROT[1].x, CAMERA_ROT[1].y, CAMERA_ROT[1].z));
 
-	if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_TUTORIAL)
-	{
-		CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(TUTORIALCAMERAROT[1].x, TUTORIALCAMERAROT[1].y, TUTORIALCAMERAROT[1].z));
-	}
+	CEnemyManager* pEnemyManager = CEnemyManager::GetInstance();
 
-	if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_GAME)
-	{
-		CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(CAMERA_ROT[1].x, CAMERA_ROT[1].y, CAMERA_ROT[1].z));
-	}
 }
 
 //===========================================================
@@ -159,72 +152,57 @@ BikeCrash::BikeCrash()
 //===========================================================
 void BikeCrash::Update(CHeatAction* pHeatAct)
 {
+	// プレイヤー取得
 	CPlayer* pPlayer = pHeatAct->GetPlayer();
 
+	// 敵取得
 	CEnemy* pEnemy = pHeatAct->GetEnemy();
 
-	if (pEnemy != nullptr && pPlayer != nullptr)
-	{
-		// プレイヤーの向き取得
-		D3DXVECTOR3 PlayerRot = pPlayer->GetRotition();
+	// どちらかが使用されていない場合
+	if (pEnemy == nullptr || pPlayer == nullptr)
+		return;
+	
+	// プレイヤーの向き取得
+	D3DXVECTOR3 PlayerRot = pPlayer->GetRotition();
 
-		// 敵の方向に向かせる
-		PlayerRot.y += utility::MoveToPosition(pPlayer->GetPosition(), pEnemy->GetPosition(), pPlayer->GetRotition().y);
-		PlayerRot.y = utility::CorrectAngle(PlayerRot.y);
+	// 敵の方向に向かせる
+	PlayerRot.y += utility::MoveToPosition(pPlayer->GetPosition(), pEnemy->GetPosition(), pPlayer->GetRotition().y);
+	PlayerRot.y = utility::CorrectAngle(PlayerRot.y);
 
-		// プレイヤーの向き設定
-		pPlayer->SetRotition(PlayerRot);
+	// プレイヤーの向き設定
+	pPlayer->SetRotition(PlayerRot);
 
-		// 当たり判定
-		if (pPlayer->GetMotion()->GetAttackOccurs() <= pPlayer->GetMotion()->GetNowFrame()
-			&& pPlayer->GetMotion()->GetAttackEnd() >= pPlayer->GetMotion()->GetNowFrame())
-		{// 現在のフレームが攻撃判定発生フレーム以上かつ攻撃判定終了フレーム以下
+	// 当たり判定
+	if (pPlayer->GetMotion()->GetAttackOccurs() <= pPlayer->GetMotion()->GetNowFrame()
+		&& pPlayer->GetMotion()->GetAttackEnd() >= pPlayer->GetMotion()->GetNowFrame())
+	{// 現在のフレームが攻撃判定発生フレーム以上かつ攻撃判定終了フレーム以下
 
-			if (CGame::GetCollision()->ItemEnemy(pPlayer->GetGrapItem(), pEnemy, 50.0f, 50.0f, 100.0f) == true)
-			{// 範囲内
+		if (CGame::GetCollision()->ItemEnemy(pPlayer->GetGrapItem(), pEnemy, 50.0f, 50.0f, 100.0f) == true)
+		{
+			// 持っていたアイテムを消す
+			if (CItemManager::GetInstance() != nullptr)
+				CItemManager::GetInstance()->Release(pPlayer->GetGrapItem()->GetID());
 
-				if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_TUTORIAL)
-				{
-					// 持っていたアイテムを消す
-					if (CTutorial::GetItemManager())
-						CTutorial::GetItemManager()->Release(pPlayer->GetGrapItem()->GetID());
+			pEnemy->Damege(CPlayer::GetInstance()->GetMotion()->GetAttackDamege(), CPlayer::GetInstance()->GetMotion()->GetKnockBack(), CPlayer::GetInstance()->GetActType());
 
-					// ターゲット以外の敵の描画を再開
-					if (CTutorial::GetEnemyManager())
-						CTutorial::GetEnemyManager()->SetTrue(pEnemy->GetIdxID());
-				}
+			// 持っていたアイテムを消す
+			pPlayer->SetGrapItem(nullptr);
 
-				if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_GAME)
-				{
-					// 持っていたアイテムを消す
-					if (CGame::GetItemManager())
-						CGame::GetItemManager()->Release(pPlayer->GetGrapItem()->GetID());
+			// 敵の位置取得
+			D3DXVECTOR3 Enempos = pEnemy->GetPosition();
 
-					// ターゲット以外の敵の描画を再開
-					if (CGame::GetEnemyManager())
-						CGame::GetEnemyManager()->SetTrue(pEnemy->GetIdxID());
-				}
+			pPlayer->SetbHeatActFlag(false);
 
-				if (pEnemy->GetMotion())
-					pEnemy->GetMotion()->Set(CEnemy::TYPE_HEATACTDAMEGE);
-
-				// 持っていたアイテムを消す
-				pPlayer->SetGrapItem(nullptr);
-
-				// 敵の位置取得
-				D3DXVECTOR3 Enempos = pEnemy->GetPosition();
-
-				pPlayer->SetbHeatActFlag(false);
-
-				// エフェクトの再生
-				CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_IMPACT, ::Effekseer::Vector3D(Enempos.x, Enempos.y, Enempos.z));
-			}
+			// エフェクトの再生
+			CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_IMPACT, ::Effekseer::Vector3D(Enempos.x, Enempos.y, Enempos.z));
 		}
+
 	}
+	
 }
 
 //===========================================================
-// 自転車を使ったヒートアクションをする処理
+// 電子レンジを使ったヒートアクションをする処理
 //===========================================================
 MicroWave::MicroWave()
 {

@@ -266,6 +266,9 @@ void FollowPlayerCamera::Update(CCamera* pCamera)
 
 	CPlayer* pPlayer = CPlayer::GetInstance();
 
+	if (pPlayer == nullptr)
+		return;
+
 	if (pInputJoyPad->GetRXStick(CInputJoyPad::STICK_RX, 0) > 0)
 	{
 		pCameraInfo->rot.y += 0.05f;
@@ -284,10 +287,7 @@ void FollowPlayerCamera::Update(CCamera* pCamera)
 	pCameraInfo->posV.x = pCameraInfo->posR.x - sinf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
 	pCameraInfo->posV.z = pCameraInfo->posR.z - cosf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
 
-	D3DXVECTOR3 pos = {};
-
-	if(pPlayer != nullptr)
-	   pos = pPlayer->GetPosition();
+	D3DXVECTOR3 pos = pPlayer->GetPosition();
 
 	pCameraInfo->posV = D3DXVECTOR3(0.0f + pCameraInfo->posV.x, 150.0f, 0.0f + pCameraInfo->posV.z);
 	pCameraInfo->posR = D3DXVECTOR3(pos.x, 75.0f, pos.z);
@@ -453,7 +453,13 @@ void ReturnPlayerBehindCamera::Update(CCamera* pCamera)
 		// プレイヤーを行動可能にする
 		CPlayer::GetInstance()->SetMobile();
 
-		// プレイヤーを行動可能にする
+		if (CEnemyManager::GetInstance() == nullptr)
+			return;
+
+		// ターゲット以外の敵の描画を再開
+		CEnemyManager::GetInstance()->RestartDrawing();
+
+		// 敵を行動可能にする
 		CEnemyManager::GetInstance()->SetMobility();
 	}
 }
@@ -485,9 +491,12 @@ void HeatActionCamera::Update(CCamera* pCamera)
 	pCameraInfo->posV.x = pCameraInfo->posR.x - sinf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
 	pCameraInfo->posV.z = pCameraInfo->posR.z - cosf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
 
+	if (CPlayer::GetInstance() == nullptr)
+		return;
+
 	D3DXVECTOR3 pos = CPlayer::GetInstance()->GetPosition();
 
-	pCameraInfo->posV = D3DXVECTOR3(0.0f + pCameraInfo->posV.x, 150.0f, 30.0f + pCameraInfo->posV.z);
+	pCameraInfo->posV = D3DXVECTOR3(pCameraInfo->posV.x, 150.0f, 30.0f + pCameraInfo->posV.z);
 	pCameraInfo->posR = D3DXVECTOR3(pos.x, 50.0f, pos.z + 10.0f);
 
 	//目標の注視点を設定

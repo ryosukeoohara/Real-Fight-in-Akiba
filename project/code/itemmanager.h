@@ -34,12 +34,14 @@ public:
 
 	// 取得系
 	int GetNum(void) { return m_nNum; }                  // 総数
+	static CItemManager* GetInstance(void) { return m_pItemManager; }
 
 private:
 	
 	int m_nNum;  // 総数
 
 	static const char *m_apTexName[CItem::TYPE_MAX];  // モデルのファイルネーム
+	static CItemManager* m_pItemManager;
 };
 
 #endif

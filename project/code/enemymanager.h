@@ -35,6 +35,7 @@ public:
 	void SetTrue(int idx);
 	void SetMobility(void);
 	void SetBossEnemy(void);
+	void RestartDrawing(void);
 	
 	// Žæ“¾Œn
 	CEnemy **GetEnemy(void) { return m_appEnemy; }

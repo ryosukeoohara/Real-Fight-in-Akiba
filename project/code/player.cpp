@@ -1123,6 +1123,8 @@ void CPlayer::SetHeatActType(void)
 
 		m_pMotion->Set(TYPE_THROW);
 
+		m_Info.Atc = TYPE_HEATACTBIKE;
+
 		break;
 
 	case CPlayer::HEAT_FIRE:
@@ -1132,8 +1134,8 @@ void CPlayer::SetHeatActType(void)
 		if (m_pHeatAct != nullptr)
 			m_pHeatAct->SetAction(new MicroWave, this, m_pEnemy);
 
-		if (CGame::GetEnemyManager() != nullptr)
-			CGame::GetEnemyManager()->SetTarget(m_pEnemy->GetIdxID());
+		if (CEnemyManager::GetInstance() != nullptr)
+			CEnemyManager::GetInstance()->SetTarget(m_pEnemy->GetIdxID());
 
 		m_pMotion->Set(TYPE_ENEMYGRAP);
 
@@ -1144,6 +1146,8 @@ void CPlayer::SetHeatActType(void)
 
 		// “G‚ð—£‚·
 		m_bGrap = false;
+
+		m_Info.Atc = TYPE_HEATACTMICROWAVE;
 
 		break;
 
