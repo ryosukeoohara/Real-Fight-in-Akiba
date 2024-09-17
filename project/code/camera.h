@@ -11,7 +11,7 @@
 // 前方宣言
 //===========================================================
 class CEnemy;
-class CCameraBehaviour;
+class CCameraState;
 
 //===========================================================
 // カメラクラスの定義
@@ -86,7 +86,7 @@ public:
 	void SetPositionV(D3DXVECTOR3 pos);
 	void SetRotation(D3DXVECTOR3 Rot);
 	void SetDistnce(float fLen);
-	void ChangeBehaviour(CCameraBehaviour* pBehaviour);
+	void ChangeState(CCameraState* pBehaviour);
 
 	// 取得系
 	MODE GetMode(void);
@@ -107,7 +107,7 @@ private:
 	MODE m_mode;
 
 	bool m_bTarget = false;
-	CCameraBehaviour *m_pBehaviour = nullptr;
+	CCameraState*m_pState = nullptr;
 	CEnemy* m_pEnemy;
 	static CCamera* m_pCamera;
 
@@ -117,13 +117,13 @@ private:
 };
 
 //===========================================================
-// ビヘイビア
+// カメラのステイト
 //===========================================================
-class CCameraBehaviour
+class CCameraState
 {
 public:
-	CCameraBehaviour();
-	~CCameraBehaviour();
+	CCameraState();
+	~CCameraState();
 
 	virtual void Update(CCamera* pCamera) = 0;
 
@@ -134,7 +134,7 @@ private:
 //===========================================================
 // 追従するカメラ
 //===========================================================
-class FollowPlayerCamera : public CCameraBehaviour
+class FollowPlayerCamera : public CCameraState
 {
 public:
 	FollowPlayerCamera();
@@ -149,7 +149,7 @@ private:
 //===========================================================
 // 固定カメラ
 //===========================================================
-class FixedCamera : public CCameraBehaviour
+class FixedCamera : public CCameraState
 {
 public:
 	FixedCamera();
@@ -164,7 +164,7 @@ private:
 //===========================================================
 // キャラクター登場演出用カメラ
 //===========================================================
-class CutSceneCamera : public CCameraBehaviour
+class CutSceneCamera : public CCameraState
 {
 public:
 	CutSceneCamera();
@@ -179,7 +179,7 @@ private:
 //===========================================================
 // キャラクター登場演出用カメラ
 //===========================================================
-class ReturnPlayerBehindCamera : public CCameraBehaviour
+class ReturnPlayerBehindCamera : public CCameraState
 {
 public:
 	ReturnPlayerBehindCamera();
@@ -194,7 +194,7 @@ private:
 //===========================================================
 // ヒートアクションカメラ
 //===========================================================
-class HeatActionCamera : public CCameraBehaviour
+class HeatActionCamera : public CCameraState
 {
 public:
 	HeatActionCamera();

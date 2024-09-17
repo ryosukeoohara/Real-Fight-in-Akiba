@@ -1003,7 +1003,7 @@ void CPlayer::State(void)
 
 	// モーションが終了かつヒートアクション中、カメラをもとの位置に戻す
 	if (m_pMotion->IsFinish() == true && m_Info.state == STATE_HEAT)
-		CManager::GetInstance()->GetCamera()->ChangeBehaviour(new ReturnPlayerBehindCamera);
+		CManager::GetInstance()->GetCamera()->ChangeState(new ReturnPlayerBehindCamera);
 
 	// モーションが終了かつ敵を投げるモーション
 	if (m_pMotion->IsFinish() == false && m_pMotion->GetType() == STATE_ENEMYGRAP && m_Grap.pEnemy != nullptr)

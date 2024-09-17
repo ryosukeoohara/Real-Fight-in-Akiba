@@ -300,7 +300,7 @@ void CGame::Update(void)
 
 	if (pFade->Get() != pFade->FADE_BLACK &&  pFade->GetCol() == 0.0f && m_bOnStage == false)
 	{
-		CManager::GetInstance()->GetCamera()->ChangeBehaviour(new CutSceneCamera);
+		CManager::GetInstance()->GetCamera()->ChangeState(new CutSceneCamera);
 		m_bOnStage = true;
 	}
 

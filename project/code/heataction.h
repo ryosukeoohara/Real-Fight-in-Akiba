@@ -17,7 +17,7 @@
 //===========================================================
 class CEnemy;
 class CItem;
-class CHeatActionBehaviour;
+class CHeatActionState;
 
 //===========================================================
 // ヒートアクションクラス定義
@@ -34,7 +34,7 @@ public:
 
 	void BikeCrash(CPlayer* pPlayer, CEnemy* pEnemy);                         // 自転車を使用したアクション
 	void MicroWave(CPlayer* pPlayer, CEnemy* pEnemy);                         // 電子レンジを使用したアクション
-	void SetAction(CHeatActionBehaviour* Behaviour, CPlayer* pPlayer, CEnemy* pEnemy);  // アクションを設定
+	void SetAction(CHeatActionState* pState, CPlayer* pPlayer, CEnemy* pEnemy);  // アクションを設定
 
 	// 取得系
 	CPlayer* GetPlayer(void) { return m_pPlayer; }  // プレイヤー
@@ -42,8 +42,8 @@ public:
 
 private:
 
-	void ChangeBehaviour(CHeatActionBehaviour* Behaviour);  // ビヘイビアの切り替え
-	CHeatActionBehaviour *m_pBehaviour;
+	void ChangeState(CHeatActionState* pState);  // ビヘイビアの切り替え
+	CHeatActionState *m_pState;
 	CPlayer::HEAT m_HeatAct;
 	CPlayer* m_pPlayer;
 	CEnemy* m_pEnemy;
@@ -54,13 +54,13 @@ private:
 };
 
 //===========================================================
-// ビヘイビア
+// ヒートアクションのステイト
 //===========================================================
-class CHeatActionBehaviour
+class CHeatActionState
 {
 public:
-	CHeatActionBehaviour() {}
-	~CHeatActionBehaviour() {}
+	CHeatActionState() {}
+	~CHeatActionState() {}
 
 	virtual void Update(CHeatAction *pHeatAct) = 0;
 
@@ -71,7 +71,7 @@ private:
 //===========================================================
 // 自転車を使用したアクション
 //===========================================================
-class BikeCrash : public CHeatActionBehaviour
+class BikeCrash : public CHeatActionState
 {
 public:
 	BikeCrash();
@@ -86,7 +86,7 @@ private:
 //===========================================================
 // 電子レンジを使用したアクション
 //===========================================================
-class MicroWave : public CHeatActionBehaviour
+class MicroWave : public CHeatActionState
 {
 public:
 	MicroWave();

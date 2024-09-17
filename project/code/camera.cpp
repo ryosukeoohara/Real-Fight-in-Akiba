@@ -101,8 +101,8 @@ void CCamera::Update(void)
 {
 	
 
-	if (m_pBehaviour != nullptr)
-		m_pBehaviour->Update(this);
+	if (m_pState != nullptr)
+		m_pState->Update(this);
 } 
 
 //================================================================
@@ -188,17 +188,17 @@ void CCamera::SetDistnce(float fLen)
 }
 
 //================================================================
-// ビヘイビアの変更
+// ステイトの変更
 //================================================================
-void CCamera::ChangeBehaviour(CCameraBehaviour* pBehaviour)
+void CCamera::ChangeState(CCameraState* pBehaviour)
 {
-	if (m_pBehaviour != nullptr)
+	if (m_pState != nullptr)
 	{
-		delete m_pBehaviour;
-		m_pBehaviour = nullptr;
+		delete m_pState;
+		m_pState = nullptr;
 	}
 		
-	m_pBehaviour = pBehaviour;
+	m_pState = pBehaviour;
 }
 
 //================================================================
@@ -210,12 +210,12 @@ CCamera::MODE CCamera::GetMode(void)
 }
 
 //=============================================================================
-// カメラのビヘイビア
+// カメラのステイト
 //=============================================================================
 //================================================================
 // コンストラクタ
 //================================================================
-CCameraBehaviour::CCameraBehaviour()
+CCameraState::CCameraState()
 {
 
 }
@@ -223,7 +223,7 @@ CCameraBehaviour::CCameraBehaviour()
 //================================================================
 // デストラクタ
 //================================================================
-CCameraBehaviour::~CCameraBehaviour()
+CCameraState::~CCameraState()
 {
 
 }
@@ -393,7 +393,7 @@ void CutSceneCamera::Update(CCamera* pCamera)
 		}
 
 		// カメラモードを変更
-		pCamera->ChangeBehaviour(new ReturnPlayerBehindCamera);
+		pCamera->ChangeState(new ReturnPlayerBehindCamera);
 	}
 }
 
@@ -448,7 +448,7 @@ void ReturnPlayerBehindCamera::Update(CCamera* pCamera)
 		pCameraInfo->nCounter = 0;
 
 		// カメラモードを変更
-		pCamera->ChangeBehaviour(new FollowPlayerCamera);
+		pCamera->ChangeState(new FollowPlayerCamera);
 
 		// プレイヤーを行動可能にする
 		CPlayer::GetInstance()->SetMobile();

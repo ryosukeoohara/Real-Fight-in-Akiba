@@ -99,14 +99,14 @@ void CHeatAction::Uninit(void)
 void CHeatAction::Updata(void)
 {
 	// ビヘイビアの更新
-	if (m_pBehaviour != nullptr)
-		m_pBehaviour->Update(this);
+	if (m_pState != nullptr)
+		m_pState->Update(this);
 }
 
 //===========================================================
 // 行うアクションを設定
 //===========================================================
-void CHeatAction::SetAction(CHeatActionBehaviour* Behaviour, CPlayer* pPlayer, CEnemy* pEnemy)
+void CHeatAction::SetAction(CHeatActionState* Behaviour, CPlayer* pPlayer, CEnemy* pEnemy)
 {
 	m_pPlayer = pPlayer;
 	m_pEnemy = pEnemy;
@@ -117,23 +117,23 @@ void CHeatAction::SetAction(CHeatActionBehaviour* Behaviour, CPlayer* pPlayer, C
 	pEnemy->SetMove(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 	// ヒートアクションのカメラモードにする
-	CManager::GetInstance()->GetCamera()->ChangeBehaviour(new HeatActionCamera);
+	CManager::GetInstance()->GetCamera()->ChangeState(new HeatActionCamera);
 	
-	ChangeBehaviour(Behaviour);
+	ChangeState(Behaviour);
 }
 
 //===========================================================
 // ビヘイビアの切り替え
 //===========================================================
-void CHeatAction::ChangeBehaviour(CHeatActionBehaviour* Behaviour)
+void CHeatAction::ChangeState(CHeatActionState* Behaviour)
 {
-	if (m_pBehaviour != nullptr)
+	if (m_pState != nullptr)
 	{
-		delete m_pBehaviour;
-		m_pBehaviour = nullptr;
+		delete m_pState;
+		m_pState = nullptr;
 	}
 
-	m_pBehaviour = Behaviour;
+	m_pState = Behaviour;
 }
 
 //===========================================================
@@ -330,7 +330,7 @@ void MicroWave::Update(CHeatAction* pHeatAct)
 			pEnemy->SetState(CEnemy::STATE_HEATACTFAINTING);
 			pEnemy->GetMotion()->Set(CEnemy::TYPE_HEATACTFAINTING);
 			pEnemy->Damege(100, 0.0f, CPlayer::TYPE_HEATACTMICROWAVE);
-			CManager::GetInstance()->GetCamera()->ChangeBehaviour(new ReturnPlayerBehindCamera);
+			CManager::GetInstance()->GetCamera()->ChangeState(new ReturnPlayerBehindCamera);
 			pPlayer->SetState(CPlayer::STATE_NEUTRAL);
 			pPlayer->SetUseMicroCount(3600);
 			CGame::GetEnemyManager()->SetTrue(CPlayer::GetInstance()->GetGrapEnemy()->GetIdxID());
