@@ -282,8 +282,7 @@ void CPlayer::Damage(int nDamage, float fKnockBack)
 		m_Info.nLife -= nDamage;
 		m_Info.move = D3DXVECTOR3(sinf(CManager::GetInstance()->GetCamera()->GetRotation().y) * -fKnockBack, fKnockBack, cosf(CManager::GetInstance()->GetCamera()->GetRotation().y) * -fKnockBack);
 
-		CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(m_Info.pos.x, m_Info.pos.y + 50.0f, m_Info.pos.z),
-			::Effekseer::Vector3D(0.0f, 0.0f, 0.0f), ::Effekseer::Vector3D(25.0f, 25.0f, 25.0f));
+		CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(m_Info.pos.x, m_Info.pos.y + 50.0f, m_Info.pos.z));
 	}
 }
 
@@ -425,6 +424,7 @@ void CPlayer::Update(void)
 		// 制御処理
 		if (m_Mobility == Mobile)
 			Control();
+
 	}
 	
 	// パーツごとの更新
@@ -432,6 +432,7 @@ void CPlayer::Update(void)
 	{
 		if (m_ppCharacter[nCount] != nullptr)
 			m_ppCharacter[nCount]->Update();
+
 	}
 
 	// モーションの更新
@@ -445,6 +446,7 @@ void CPlayer::Update(void)
 
 		if (m_pStamina != nullptr)
 			m_pStamina->GetObj2D()->SetEdgeCenterTex(m_fStamina * 10.0f);
+
 	}
 
 	if (m_nUseCounter > 0)
@@ -483,6 +485,7 @@ void CPlayer::Update(void)
 
 		if (m_bHeatActFlag == false)
 			m_pHeatAct = nullptr;
+
 	}
 
 	// 行動制限
@@ -720,8 +723,8 @@ void CPlayer::Move(void)
 	m_Info.move.x += (0.0f - m_Info.move.x) * 0.1f;
 	m_Info.move.z += (0.0f - m_Info.move.z) * 0.1f;
 
-	if(CCollision::GetColl() != nullptr)
-	   CCollision::GetColl()->Map(&m_Info.pos, &m_Info.posOld, 40.0f);
+	if(CCollision::GetInstance() != nullptr)
+	   CCollision::GetInstance()->Map(&m_Info.pos, &m_Info.posOld, 40.0f);
 }
 
 //================================================================
@@ -1473,7 +1476,7 @@ void CPlayer::GrapEnemy(bool value)
 		m_Grap.pEnemy->SetRotition(D3DXVECTOR3(-0.2f, 1.27f, -1.4f));
 		m_Grap.pEnemy->SetState(CEnemy::STATE_GRAP);
 		m_Grap.pEnemy->SetChase(CEnemy::CHASE_OFF);
-		m_Grap.pEnemy->GetMotion()->Set(CEnemy::TYPE_GRAP);
+		m_Grap.pEnemy->GetMotion()->Set(CEnemy::MOTION_GRAP);
 		m_nIdxEne = m_Grap.pEnemy->GetIdxID();
 		m_Grap.pItem = nullptr;
 		m_bGrap = true;
@@ -1485,7 +1488,7 @@ void CPlayer::GrapEnemy(bool value)
 		m_Grap.pEnemy->SetRotition(D3DXVECTOR3(0.0f, m_Info.rot.y, 0.0f));
 		m_Grap.pEnemy->SetState(CEnemy::STATE_NEUTRAL);
 		m_Grap.pEnemy->SetChase(CEnemy::CHASE_ON);
-		m_Grap.pEnemy->GetMotion()->Set(CEnemy::TYPE_NEUTRAL);
+		m_Grap.pEnemy->GetMotion()->Set(CEnemy::MOTION_NEUTRAL);
 		m_Grap.pEnemy = nullptr;
 		m_nIdxEne = -1;
 		m_Info.state = STATE_NEUTRAL;

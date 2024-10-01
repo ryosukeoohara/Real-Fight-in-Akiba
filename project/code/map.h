@@ -31,12 +31,14 @@ public:
 	void Update(void);    // XVˆ—
 
 	static CMap *Create(void); // ¶¬ˆ—
+	
 
 	// İ’èŒn
 
 	// æ“¾Œn
 	CObjectX **GetObjectX(void) { return m_appObjectX; }
 	int GetNum(void) { return m_nNumModel; }
+	static CMap *GetInstance(void) { return m_pMap; }
 
 private:
 
@@ -48,6 +50,7 @@ private:
 
 	void TextLoad(void);
 
+	static CMap* m_pMap;
 	CObjectX **m_appObjectX;
 	int m_nNumModel;
 	int m_nNumItem;

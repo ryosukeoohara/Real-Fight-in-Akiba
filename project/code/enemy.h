@@ -18,6 +18,7 @@
 //===========================================================
 class CMotion;
 class CCharacter;
+class CEnemyState;
 
 //===========================================================
 // クラス定義
@@ -25,45 +26,6 @@ class CCharacter;
 class CEnemy : public CObject
 {
 public:
-
-	// 状態
-	enum STATE
-	{
-		STATE_NONE = 0,             // なんもない
-		STATE_NEUTRAL,              // 待機
-		STATE_DASH,                 // 移動
-		STATE_WALK,                 // 移動
-		STATE_ATTACK,               // 攻撃
-		STATE_GRAP,                 // 投げられ待ち
-		STATE_DAMEGE,               // 攻撃受けた
-		STATE_PAINFULDAMAGE,        // 痛い攻撃を受けた
-		STATE_HEATDAMEGE,           // 攻撃受けた
-		STATE_GETUP,                // 起き上がり
-		STATE_HEATACTELECTROWAIT,   // ヒートアクション:電子レンジ待機
-		STATE_HEATACTELECTRO,       // ヒートアクション:電子レンジびりびり
-		STATE_HEATACTFAINTING,      // ヒートアクション:電子レンジ気絶
-		STATE_FALLDOWN,             // 転ぶ
-		STATE_DEATH,                // 死亡
-		STATE_MAX
-	};
-
-	//モーション
-	enum MOTIONTYPE
-	{
-		TYPE_NEUTRAL = 0,              // ニュートラル
-		TYPE_DASH,                     // 移動
-		TYPE_ATTACK,                   // 攻撃
-		TYPE_DAMEGE,                   // ダメージ
-		TYPE_GRAP,                     // 掴まれ
-		TYPE_HEATACTDAMEGE,            // ヒートアクションダメージ
-		TYPE_HEATACTELECTROWAIT,       // ヒートアクション:電子レンジの待機
-		TYPE_HEATACTELECTRO,           // ヒートアクション:電子レンジで感電中
-		TYPE_HEATACTFAINTING,          // ヒートアクション:電子レンジ気絶
-		TYPE_GETUP,                    // 起き上がり
-		TYPE_DETH,                     // 死亡
-		TYPE_FALLDOWN,
-		TYPE_MAX
-	};
 
 	// 敵の種類
 	enum TYPE
@@ -94,6 +56,62 @@ public:
 
 public:
 
+	// モーション
+	enum MOTIONTYPE
+	{
+		MOTION_NEUTRAL = 0,          // 待機
+		MOTION_DASH,                 // 移動
+		MOTION_ATTACK,               // 攻撃
+		MOTION_DAMEGE,               // 攻撃受けた
+		MOTION_GRAP,                 // 投げられ待ち
+		MOTION_FALLDOWN,             // 転ぶ
+		
+		MOTION_HEATACTELECTROWAIT,   // ヒートアクション:電子レンジ待機
+		MOTION_HEATACTELECTRO,       // ヒートアクション:電子レンジびりびり
+		MOTION_HEATACTFAINTING,      // ヒートアクション:電子レンジ気絶
+
+		MOTION_GETUP,                // 起き上がり
+		MOTION_DEATH,                // 死亡
+
+		MOTION_PAINFULDAMAGE,        // 痛い攻撃を受けた
+		MOTION_HEATDAMEGE,           // 攻撃受けた
+		MOTION_MAX
+	};
+
+	// 状態
+	enum STATE
+	{
+		STATE_NONE = 0,             // なんもない
+		STATE_NEUTRAL,              // 待機
+		STATE_DASH,                 // 移動
+		STATE_ATTACK,               // 攻撃
+		STATE_DAMEGE,               // 攻撃受けた
+		STATE_GRAP,                 // 投げられ待ち
+		STATE_PAINFULDAMAGE,        // 痛い攻撃を受けた
+		STATE_HEATDAMEGE,           // 攻撃受けた
+		STATE_GETUP,                // 起き上がり
+		STATE_HEATACTELECTROWAIT,   // ヒートアクション:電子レンジ待機
+		STATE_HEATACTELECTRO,       // ヒートアクション:電子レンジびりびり
+		STATE_HEATACTFAINTING,      // ヒートアクション:電子レンジ気絶
+		STATE_FALLDOWN,             // 転ぶ
+		STATE_DEATH,                // 死亡
+		STATE_MAX
+	};
+
+	// 情報
+	struct INFO
+	{							    
+		D3DXVECTOR3 pos;            // 位置
+		D3DXVECTOR3 posOld;         // 前回の位置
+		D3DXVECTOR3 rot;            // 向き
+		D3DXVECTOR3 move;           // 移動量
+		D3DXMATRIX mtxWorld;        // ワールドマトリックス
+		STATE state;                // 状態
+		int nIdxID;                 // インデックス番号
+		int nLife;                  // 体力
+		bool bDraw;                 // 描画するかどうか
+	};
+
 	CEnemy();                                  //コンストラクタ
 	CEnemy(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nPriority = 5);                   //コンストラクタ
 	~CEnemy();                                 //デストラクタ
@@ -107,16 +125,13 @@ public:
 	void ReadText(const char *fliename);             //テキストファイル読み込み
 
 	//　設定系
-	void SetPosition(D3DXVECTOR3 pos)
-	{ 
-		m_Info.pos = pos; 
-	}         // 位置
+	void SetPosition(D3DXVECTOR3 pos) { m_Info.pos = pos; }         // 位置
 	void SetRotition(D3DXVECTOR3 rot) { m_Info.rot = rot; }         // 向き
 	void SetMove(D3DXVECTOR3 move) { m_Info.move = move; }          // 移動量
 	void SetState(STATE state) { m_Info.state = state; }            // 状態
 	void SetLife(int nLife) { m_Info.nLife = nLife; }               // 体力
 	void SetCurrent(D3DXMATRIX *Current) { m_pCurrent = Current; }  // 親のマトリックス
-	void SetIdx(int idx) { m_Info.nIdxID = idx; }
+	void SetIdx(int idx) { m_Info.nIdxID = idx; }                   // ID
 	void SetType(TYPE type) { m_Type = type; }                      // 種類
 	void SetNumAll(int nNum) { m_nNumAll = nNum; }
 	virtual void SetChase(CHASE cha);
@@ -138,49 +153,39 @@ public:
 	MOBILITY GetMobility(void) { return m_Mobility; }
 	static CEnemy *GetTop(void) { return m_pTop; }
 	CEnemy *GetNext(void) { return m_pNext; }
+	CEnemy::INFO *GetInfo(void) { return &m_Info; }
 
-	virtual void Damege(int damege, float blowaway, CPlayer::ATTACKTYPE act);
+	virtual void Damege(void) = 0;
+
+	//virtual void ChangeState(CEnemyState *pEnemy) = 0;
+	virtual void RecoverFromDamage(void) = 0;
+
+	void HitDetection(D3DXVECTOR3 MyPos, float attackrange, float targetradius);
 
 protected:
 
 	// 制御処理
 	void Controll(void);
-	virtual void Attack(void) = 0;
-	virtual void Move(void) = 0;
-	
-	struct INFO
-	{
-		D3DXVECTOR3 pos;                         // 位置
-		D3DXVECTOR3 posOld;                      // 前回の位置
-		D3DXVECTOR3 rot;                         // 向き
-		D3DXVECTOR3 move;                        // 移動量
-		D3DXMATRIX mtxWorld;                     // ワールドマトリックス
-		STATE state;                             // 状態
-		int nIdxID;                              // インデックス番号
-		int nLife;                               // 体力
-		bool bDraw;                              // 描画するかどうか
-	};
-
-	INFO m_Info;                                 // 情報
 	TYPE m_Type;
 
 private:
 
-	//CEnemy *m_apEnemy[]
-	CMotion *m_pMotion;                        // モーションへのポインタ
-	CCharacter **m_apModel;                    // モデル(パーツ)へのポインタ
-	CGage3D *m_pLife3D;                          // ゲージのポインタ
-	CGage2D *m_pLife2D;                          // ゲージのポインタ
-	static int m_nNumAll;                      // 敵の総数
-	int m_nDamegeCounter;                      // ダメージ状態でいるカウント
-	int m_nBiriBiriCount;
-	static int m_nIdx;
-	D3DXMATRIX *m_pCurrent;                    // 親のマトリックス
-	static CEnemy *m_pTop;  //先頭のオブジェクトへのポインタ
-	static CEnemy *m_pCur; //最後尾のオブジェクトへのポインタ
+	void ListOut(void);
+	
+	INFO m_Info;                   // 情報
+	CMotion *m_pMotion;            // モーションへのポインタ
+	CCharacter **m_apModel;        // モデル(パーツ)へのポインタ
+	CGage3D *m_pLife3D;            // ゲージのポインタ
+	CGage2D *m_pLife2D;            // ゲージのポインタ
+	static int m_nNumAll;          // 敵の総数
+	int m_nDamegeCounter;          // ダメージ状態でいるカウント
+	static int m_nIdx;             
+	D3DXMATRIX *m_pCurrent;        // 親のマトリックス
+	static CEnemy *m_pTop;         //先頭のオブジェクトへのポインタ
+	static CEnemy *m_pCur;         //最後尾のオブジェクトへのポインタ
 	CEnemy *m_pNext;
-	CEnemy *m_pPrev;       //前のオブジェクトへのポインタ
-	bool m_bDeath;          //死亡フラグ
+	CEnemy *m_pPrev;               //前のオブジェクトへのポインタ
+	bool m_bDeath;                 //死亡フラグ
 	
 	//*=============================================================================
 	// 外部ファイル読み込み用
@@ -193,5 +198,22 @@ private:
 	char m_filename[128] = {};                 // 文字読み込み用
 
 };
+
+////===========================================================
+//// ステイト
+////===========================================================
+//class CEnemyState
+//{
+//public:
+//	CEnemyState() {};
+//	~CEnemyState() {};
+//
+//	virtual void Update(CEnemy* pEnemy) = 0;
+//
+//private:
+//
+//};
+
+
 
 #endif // !_ENEMY_H_

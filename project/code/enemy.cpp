@@ -5,6 +5,7 @@
 //
 //===========================================================
 #include "enemy.h"
+#include "enemy_weak.h"
 #include "texture.h"
 #include "manager.h"
 #include "renderer.h"
@@ -23,6 +24,8 @@
 #include "particle.h"
 #include "effect.h"
 #include "item.h"
+#include "MyEffekseer.h"
+#include "utility.h"
 #include <assert.h>
 
 //===========================================================
@@ -40,7 +43,9 @@ namespace
 {
 	const int DAMEGECOUNT = 15;     // ダメージ状態
 	const float RADIUS = 20.0f;     // 横幅
+	const float ATTACKLENGHT = 50.0f;  // 攻撃可能範囲
 	const float ENEMY_MOVE = 2.0f;  // 移動量
+	const float SPEED = 2.0f;          // 走る速さ
 	const char *ENEMY_TEXT = "data\\TEXT\\motion_set_enemy.txt";  // テキストファイル
 }
 
@@ -55,7 +60,6 @@ CEnemy::CEnemy()
 	m_Info.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_Info.move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	D3DXMatrixIdentity(&m_Info.mtxWorld);
-	m_Info.state = STATE_NONE;
 	m_Mobility = Immobile;
 	m_Info.nLife = 0;
 	m_Info.nIdxID = -1;
@@ -66,7 +70,7 @@ CEnemy::CEnemy()
 	m_pLife2D = nullptr;
 	m_pLife3D = nullptr;
 	m_bDeath = false;
-
+	
 	if (m_pTop != nullptr)
 	{// 先頭が存在している場合
 
@@ -93,7 +97,6 @@ CEnemy::CEnemy(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nPriority)
 	m_Info.rot = rot;
 	m_Info.move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	D3DXMatrixIdentity(&m_Info.mtxWorld);
-	m_Info.state = STATE_NONE;
 	m_Mobility = Immobile;
 	m_Info.nLife = nlife;
 	m_Info.nIdxID = -1;
@@ -104,7 +107,7 @@ CEnemy::CEnemy(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nPriority)
 	m_pLife2D = nullptr;
 	m_pLife3D = nullptr;
 	m_bDeath = false;
-
+	
 	if (m_pTop != nullptr)
 	{// 先頭が存在している場合
 
@@ -177,44 +180,8 @@ void CEnemy::Uninit(void)
 
 	m_bDeath = true;
 
-	// リストから自分自身を削除する
-	if (m_pTop == this)
-	{// 自身が先頭
-		if (m_pNext != nullptr)
-		{// 次が存在している
-			m_pTop = m_pNext;	// 次を先頭にする
-			m_pNext->m_pPrev = nullptr;	// 次の前のポインタを覚えていないようにする
-		}
-		else
-		{// 存在していない
-			m_pTop = nullptr;	// 先頭がない状態にする
-			m_pCur = nullptr;	// 最後尾がない状態にする
-		}
-	}
-	else if (m_pCur == this)
-	{// 自身が最後尾
-		if (m_pPrev != nullptr)
-		{// 次が存在している
-			m_pCur = m_pPrev;			// 前を最後尾にする
-			m_pPrev->m_pNext = nullptr;	// 前の次のポインタを覚えていないようにする
-		}
-		else
-		{// 存在していない
-			m_pTop = nullptr;	// 先頭がない状態にする
-			m_pCur = nullptr;	// 最後尾がない状態にする
-		}
-	}
-	else
-	{
-		if (m_pNext != nullptr)
-		{
-			m_pNext->m_pPrev = m_pPrev;	// 自身の次に前のポインタを覚えさせる
-		}
-		if (m_pPrev != nullptr)
-		{
-			m_pPrev->m_pNext = m_pNext;	// 自身の前に次のポインタを覚えさせる
-		}
-	}
+	// 自分をリストから消す
+	ListOut();
 
 	// モーションの破棄
 	if (m_pMotion != nullptr)
@@ -241,6 +208,8 @@ void CEnemy::Uninit(void)
 		m_apModel = nullptr;
 	}
 
+	
+
 	CObject::Release();
 }
 
@@ -249,79 +218,19 @@ void CEnemy::Uninit(void)
 //===========================================================
 void CEnemy::Update(void)
 {
-	if (m_Info.bDraw == true)
-	{
-		if (m_Info.state != STATE_HEATDAMEGE && m_Info.state != STATE_HEATACTELECTROWAIT && m_Info.state != STATE_HEATACTELECTRO && m_Info.state != STATE_HEATACTFAINTING && m_Info.state != STATE_DEATH)
-		{
-			Controll();
-		}
-		
-		if (m_pMotion != nullptr)
-		{
-			// 更新処理
-			m_pMotion->Update();
-		}
+	// モーションの更新
+	if (m_pMotion != nullptr)
+		m_pMotion->Update();
 
-		if (m_apModel != nullptr)
-		{
-			for (int nCount = 0; nCount < m_nNumModel; nCount++)
-			{
-				if (m_apModel[nCount] != nullptr)
-				{
-					m_apModel[nCount]->Update();
-				}
-			}
-		}
-
-		// 敵同士の当たり判定
-		CEnemy* pEnemy = CEnemy::GetTop();
-		while (pEnemy != nullptr)
-		{
-			CEnemy* pEnemyNext = pEnemy->GetNext();
-
-			if(pEnemy != this)
-			m_Info.pos = *CGame::GetCollision()->CheckEnemy(&m_Info.pos, &m_Info.posOld, &pEnemy->GetPosition(), RADIUS);
-
-			pEnemy = pEnemyNext;
-		}
-	}
-
-	if (GetMotion()->IsFinish() == false)
+	// モデルの更新
+	if (m_apModel == nullptr)
 		return;
-
-	if ((m_Info.state == STATE_HEATDAMEGE || m_Info.state == STATE_PAINFULDAMAGE || m_Info.state == STATE_HEATACTFAINTING) && m_Info.state != STATE_GETUP)
+	
+	for (int nCount = 0; nCount < m_nNumModel; nCount++)
 	{
-		m_Info.state = STATE_GETUP;
-		GetMotion()->Set(TYPE_GETUP);
-		
-		if (m_Chase == CHASE_OFF)
-			m_Chase = CHASE_ON;
-	}
-	else if (m_Info.state == STATE_DEATH)
-	{// 死亡
+		if (m_apModel[nCount] != nullptr)
+			m_apModel[nCount]->Update();
 
-		// 敵の総数を減らす
-		int nNum = CEnemyManager::GetNum() - 1;
-		CEnemyManager::SetNum(nNum);
-		Uninit();
-
-		if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_GAME)
-		{// ゲームの時
-
-			// 敵を倒した数を増やす
-			int nDefeat = CPlayer::GetInstance()->GetDefeat() + 1;
-			CPlayer::GetInstance()->SetDefeat(nDefeat);
-		}
-
-		return;
-	}
-	else
-	{
-		m_Info.state = STATE_NEUTRAL;
-		GetMotion()->Set(TYPE_NEUTRAL);
-
-		if (m_Chase == CHASE_OFF)
-			m_Chase = CHASE_ON;
 	}
 }
 
@@ -334,132 +243,175 @@ void CEnemy::Draw(void)
 	CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 
-	if (m_Info.bDraw == true)
+	// 描画を切っていたら処理を抜ける
+	if (!m_Info.bDraw)
+		return;
+	
+	//計算用マトリックス
+	D3DXMATRIX mtxRot, mtxTrans;
+
+	//ワールドマトリックスの初期化
+	D3DXMatrixIdentity(&m_Info.mtxWorld);
+
+	if (m_pCurrent != nullptr)
 	{
-		//計算用マトリックス
-		D3DXMATRIX mtxRot, mtxTrans;
+		//向きを反映
+		D3DXMatrixRotationYawPitchRoll(&mtxRot, m_Info.rot.y, m_Info.rot.x, m_Info.rot.z);
 
-		//ワールドマトリックスの初期化
-		D3DXMatrixIdentity(&m_Info.mtxWorld);
+		D3DXMatrixMultiply(&m_Info.mtxWorld, &m_Info.mtxWorld, &mtxRot);
 
-		if (m_pCurrent != nullptr)
-		{
-			//向きを反映
-			D3DXMatrixRotationYawPitchRoll(&mtxRot, m_Info.rot.y, m_Info.rot.x, m_Info.rot.z);
+		//位置を反映
+		D3DXMatrixTranslation(&mtxTrans, m_Info.pos.x, m_Info.pos.y, m_Info.pos.z);
 
-			D3DXMatrixMultiply(&m_Info.mtxWorld, &m_Info.mtxWorld, &mtxRot);
+		D3DXMatrixMultiply(&m_Info.mtxWorld, &m_Info.mtxWorld, &mtxTrans);
 
-			//位置を反映
-			D3DXMatrixTranslation(&mtxTrans, m_Info.pos.x, m_Info.pos.y, m_Info.pos.z);
+		// マトリックスと親のマトリックスをかけ合わせる
+		D3DXMatrixMultiply(&m_Info.mtxWorld,
+			&m_Info.mtxWorld, m_pCurrent);
+	}
+	else
+	{
+		//向きを反映
+		D3DXMatrixRotationYawPitchRoll(&mtxRot, m_Info.rot.y, m_Info.rot.x, m_Info.rot.z);
 
-			D3DXMatrixMultiply(&m_Info.mtxWorld, &m_Info.mtxWorld, &mtxTrans);
+		D3DXMatrixMultiply(&m_Info.mtxWorld, &m_Info.mtxWorld, &mtxRot);
 
-			// マトリックスと親のマトリックスをかけ合わせる
-			D3DXMatrixMultiply(&m_Info.mtxWorld,
-				&m_Info.mtxWorld, m_pCurrent);
-		}
-		else
-		{
-			//向きを反映
-			D3DXMatrixRotationYawPitchRoll(&mtxRot, m_Info.rot.y, m_Info.rot.x, m_Info.rot.z);
+		//位置を反映
+		D3DXMatrixTranslation(&mtxTrans, m_Info.pos.x, m_Info.pos.y, m_Info.pos.z);
 
-			D3DXMatrixMultiply(&m_Info.mtxWorld, &m_Info.mtxWorld, &mtxRot);
+		D3DXMatrixMultiply(&m_Info.mtxWorld, &m_Info.mtxWorld, &mtxTrans);
+	}
 
-			//位置を反映
-			D3DXMatrixTranslation(&mtxTrans, m_Info.pos.x, m_Info.pos.y, m_Info.pos.z);
+	//ワールドマトリックスの設定
+	pDevice->SetTransform(D3DTS_WORLD, &m_Info.mtxWorld);
 
-			D3DXMatrixMultiply(&m_Info.mtxWorld, &m_Info.mtxWorld, &mtxTrans);
-		}
+	// 描画処理
+	for (int nCount = 0; nCount < m_nNumModel; nCount++)
+	{
+		if (m_apModel[nCount] == nullptr)
+			continue;
 
-		//ワールドマトリックスの設定
-		pDevice->SetTransform(D3DTS_WORLD, &m_Info.mtxWorld);
-
-		for (int nCount = 0; nCount < m_nNumModel; nCount++)
-		{
-			if (m_apModel[nCount] != nullptr)
-			{
-				//描画処理
-				m_apModel[nCount]->Draw();
-			}
-		}
+		m_apModel[nCount]->Draw();
 	}
 }
 
 //===========================================================
 // 制御処理
 //===========================================================
-void CEnemy::Controll(void)
+//void CEnemy::Controll(void)
+//{
+//	int nNum = 0;
+//	CEnemy **ppEnemy = nullptr;
+//
+//	if (m_Info.state == STATE_DAMEGE || m_Info.state == STATE_HEATDAMEGE)
+//	{
+//		m_nDamegeCounter--;
+//
+//		if (m_nDamegeCounter <= 0)
+//		{
+//			m_Info.state = STATE_NONE;
+//			m_nDamegeCounter = DAMEGECOUNT;
+//		}
+//	}
+//	else
+//	{
+//		if (m_Info.state != STATE_GRAP && m_Mobility == Mobile)
+//			Move();
+//	}
+//
+//	if (m_Info.nLife <= 0)
+//	{
+//		m_Info.state = STATE_DEATH;
+//		GetMotion()->Set(TYPE_DETH);
+//		return;
+//	}
+//
+//	if (m_Info.state != STATE_GRAP && CPlayer::GetInstance()->GetHeatActFlag() == false)
+//	{
+//		m_Info.move.y -= 0.9f;
+//
+//		// 移動量
+//		m_Info.pos.x += m_Info.move.x;
+//		m_Info.pos.y += m_Info.move.y;
+//		m_Info.pos.z += m_Info.move.z;
+//
+//		if (m_Info.pos.y <= 0.0f)
+//			m_Info.pos.y = 0.0f;
+//
+//	}
+//
+//	//デバッグプロックの情報を取得
+//	CDebugProc *pDebugProc = CManager::GetInstance()->GetDebugProc();
+//	pDebugProc->Print("\n敵の位置：%f,%f,%f\n", m_Info.pos.x, m_Info.pos.y, m_Info.pos.z);
+//	pDebugProc->Print("敵の向き：%f,%f,%f\n", m_Info.rot.x, m_Info.rot.y, m_Info.rot.z);
+//	pDebugProc->Print("敵の体力：%d\n", m_Info.nLife);
+//	pDebugProc->Print("敵の番号：%d\n", m_Info.nIdxID);
+//}
+
+//===========================================================
+// 制御処理
+//===========================================================
+//void CEnemy::Attack(void)
+//{
+//	
+//}
+
+//===========================================================
+// 制御処理
+//===========================================================
+//void CEnemy::Move(void)
+//{
+//	
+//}
+
+//===========================================================
+// リストから自分を消す処理
+//===========================================================
+void CEnemy::ListOut(void)
 {
-	int nNum = 0;
-	CEnemy **ppEnemy = nullptr;
+	if (m_pTop == this)
+	{// 自身が先頭
 
-	if (m_Info.state == STATE_DAMEGE || m_Info.state == STATE_HEATDAMEGE)
-	{
-		m_nDamegeCounter--;
+		if (m_pNext != nullptr)
+		{// 次が存在している
 
-		if (m_nDamegeCounter <= 0)
-		{
-			m_Info.state = STATE_NONE;
-			m_nDamegeCounter = DAMEGECOUNT;
+			m_pTop = m_pNext;	// 次を先頭にする
+			m_pNext->m_pPrev = nullptr;	// 次の前のポインタを覚えていないようにする
+		}
+		else
+		{// 存在していない
+
+			m_pTop = nullptr;	// 先頭がない状態にする
+			m_pCur = nullptr;	// 最後尾がない状態にする
+		}
+	}
+	else if (m_pCur == this)
+	{// 自身が最後尾
+
+		if (m_pPrev != nullptr)
+		{// 次が存在している
+
+			m_pCur = m_pPrev;			// 前を最後尾にする
+			m_pPrev->m_pNext = nullptr;	// 前の次のポインタを覚えていないようにする
+		}
+		else
+		{// 存在していない
+
+			m_pTop = nullptr;	// 先頭がない状態にする
+			m_pCur = nullptr;	// 最後尾がない状態にする
 		}
 	}
 	else
 	{
-		if (m_Info.state != STATE_GRAP && m_Mobility == Mobile)
-			Move();
+		if (m_pNext != nullptr)
+		{
+			m_pNext->m_pPrev = m_pPrev;	// 自身の次に前のポインタを覚えさせる
+		}
+		if (m_pPrev != nullptr)
+		{
+			m_pPrev->m_pNext = m_pNext;	// 自身の前に次のポインタを覚えさせる
+		}
 	}
-
-	if (m_Info.nLife <= 0)
-	{
-		m_Info.state = STATE_DEATH;
-		GetMotion()->Set(TYPE_DETH);
-		return;
-	}
-
-	if (m_Info.state != STATE_GRAP && CPlayer::GetInstance()->GetHeatActFlag() == false)
-	{
-		m_Info.move.y -= 0.9f;
-
-		// 移動量
-		m_Info.pos.x += m_Info.move.x;
-		m_Info.pos.y += m_Info.move.y;
-		m_Info.pos.z += m_Info.move.z;
-
-		if (m_Info.pos.y <= 0.0f)
-			m_Info.pos.y = 0.0f;
-
-	}
-
-	//デバッグプロックの情報を取得
-	CDebugProc *pDebugProc = CManager::GetInstance()->GetDebugProc();
-	pDebugProc->Print("\n敵の位置：%f,%f,%f\n", m_Info.pos.x, m_Info.pos.y, m_Info.pos.z);
-	pDebugProc->Print("敵の向き：%f,%f,%f\n", m_Info.rot.x, m_Info.rot.y, m_Info.rot.z);
-	pDebugProc->Print("敵の体力：%d\n", m_Info.nLife);
-	pDebugProc->Print("敵の番号：%d\n", m_Info.nIdxID);
-}
-
-//===========================================================
-// 制御処理
-//===========================================================
-void CEnemy::Attack(void)
-{
-	
-}
-
-//===========================================================
-// 制御処理
-//===========================================================
-void CEnemy::Move(void)
-{
-	
-}
-
-//===========================================================
-// 制御処理
-//===========================================================
-void CEnemy::Damege(int damege, float blowaway, CPlayer::ATTACKTYPE act)
-{
-	
 }
 
 //===========================================================
@@ -600,12 +552,35 @@ void CEnemy::ReadText(const char *fliename)
 		//初期化処理
 		m_pMotion->ReadText(fliename);
 
-		m_pMotion->InitPose(TYPE_NEUTRAL);
-
-		//m_pMotion->Set(TYPE_NEUTRAL);
+		m_pMotion->InitPose(MOTION_NEUTRAL);
 	}
 }
 
 void CEnemy::SetChase(CHASE cha)
 {
+}
+
+
+
+
+//===========================================================
+// 攻撃が発生しているかどうか判定
+//===========================================================
+void CEnemy::HitDetection(D3DXVECTOR3 MyPos, float attackrange, float targetradius)
+{
+	if (m_pMotion == nullptr)
+		return;
+
+	if (m_pMotion->GetNowFrame() == m_pMotion->GetAttackOccurs())
+	{
+		D3DXMATRIX mtx = *GetCharcter()[0]->GetMtxWorld();
+		CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_ATTACK, ::Effekseer::Vector3D(mtx._41, mtx._42, mtx._43), ::Effekseer::Vector3D(0.0f, 0.0f, 0.0f), ::Effekseer::Vector3D(25.0f, 25.0f, 25.0f));
+	}
+
+	if (m_pMotion->GetAttackOccurs() <= m_pMotion->GetNowFrame() && m_pMotion->GetAttackEnd() >= m_pMotion->GetNowFrame())
+	{// 現在のフレームが攻撃判定発生フレーム以上かつ攻撃判定終了フレームない
+
+		if (CGame::GetCollision()->Circle(MyPos, CGame::GetPlayer()->GetPosition(), attackrange, targetradius) == true)
+			CPlayer::GetInstance()->Damage(GetMotion()->GetAttackDamege(), GetMotion()->GetKnockBack());
+	}
 }

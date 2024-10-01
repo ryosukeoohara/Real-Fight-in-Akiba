@@ -15,6 +15,7 @@
 #include "objectX.h"
 #include "game.h"
 #include "enemy.h"
+#include "enemy_weak.h"
 #include "enemymanager.h"
 #include "itemmanager.h"
 #include "character.h"
@@ -128,9 +129,10 @@ void CCollision::AttackCircle(D3DXVECTOR3 * pMyPos, float fMyRadius, float fTarg
 
 		if (c <= fMyRadius + fTargetRadius && (pMyPos->y >= pEnemy->GetPosition().y && pMyPos->y <= pEnemy->GetPosition().y + fHeight) && pEnemy->GetState() != CEnemy::STATE_DAMEGE)
 		{
-			pEnemy->Damege(CPlayer::GetInstance()->GetMotion()->GetAttackDamege(), CPlayer::GetInstance()->GetMotion()->GetKnockBack(), CPlayer::GetInstance()->GetActType());
-			CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(pMyPos->x, pMyPos->y, pMyPos->z),
-				::Effekseer::Vector3D(0.0f, 0.0f, 0.0f), ::Effekseer::Vector3D(25.0f, 25.0f, 25.0f));
+			//pEnemy->Damege(CPlayer::GetInstance()->GetMotion()->GetAttackDamege(), CPlayer::GetInstance()->GetMotion()->GetKnockBack(), CPlayer::GetInstance()->GetActType());
+
+			pEnemy->Damege();
+			CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(pMyPos->x, pMyPos->y, pMyPos->z));
 		}
 
 		pEnemy = pEnemyNext;
@@ -151,70 +153,66 @@ bool CCollision::Player(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, float fWidthX, fl
 void CCollision::Map(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, float fRadius)
 {
 	int nNum = 0;
-	CObjectX **pMap = nullptr;
+	CObjectX **pMapObject = nullptr;
 
 	D3DXVECTOR3 Mappos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 vtxMin = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 vtxMax = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	if (CGame::GetMap() != nullptr)
-	{
-		nNum = CGame::GetMap()->GetNum();
-		pMap = CGame::GetMap()->GetObjectX();
-	}
+	CMap* pMap = CMap::GetInstance();
 
-	if (CTutorial::GetMap() != nullptr)
+	if (pMap != nullptr)
 	{
-		nNum = CTutorial::GetMap()->GetNum();
-		pMap = CTutorial::GetMap()->GetObjectX();
+		nNum = pMap->GetNum();
+		pMapObject = pMap->GetObjectX();
 	}
-
+	
 	for (int nCount = 0; nCount < nNum; nCount++)
 	{
-		if (pMap[nCount] != nullptr)
+		if (pMapObject[nCount] == nullptr)
+			continue;
+
+		Mappos = pMapObject[nCount]->GetPosition();
+
+		vtxMin = pMapObject[nCount]->GetVtxMin();
+
+		vtxMax = pMapObject[nCount]->GetVtxMax();
+
+		if (pMapObject[nCount]->IsEnable() == false)
+			continue;
+
+		if (pos->z + fRadius > Mappos.z + vtxMin.z
+		 && pos->z + -fRadius < Mappos.z + vtxMax.z)
 		{
-			Mappos = pMap[nCount]->GetPosition();
-
-			vtxMin = pMap[nCount]->GetVtxMin();
-
-			vtxMax = pMap[nCount]->GetVtxMax();
+			//ブロックの右側面==================================
+			if (pos->x + -fRadius <= Mappos.x + vtxMax.x
+				&& posOld->x + -fRadius >= Mappos.x + vtxMax.x)
+			{
+				pos->x = (Mappos.x + vtxMax.x) - -fRadius;
+			}
+			//ブロックの左側面==================================
+			if (pos->x + fRadius >= Mappos.x + vtxMin.x
+				&& posOld->x + fRadius <= Mappos.x + vtxMin.x)
+			{
+				pos->x = (Mappos.x + vtxMin.x) - fRadius;
+			}
 		}
 
-		if (pMap[nCount]->IsEnable() == true)
+		if (pos->x + fRadius > Mappos.x + vtxMin.x
+		 && pos->x + -fRadius < Mappos.x + vtxMax.x)
 		{
-			if (pos->z + fRadius > Mappos.z + vtxMin.z
-				&& pos->z + -fRadius < Mappos.z + vtxMax.z)
+			//ブロックの上======================================
+			if (pos->z + -fRadius <= Mappos.z + vtxMax.z
+			 && posOld->z + -fRadius >= Mappos.z + vtxMax.z)
 			{
-				//ブロックの右側面==================================
-				if (pos->x + -fRadius <= Mappos.x + vtxMax.x
-					&& posOld->x + -fRadius >= Mappos.x + vtxMax.x)
-				{
-					pos->x = (Mappos.x + vtxMax.x) - -fRadius;
-				}
-				//ブロックの左側面==================================
-				if (pos->x + fRadius >= Mappos.x + vtxMin.x
-					&& posOld->x + fRadius <= Mappos.x + vtxMin.x)
-				{
-					pos->x = (Mappos.x + vtxMin.x) - fRadius;
-				}
+				pos->z = (Mappos.z + vtxMax.z) - -fRadius;
 			}
 
-			if (pos->x + fRadius > Mappos.x + vtxMin.x
-			 && pos->x + -fRadius < Mappos.x + vtxMax.x)
+			//ブロックの下======================================
+			if (pos->z + fRadius >= Mappos.z + vtxMin.z
+			 && posOld->z + fRadius <= Mappos.z + vtxMin.z)
 			{
-				//ブロックの上======================================
-				if (pos->z + -fRadius <= Mappos.z + vtxMax.z
-				 && posOld->z + -fRadius >= Mappos.z + vtxMax.z)
-				{
-					pos->z = (Mappos.z + vtxMax.z) - -fRadius;
-				}
-
-				//ブロックの下======================================
-				if (pos->z + fRadius >= Mappos.z + vtxMin.z
-				 && posOld->z + fRadius <= Mappos.z + vtxMin.z)
-				{
-					pos->z = (Mappos.z + vtxMin.z) - fRadius;
-				}
+				pos->z = (Mappos.z + vtxMin.z) - fRadius;
 			}
 		}
 	}

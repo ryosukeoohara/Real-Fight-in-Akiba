@@ -44,7 +44,7 @@ public:
 
 	void SetbColli(bool bValue) { m_bColli = bValue; }
 	bool GetbColli(void) { return m_bColli; }
-	static CCollision *GetColl(void) { return m_pColli; }
+	static CCollision *GetInstance(void) { return m_pColli; }
 	
 private:
 	static CCollision *m_pColli;

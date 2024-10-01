@@ -137,9 +137,6 @@ void CEnemyManager::ReadText(const char *text)
 				fscanf(pFile, "%s", &aString);          //=
 				fscanf(pFile, "%d", &m_nEnemyAll);  //ÉÇÉfÉãÇÃëçêî
 
-				m_appEnemy = new CEnemy*[m_nEnemyAll];
-				//m_nNum = m_nEnemyAll;
-
 			}  //NUM_MODELÇÃÇ©Ç¡Ç±
 
 			while (strcmp("END_SCRIPT", aString) != 0)

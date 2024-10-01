@@ -183,7 +183,7 @@ void BikeCrash::Update(CHeatAction* pHeatAct)
 			if (CItemManager::GetInstance() != nullptr)
 				CItemManager::GetInstance()->Release(pPlayer->GetGrapItem()->GetID());
 
-			pEnemy->Damege(CPlayer::GetInstance()->GetMotion()->GetAttackDamege(), CPlayer::GetInstance()->GetMotion()->GetKnockBack(), CPlayer::GetInstance()->GetActType());
+			pEnemy->Damege();
 
 			// 持っていたアイテムを消す
 			pPlayer->SetGrapItem(nullptr);
@@ -280,7 +280,7 @@ void MicroWave::Update(CHeatAction* pHeatAct)
 					return;
 
 				// ヒートアクション:電子レンジに頭を入れられて待っている状態
-				pEnemy->GetMotion()->Set(CEnemy::TYPE_HEATACTELECTROWAIT);
+				pEnemy->GetMotion()->Set(CEnemy::MOTION_HEATACTELECTROWAIT);
 				CManager::GetInstance()->GetSound()->Play(CSound::SOUND_LABEL_SE_GRASS);
 
 				// ガラス片のパーティクルを生成
@@ -304,7 +304,7 @@ void MicroWave::Update(CHeatAction* pHeatAct)
 			if (pEnemy->GetState() != CEnemy::STATE_HEATACTELECTRO)
 			{
 				pEnemy->SetState(CEnemy::STATE_HEATACTELECTRO);
-				pEnemy->GetMotion()->Set(CEnemy::TYPE_HEATACTELECTRO);
+				pEnemy->GetMotion()->Set(CEnemy::MOTION_HEATACTELECTRO);
 				CManager::GetInstance()->GetSound()->Play(CSound::SOUND_LABEL_SE_FIRE);
 
 				if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_TUTORIAL)
@@ -328,8 +328,8 @@ void MicroWave::Update(CHeatAction* pHeatAct)
 		if (pEnemy->GetState() != CEnemy::STATE_HEATACTFAINTING)
 		{
 			pEnemy->SetState(CEnemy::STATE_HEATACTFAINTING);
-			pEnemy->GetMotion()->Set(CEnemy::TYPE_HEATACTFAINTING);
-			pEnemy->Damege(100, 0.0f, CPlayer::TYPE_HEATACTMICROWAVE);
+			pEnemy->GetMotion()->Set(CEnemy::MOTION_HEATACTFAINTING);
+			pEnemy->Damege();
 			CManager::GetInstance()->GetCamera()->ChangeState(new ReturnPlayerBehindCamera);
 			pPlayer->SetState(CPlayer::STATE_NEUTRAL);
 			pPlayer->SetUseMicroCount(3600);

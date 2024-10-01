@@ -40,9 +40,6 @@
     <Filter Include="ソース ファイル\character\audience">
       <UniqueIdentifier>{d7b9a3d0-1867-496f-a58b-c2108f8a9d1b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\item">
-      <UniqueIdentifier>{076a54c5-d185-41c9-93a1-c87bf807036e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\base">
       <UniqueIdentifier>{977471dc-cc45-41e7-88e0-2614f19647f7}</UniqueIdentifier>
     </Filter>
@@ -54,6 +51,15 @@
     </Filter>
     <Filter Include="ソース ファイル\action">
       <UniqueIdentifier>{524a2b4b-a680-4bf2-aae6-fe465fb30841}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\collision">
+      <UniqueIdentifier>{25a7e6cd-b1d0-422f-a475-c0ddbd444fa4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\input">
+      <UniqueIdentifier>{e82c26fe-4497-43d3-a355-977e6bb889d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\lib\item">
+      <UniqueIdentifier>{076a54c5-d185-41c9-93a1-c87bf807036e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -68,18 +74,6 @@
     </ClCompile>
     <ClCompile Include="code\title.cpp">
       <Filter>ソース ファイル\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="code\input.cpp">
-      <Filter>ソース ファイル\base</Filter>
-    </ClCompile>
-    <ClCompile Include="code\InputJoyPad.cpp">
-      <Filter>ソース ファイル\base</Filter>
-    </ClCompile>
-    <ClCompile Include="code\InputKeyBoard.cpp">
-      <Filter>ソース ファイル\base</Filter>
-    </ClCompile>
-    <ClCompile Include="code\InputMouse.cpp">
-      <Filter>ソース ファイル\base</Filter>
     </ClCompile>
     <ClCompile Include="code\light.cpp">
       <Filter>ソース ファイル\base</Filter>
@@ -121,9 +115,6 @@
       <Filter>ソース ファイル\lib</Filter>
     </ClCompile>
     <ClCompile Include="code\texture.cpp">
-      <Filter>ソース ファイル\base</Filter>
-    </ClCompile>
-    <ClCompile Include="code\collision.cpp">
       <Filter>ソース ファイル\base</Filter>
     </ClCompile>
     <ClCompile Include="code\debugproc.cpp">
@@ -202,10 +193,10 @@
       <Filter>ソース ファイル\character\audience</Filter>
     </ClCompile>
     <ClCompile Include="code\itemmanager.cpp">
-      <Filter>ソース ファイル\item</Filter>
+      <Filter>ソース ファイル\lib\item</Filter>
     </ClCompile>
     <ClCompile Include="code\item.cpp">
-      <Filter>ソース ファイル\item</Filter>
+      <Filter>ソース ファイル\lib\item</Filter>
     </ClCompile>
     <ClCompile Include="code\gage.cpp">
       <Filter>ソース ファイル\UI</Filter>
@@ -222,6 +213,21 @@
     <ClCompile Include="code\heataction.cpp">
       <Filter>ソース ファイル\action</Filter>
     </ClCompile>
+    <ClCompile Include="code\collision.cpp">
+      <Filter>ソース ファイル\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="code\input.cpp">
+      <Filter>ソース ファイル\input</Filter>
+    </ClCompile>
+    <ClCompile Include="code\InputJoyPad.cpp">
+      <Filter>ソース ファイル\input</Filter>
+    </ClCompile>
+    <ClCompile Include="code\InputKeyBoard.cpp">
+      <Filter>ソース ファイル\input</Filter>
+    </ClCompile>
+    <ClCompile Include="code\InputMouse.cpp">
+      <Filter>ソース ファイル\input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\game.h">
@@ -232,18 +238,6 @@
     </ClInclude>
     <ClInclude Include="code\result.h">
       <Filter>ソース ファイル\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="code\input.h">
-      <Filter>ソース ファイル\base</Filter>
-    </ClInclude>
-    <ClInclude Include="code\InputJoyPad.h">
-      <Filter>ソース ファイル\base</Filter>
-    </ClInclude>
-    <ClInclude Include="code\InputKeyBoard.h">
-      <Filter>ソース ファイル\base</Filter>
-    </ClInclude>
-    <ClInclude Include="code\InputMouse.h">
-      <Filter>ソース ファイル\base</Filter>
     </ClInclude>
     <ClInclude Include="code\tutorial.h">
       <Filter>ソース ファイル\scene</Filter>
@@ -270,9 +264,6 @@
       <Filter>ソース ファイル\lib</Filter>
     </ClInclude>
     <ClInclude Include="code\texture.h">
-      <Filter>ソース ファイル\base</Filter>
-    </ClInclude>
-    <ClInclude Include="code\collision.h">
       <Filter>ソース ファイル\base</Filter>
     </ClInclude>
     <ClInclude Include="code\debugproc.h">
@@ -357,10 +348,10 @@
       <Filter>ソース ファイル\character\audience</Filter>
     </ClInclude>
     <ClInclude Include="code\item.h">
-      <Filter>ソース ファイル\item</Filter>
+      <Filter>ソース ファイル\lib\item</Filter>
     </ClInclude>
     <ClInclude Include="code\itemmanager.h">
-      <Filter>ソース ファイル\item</Filter>
+      <Filter>ソース ファイル\lib\item</Filter>
     </ClInclude>
     <ClInclude Include="code\gage.h">
       <Filter>ソース ファイル\UI</Filter>
@@ -388,6 +379,21 @@
     </ClInclude>
     <ClInclude Include="code\heataction.h">
       <Filter>ソース ファイル\action</Filter>
+    </ClInclude>
+    <ClInclude Include="code\collision.h">
+      <Filter>ソース ファイル\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="code\input.h">
+      <Filter>ソース ファイル\input</Filter>
+    </ClInclude>
+    <ClInclude Include="code\InputJoyPad.h">
+      <Filter>ソース ファイル\input</Filter>
+    </ClInclude>
+    <ClInclude Include="code\InputKeyBoard.h">
+      <Filter>ソース ファイル\input</Filter>
+    </ClInclude>
+    <ClInclude Include="code\InputMouse.h">
+      <Filter>ソース ファイル\input</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

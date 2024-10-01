@@ -187,7 +187,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	{//使用されていなかったら
 
 		//シーンの生成
-		m_pScene = CScene::Create(CScene::MODE_TUTORIAL);
+		m_pScene = CScene::Create(CScene::MODE_GAME);
 
 		//初期化処理
 		m_pScene->Init();
