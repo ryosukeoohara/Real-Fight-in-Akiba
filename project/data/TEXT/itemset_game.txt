@@ -36,7 +36,7 @@ END_ITEMSET
 ITEMSET # 自転車
     TYPE = 1
     POS = 750.0 0.0 429.0
-    ROT = 0.0 1.57 0.0
+    ROT = 0.0 0.0 0.0
 END_ITEMSET
 
 ITEMSET # 電子レンジ

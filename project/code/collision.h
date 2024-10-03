@@ -36,6 +36,7 @@ public:
 	void AttackCircle(D3DXVECTOR3 *pMyPos, float fMyRadius, float fTargetRadius, float fHeight);         // 円の当たり判定
 	bool Player(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, float fWidthX, float fWidthZ, CPlayer *pPlayer);  // ぷれいやーとの当たり判定
 	void Map(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, float fRadius);                                      // マップにある建物との当たり判定
+	bool HitMapObject(D3DXVECTOR3 pMyPos, D3DXVECTOR3 pTargetPos, float fMyRadius, float fTargetRadius);
 	void MapObject(D3DXVECTOR3* pos, D3DXVECTOR3* posOld, float fRadius);
 	void MapEnemy(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, CObjectX **pObjectX, CEnemy *enemy);            // マップにある建物との当たり判定
 	bool Item(D3DXVECTOR3 *pos);

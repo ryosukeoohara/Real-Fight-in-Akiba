@@ -149,7 +149,7 @@ bool CCollision::Player(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, float fWidthX, fl
 }
 
 //=============================================================================
-//マップにある建物との当たり判定
+// マップにある建物との当たり判定
 //=============================================================================
 void CCollision::Map(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, float fRadius)
 {
@@ -182,8 +182,6 @@ void CCollision::Map(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, float fRadius)
 		if (pMapObject[nCount]->IsEnable() == false)
 			continue;
 
-		bool b = false;
-
 		if (pos->z + fRadius > Mappos.z + vtxMin.z
 			&& pos->z + -fRadius < Mappos.z + vtxMax.z)
 		{
@@ -191,7 +189,7 @@ void CCollision::Map(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, float fRadius)
 			if (pos->x + -fRadius <= Mappos.x + vtxMax.x
 				&& posOld->x + -fRadius >= Mappos.x + vtxMax.x)
 			{
-				pos->x = (Mappos.x + vtxMax.x) - -fRadius;
+				pos->x = (Mappos.x + vtxMax.x) + fRadius;
 			}
 			//ブロックの左側面==================================
 			if (pos->x + fRadius >= Mappos.x + vtxMin.x
@@ -208,7 +206,7 @@ void CCollision::Map(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, float fRadius)
 			if (pos->z + -fRadius <= Mappos.z + vtxMax.z
 				&& posOld->z + -fRadius >= Mappos.z + vtxMax.z)
 			{
-				pos->z = (Mappos.z + vtxMax.z) - -fRadius;
+				pos->z = (Mappos.z + vtxMax.z) + fRadius;
 			}
 
 			//ブロックの下======================================
@@ -218,19 +216,65 @@ void CCollision::Map(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, float fRadius)
 				pos->z = (Mappos.z + vtxMin.z) - fRadius;
 			}
 		}
-
-		/*if (b == true)
-		{
-			D3DXVECTOR3 rot = CPlayer::GetInstance()->GetRotition();
-			Mappos.x += sinf(rot.y) * 5.0f;
-			Mappos.z += cosf(rot.y) * 5.0f;
-
-			pMapObject[nCount]->SetPosition(Mappos);
-
-		}*/
 	}
 }
 
+//=============================================================================
+// マップにある建物と攻撃の当たり判定
+//=============================================================================
+bool CCollision::HitMapObject(D3DXVECTOR3 pMyPos, D3DXVECTOR3 pTargetPos, float fMyRadius, float fTargetRadius)
+{
+	int nNum = 0;
+	CObjectX** pMapObject = nullptr;
+
+	D3DXVECTOR3 Mappos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 vtxMin = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 vtxMax = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+	CMap* pMap = CMap::GetInstance();
+
+	if (pMap != nullptr)
+	{
+		nNum = pMap->GetNum();
+		pMapObject = pMap->GetObjectX();
+	}
+
+	for (int nCount = 0; nCount < nNum; nCount++)
+	{
+		if (pMapObject[nCount] == nullptr)
+			continue;
+
+		Mappos = pMapObject[nCount]->GetPosition();
+
+		vtxMin = pMapObject[nCount]->GetVtxMin();
+
+		vtxMax = pMapObject[nCount]->GetVtxMax();
+
+		int nIdx = pMapObject[nCount]->GetIdxModel();
+
+		if (pMapObject[nCount]->IsEnable() == false || nIdx > 43 && nIdx < 51)
+			continue;
+
+		float circleX = pMyPos.x - Mappos.x;
+		float circleZ = pMyPos.z - Mappos.z;
+		float c = 0.0f;
+
+		c = sqrtf(circleX * circleX + circleZ * circleZ);
+
+		if (c <= fMyRadius + fTargetRadius)
+		{
+			pMapObject[nCount]->SetbHitAttack(true);
+
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+//=============================================================================
+// マップにある建物との当たり判定
+//=============================================================================
 void CCollision::MapObject(D3DXVECTOR3* pos, D3DXVECTOR3* posOld, float fRadius)
 {
 	int nNum = 0;
@@ -262,9 +306,7 @@ void CCollision::MapObject(D3DXVECTOR3* pos, D3DXVECTOR3* posOld, float fRadius)
 		if (pMapObject[nCount]->IsEnable() == false)
 			continue;
 
-		bool b = false;
-
-		//pMapObject[nCount]->SetbShut(false);
+		pMapObject[nCount]->SetbDown(false);
 
 		if (pos->z + fRadius > Mappos.z + vtxMin.z
 			&& pos->z + -fRadius < Mappos.z + vtxMax.z)
@@ -273,29 +315,21 @@ void CCollision::MapObject(D3DXVECTOR3* pos, D3DXVECTOR3* posOld, float fRadius)
 			if (pos->x + -fRadius <= Mappos.x + vtxMax.x
 				&& posOld->x + -fRadius >= Mappos.x + vtxMax.x)
 			{
-				/*b = true;
-				D3DXVECTOR3 rot = CPlayer::GetInstance()->GetRotition();
-				Mappos.x += sinf(rot.y) * 5.0f;
-				Mappos.z += cosf(rot.y) * 5.0f;
+				if(pMapObject[nCount]->GetIdxModel() != 0)
+				   pMapObject[nCount]->SetbShut(true);
 
-				pMapObject[nCount]->SetPosition(Mappos);*/
-
-				pMapObject[nCount]->SetbShut(true);
-				//pos->x = (Mappos.x + vtxMax.x) - -fRadius;
+				else
+					pMapObject[nCount]->SetbDown(true);
 			}
 			//ブロックの左側面==================================
 			if (pos->x + fRadius >= Mappos.x + vtxMin.x
 				&& posOld->x + fRadius <= Mappos.x + vtxMin.x)
 			{
-				/*b = true;
-				D3DXVECTOR3 rot = CPlayer::GetInstance()->GetRotition();
-				Mappos.x += sinf(rot.y) * 5.0f;
-				Mappos.z += cosf(rot.y) * 5.0f;
+				if (pMapObject[nCount]->GetIdxModel() != 0)
+					pMapObject[nCount]->SetbShut(true);
 
-				pMapObject[nCount]->SetPosition(Mappos);*/
-
-				pMapObject[nCount]->SetbShut(true);
-				//pos->x = (Mappos.x + vtxMin.x) - fRadius;
+				else
+					pMapObject[nCount]->SetbDown(true);
 			}
 		}
 
@@ -306,41 +340,25 @@ void CCollision::MapObject(D3DXVECTOR3* pos, D3DXVECTOR3* posOld, float fRadius)
 			if (pos->z + -fRadius <= Mappos.z + vtxMax.z
 				&& posOld->z + -fRadius >= Mappos.z + vtxMax.z)
 			{
-				/*b = true;
-				D3DXVECTOR3 rot = CPlayer::GetInstance()->GetRotition();
-				Mappos.x += sinf(rot.y) * 5.0f;
-				Mappos.z += cosf(rot.y) * 5.0f;
+				if (pMapObject[nCount]->GetIdxModel() != 0)
+					pMapObject[nCount]->SetbShut(true);
 
-				pMapObject[nCount]->SetPosition(Mappos);*/
-
-				pMapObject[nCount]->SetbShut(true);
-				//pos->z = (Mappos.z + vtxMax.z) - -fRadius;
+				else
+					pMapObject[nCount]->SetbDown(true);
 			}
 
 			//ブロックの下======================================
 			if (pos->z + fRadius >= Mappos.z + vtxMin.z
 				&& posOld->z + fRadius <= Mappos.z + vtxMin.z)
 			{
-				/*b = true;
-				D3DXVECTOR3 rot = CPlayer::GetInstance()->GetRotition();
-				Mappos.x += sinf(rot.y) * 5.0f;
-				Mappos.z += cosf(rot.y) * 5.0f;
+				if (pMapObject[nCount]->GetIdxModel() != 0)
+					pMapObject[nCount]->SetbShut(true);
 
-				pMapObject[nCount]->SetPosition(Mappos);*/
-
-				pMapObject[nCount]->SetbShut(true);
-				//pos->z = (Mappos.z + vtxMin.z) - fRadius;
+				else
+					pMapObject[nCount]->SetbDown(true);
 			}
 		}
 
-		if (b == true)
-		{
-			D3DXVECTOR3 rot = CPlayer::GetInstance()->GetRotition();
-			Mappos.x += sinf(rot.y) * 5.0f;
-			Mappos.z += cosf(rot.y) * 5.0f;
-
-			pMapObject[nCount]->SetPosition(Mappos);
-		}
 	}
 }
 

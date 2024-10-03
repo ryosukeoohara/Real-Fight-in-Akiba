@@ -193,6 +193,9 @@
     <ClCompile Include="code\manager.cpp" />
     <ClCompile Include="code\map.cpp" />
     <ClCompile Include="code\mapobject.cpp" />
+    <ClCompile Include="code\mapobject_can.cpp" />
+    <ClCompile Include="code\mapobject_fance.cpp" />
+    <ClCompile Include="code\mapobject_trashbox.cpp" />
     <ClCompile Include="code\motion.cpp" />
     <ClCompile Include="code\MyEffekseer.cpp" />
     <ClCompile Include="code\number.cpp" />
@@ -258,6 +261,9 @@
     <ClInclude Include="code\manager.h" />
     <ClInclude Include="code\map.h" />
     <ClInclude Include="code\mapobject.h" />
+    <ClInclude Include="code\mapobject_can.h" />
+    <ClInclude Include="code\mapobject_fance.h" />
+    <ClInclude Include="code\mapobject_trashbox.h" />
     <ClInclude Include="code\motion.h" />
     <ClInclude Include="code\MyEffekseer.h" />
     <ClInclude Include="code\number.h" />

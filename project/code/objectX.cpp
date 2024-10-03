@@ -81,6 +81,95 @@ CObjectX *CObjectX::Create(const char *aModelFliename, int nPriority)
 }
 
 //===========================================================
+// 缶とゴミ箱が蹴られて吹っ飛ぶ処理
+//===========================================================
+void CObjectX::Shoot(void)
+{
+	// プレイヤーに蹴られている
+	if (m_bShut)
+	{
+		D3DXVECTOR3 rot = CPlayer::GetInstance()->GetRotition();
+		D3DXVECTOR3 move = CPlayer::GetInstance()->GetMove();
+
+		m_Info.rot.x = 1.57f;
+		m_Info.rot.y = rot.y;
+		m_Info.rot.z = 1.57f;
+
+		m_Info.move.x += (move.x * 1.2f);
+		m_Info.move.y += 1.0f;
+		m_Info.move.z += (move.z * 1.2f);
+	}
+}
+
+//===========================================================
+// 柵が倒れる処理
+//===========================================================
+void CObjectX::FallDown(void)
+{
+	if (m_Info.rot.x >= 1.3f || m_Info.rot.x <= -1.3f)
+	{
+		m_bDown = false;
+
+		m_fFallDownSpeed = 0.0f;
+	}
+
+	D3DXVECTOR3 move = {};
+
+	// 柵に振れた瞬間だけ通る
+	if (m_bDown)
+	{
+		move = CPlayer::GetInstance()->GetMove();
+
+		m_fFallDownSpeed = (move.x + move.x) - (move.z + move.z);
+	}
+
+	if (m_fFallDownSpeed >= 8.0f || m_fFallDownSpeed <= -8.0f)
+	{// プレイヤーの速度が一定より速かったら
+
+		move = CPlayer::GetInstance()->GetMove();
+		m_Info.move.x += move.x;
+		m_Info.move.z += move.z;
+	}
+
+	m_Info.rot.x -= (m_fFallDownSpeed * 0.01f);
+}
+
+//===========================================================
+// プレイヤーの攻撃がヒットしたとき揺らす処理
+//===========================================================
+void CObjectX::HitAttack(void)
+{
+	// カメラを揺らす処理を行うかどうかのフラグが立っていたらカメラを揺らす処理を行う
+	if (m_bHitAttack)
+	{
+		// sin を使用した揺らし座標の算出
+		m_Info.move.y = 0.0f;
+			
+		m_Info.move.x = sinf(ShakeAngle) * (1.0f - ((float)m_nShakeTimeCounter /
+			60)) * 2.0f;
+
+		m_Info.move.z = sinf(ShakeAngle) * (1.0f - ((float)m_nShakeTimeCounter /
+			60)) * 2.0f;
+
+		// 揺らし処理に使用する sin に渡す角度の変更処理
+		ShakeAngle += 2.0f * 1.0f;
+
+		// 揺らす時間が経過したら揺らし処理を終了する
+		m_nShakeTimeCounter += 1;
+		if (m_nShakeTimeCounter >= 60)
+		{
+			m_bHitAttack = false;
+		}
+	}
+	else
+	{
+		// 揺らされていない場合は揺らし処理による加算座標を０にする
+		//m_Info.move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		m_nShakeTimeCounter = 0;
+	}
+}
+
+//===========================================================
 // 初期化処理
 //===========================================================
 HRESULT CObjectX::Init(void)
@@ -215,24 +304,31 @@ void CObjectX::Uninit(void)
 //===========================================================
 void CObjectX::Update(void)
 {
-	if (m_Info.pos.y >= 0.0f)
+	if (m_bShut)
+	{
+		int i = 0l;
+	}
+
+	if (m_Info.pos.y - m_Info.vtxMax.x >= 0.0f)
 	{
 		m_Info.pos.y -= 1.0f;
 		m_bShut = false;
 	}
-	    
-	if (m_bShut)
+
+	if (m_Info.pos.y <= 0.0f)
 	{
-		D3DXVECTOR3 rot = CPlayer::GetInstance()->GetRotition();
-
-		m_Info.rot.x = 1.57f;
-		m_Info.rot.y = sinf(rot.y);
-		m_Info.rot.z = 1.57f;
-
-		m_Info.move.x -= sinf(rot.y) * 5.0f;
-		m_Info.move.y += 1.0f;
-		m_Info.move.z -= cosf(rot.y) * 5.0f;
+		m_Info.pos.y = 1.0f;
+		m_bShut = false;
 	}
+
+	// プレイヤーに蹴られて吹き飛ぶ処理
+	Shoot();
+
+	// プレイヤーが柵に触れて倒れる
+	FallDown();
+
+	// 
+	HitAttack();
 
 	m_Info.pos += m_Info.move;
 

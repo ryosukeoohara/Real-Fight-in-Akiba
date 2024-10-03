@@ -4,12 +4,12 @@
 // Author ‘åŒ´—å«
 //
 //===========================================================
-#include "renderer.h"
-#include "manager.h"
 #include "mapobject.h"
 #include "objectX.h"
 #include "debugproc.h"
-#include "object.h"
+#include "mapobject_can.h"
+#include "mapobject_trashbox.h"
+#include"mapobject_fance.h"
 
 //===========================================================
 // Ã“Iƒƒ“ƒo•Ï”
@@ -177,18 +177,48 @@ void CMapObject::TextLoad(void)
 					}
 
 					m_appObjectX[nCntItem] = CObjectX::Create(m_aTex[nType].aName);
-					m_appObjectX[nCntItem]->SetPosition(pos);
-					m_appObjectX[nCntItem]->SetRotition(rot);
 
-					if (nType != 2)
+					if (m_appObjectX[nCntItem] != nullptr)
 					{
-						m_appObjectX[nCntItem]->SetbEnable(false);
-					}
-					else
-					{
+						m_appObjectX[nCntItem]->SetPosition(pos);
+						m_appObjectX[nCntItem]->SetRotition(rot);
+						m_appObjectX[nCntItem]->SetIdxModel(nType);
 						m_appObjectX[nCntItem]->SetbEnable(true);
 					}
 
+					//if (nType == 0)
+					//{
+					//	
+					//}
+
+					//if (nType == 1)
+					//{
+					//	m_appObjectX[nCntItem] = CMapObject_TrashBox::Create(m_aTex[nType].aName);
+
+					//	if (m_appObjectX[nCntItem] != nullptr)
+					//	{
+					//		m_appObjectX[nCntItem]->SetPosition(pos);
+					//		m_appObjectX[nCntItem]->SetRotition(rot);
+					//		m_appObjectX[nCntItem]->SetIdxModel(nType);
+					//		m_appObjectX[nCntItem]->SetbEnable(true);
+					//	}
+					//}
+
+					//if (nType == 2)
+					//{
+					//	m_appObjectX[nCntItem] = CMapObject_Can::Create(m_aTex[nType].aName);
+
+					//	if (m_appObjectX[nCntItem] != nullptr)
+					//	{
+					//		m_appObjectX[nCntItem]->SetPosition(pos);
+					//		m_appObjectX[nCntItem]->SetRotition(rot);
+					//		m_appObjectX[nCntItem]->SetIdxModel(nType);
+					//		m_appObjectX[nCntItem]->SetbEnable(true);
+					//	}
+					//}
+
+					
+					
 					nCntItem++;
 
 					m_nNumModel++;

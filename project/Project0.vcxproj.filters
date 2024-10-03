@@ -58,7 +58,7 @@
     <Filter Include="ソース ファイル\input">
       <UniqueIdentifier>{e82c26fe-4497-43d3-a355-977e6bb889d3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\lib\item">
+    <Filter Include="ソース ファイル\item">
       <UniqueIdentifier>{076a54c5-d185-41c9-93a1-c87bf807036e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -141,9 +141,6 @@
     <ClCompile Include="code\motion.cpp">
       <Filter>ソース ファイル\character</Filter>
     </ClCompile>
-    <ClCompile Include="code\effect.cpp">
-      <Filter>ソース ファイル\VFX</Filter>
-    </ClCompile>
     <ClCompile Include="code\effect2D.cpp">
       <Filter>ソース ファイル\VFX</Filter>
     </ClCompile>
@@ -193,13 +190,10 @@
       <Filter>ソース ファイル\character\audience</Filter>
     </ClCompile>
     <ClCompile Include="code\itemmanager.cpp">
-      <Filter>ソース ファイル\lib\item</Filter>
+      <Filter>ソース ファイル\item</Filter>
     </ClCompile>
     <ClCompile Include="code\item.cpp">
-      <Filter>ソース ファイル\lib\item</Filter>
-    </ClCompile>
-    <ClCompile Include="code\gage.cpp">
-      <Filter>ソース ファイル\UI</Filter>
+      <Filter>ソース ファイル\item</Filter>
     </ClCompile>
     <ClCompile Include="code\pause.cpp">
       <Filter>ソース ファイル\scene</Filter>
@@ -235,6 +229,21 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="code\mapobject.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="code\effect.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="code\gage.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="code\mapobject_can.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="code\mapobject_trashbox.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="code\mapobject_fance.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -357,10 +366,10 @@
       <Filter>ソース ファイル\character\audience</Filter>
     </ClInclude>
     <ClInclude Include="code\item.h">
-      <Filter>ソース ファイル\lib\item</Filter>
+      <Filter>ソース ファイル\item</Filter>
     </ClInclude>
     <ClInclude Include="code\itemmanager.h">
-      <Filter>ソース ファイル\lib\item</Filter>
+      <Filter>ソース ファイル\item</Filter>
     </ClInclude>
     <ClInclude Include="code\gage.h">
       <Filter>ソース ファイル\UI</Filter>
@@ -411,6 +420,15 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="code\mapobject.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="code\mapobject_can.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="code\mapobject_trashbox.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="code\mapobject_fance.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

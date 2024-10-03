@@ -114,7 +114,7 @@ CItem *CItem::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, TYPE type, int nIdx, cons
 //================================================================
 void CItem::Collision(D3DXVECTOR3* pos, D3DXVECTOR3* posOld, float fRadius)
 {
-	if (m_Type == TYPE_TABLE)
+	if (m_Type == TYPE_TABLE || m_Type == TYPE_BIKE)
 	{
 		D3DXVECTOR3 vtxMax = GetVtxMax();
 		D3DXVECTOR3 vtxMin = GetVtxMin();

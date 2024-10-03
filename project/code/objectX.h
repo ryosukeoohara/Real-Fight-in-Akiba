@@ -65,6 +65,8 @@ public:
 	void SetbEnable(bool bValue = true) { m_bEnable = bValue; }
 	void SetbDraw(bool bValue) { m_bDraw = bValue; }
 	void SetbShut(bool bValue) { m_bShut = bValue; }
+	void SetbDown(bool bValue) { m_bDown = bValue; }
+	void SetbHitAttack(bool bValue) { m_bHitAttack = bValue; }
 
 	//　取得系
 	D3DXVECTOR3 GetPosition(void) { return  m_Info.pos; }        // 位置
@@ -81,6 +83,9 @@ public:
 
 private:
 	
+	void Shoot(void);
+	void FallDown(void);
+	void HitAttack(void);
 	D3DXVECTOR3 m_posOrigin;
 	D3DXVECTOR3 m_rotOrigin;
 	LPD3DXMESH m_pMesh;       //テクスチャへのポインタ
@@ -88,11 +93,16 @@ private:
 	DWORD m_dwNumMat;         //マテリアルの数
 	LPDIRECT3DTEXTURE9 *m_pTexture;     //テクスチャへのポインタ
 	D3DXMATRIX *m_pCurrent;                     // 親のマトリックス
+	float m_fFallDownSpeed = 0.0f;
+	int m_nShakeTimeCounter = 0;
+	float ShakeAngle = 0.0f;
 
 	int *m_nIdxTexture;
 	bool m_bEnable;
 	bool m_bDraw;
 	bool m_bShut = false; 
+	bool m_bDown = false;
+	bool m_bHitAttack = false;
 };
 
 #endif

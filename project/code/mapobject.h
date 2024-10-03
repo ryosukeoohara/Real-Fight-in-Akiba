@@ -23,6 +23,14 @@ class CMapObject
 {
 public:
 
+	/*enum TYPE
+	{
+		TYPE_KAN,
+		TYPE_BOX,
+		TYPE_KAN,
+		TYPE_MAX
+	};*/
+
 	CMapObject();   // コンストラクタ
 	~CMapObject();  // デストラクタ
 
@@ -32,13 +40,15 @@ public:
 
 	static CMapObject* Create(void); // 生成処理
 
-
 	// 設定系
+	//void SetType(TYPE n) { m_type = n; }
 
 	// 取得系
 	CObjectX** GetObjectX(void) { return m_appObjectX; }
 	int GetNum(void) { return m_nNumModel; }
 	static CMapObject* GetInstance(void) { return m_pMap; }
+	
+	void SetbShut(bool bValue) { m_bShut = bValue; }
 
 private:
 
@@ -47,8 +57,10 @@ private:
 		char aName[MAX_NAME];
 	};
 
-
+	//TYPE m_type;
 	void TextLoad(void);
+	void Shoot(void);
+	void FallDown(void);
 
 	static CMapObject* m_pMap;
 	CObjectX** m_appObjectX;
@@ -56,6 +68,9 @@ private:
 	int m_nNumItem;
 
 	TEX m_aTex[MAX_MODEL];
+
+	bool m_bShut = false;
+	bool m_bDown = false;
 };
 
 #endif

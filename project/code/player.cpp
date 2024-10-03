@@ -717,21 +717,9 @@ void CPlayer::Move(void)
 		m_Info.rot.y = utility::CorrectAngle(m_Info.rot.y);
 	}
 
-
-
 	// 走っているとき
 	if (m_bDesh)
-	{
 		DashEffect();
-
-		/*m_nEffectCounter++;
-
-		if (m_nEffectCounter == 20)
-		{
-			m_nEffectCounter = 0;
-			CParticle::Create(D3DXVECTOR3(m_Info.pos.x, 0.0f, m_Info.pos.z), CParticle::TYPE_GROUND);
-		}*/
-	}
 	
 	// 位置に移動量加算
 	m_Info.pos.x += m_Info.move.x;
@@ -741,10 +729,12 @@ void CPlayer::Move(void)
 	m_Info.move.x += (0.0f - m_Info.move.x) * 0.1f;
 	m_Info.move.z += (0.0f - m_Info.move.z) * 0.1f;
 
-	if(CCollision::GetInstance() != nullptr)
-	   CCollision::GetInstance()->Map(&m_Info.pos, &m_Info.posOld, 40.0f);
+	if (CCollision::GetInstance() != nullptr)
+	{
+		CCollision::GetInstance()->Map(&m_Info.pos, &m_Info.posOld, 40.0f);
 
-	CCollision::GetInstance()->MapObject(&m_Info.pos, &m_Info.posOld, 20.0f);
+		CCollision::GetInstance()->MapObject(&m_Info.pos, &m_Info.posOld, 20.0f);
+	}
 }
 
 //================================================================
@@ -967,7 +957,14 @@ void CPlayer::State(void)
 
 		// 現在のフレームが攻撃判定発生フレーム以上かつ攻撃判定終了フレームない
 		if (m_pMotion->GetAttackOccurs() <= m_pMotion->GetNowFrame() && m_pMotion->GetAttackEnd() >= m_pMotion->GetNowFrame())
+		{
 			CGame::GetCollision()->AttackCircle(&D3DXVECTOR3(mtx->_41, mtx->_42, mtx->_43), 50.0f, 50.0f, 100.0f);
+
+			if(CCollision::GetInstance()->HitMapObject(D3DXVECTOR3(mtx->_41, mtx->_42, mtx->_43), {}, 30.0f, 10.0f))
+				CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(mtx->_41, mtx->_42, mtx->_43));
+
+		}
+			
 	}
 
 	// アイテムを持った
@@ -1466,8 +1463,8 @@ void CPlayer::Collision(void)
 	}
 
 	// アイテムとの当たり判定
-	if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_TUTORIAL)
-	{
+	//if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_TUTORIAL)
+	//{
 		CItem* pItem = CItem::GetTop();
 
 		while (pItem != nullptr)
@@ -1478,7 +1475,7 @@ void CPlayer::Collision(void)
 
 			pItem = pItemNext;
 		}
-	}
+	//}
 }
 
 //================================================================
@@ -1584,6 +1581,9 @@ void CPlayer::MoveLimit(void)
 	}
 }
 
+//================================================================
+// 走っているときのエフェクト
+//================================================================
 void CPlayer::DashEffect(void)
 {
 	D3DMATRIX* mtx = {};
