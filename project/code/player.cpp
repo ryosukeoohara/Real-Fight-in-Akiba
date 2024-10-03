@@ -9,6 +9,7 @@
 #include "renderer.h"
 #include "manager.h"
 #include "input.h"
+#include "InputMouse.h"
 #include "InputKeyBoard.h"
 #include "InputJoyPad.h"
 #include "sound.h"
@@ -33,6 +34,7 @@
 #include "effect2D.h"
 #include "animation.h"
 #include "heataction.h"
+#include "particle.h"
 #include "MyEffekseer.h"
 
 //===========================================================
@@ -714,6 +716,22 @@ void CPlayer::Move(void)
 		// Šp“x‚Ì’l‚ðC³‚·‚é
 		m_Info.rot.y = utility::CorrectAngle(m_Info.rot.y);
 	}
+
+
+
+	// ‘–‚Á‚Ä‚¢‚é‚Æ‚«
+	if (m_bDesh)
+	{
+		DashEffect();
+
+		/*m_nEffectCounter++;
+
+		if (m_nEffectCounter == 20)
+		{
+			m_nEffectCounter = 0;
+			CParticle::Create(D3DXVECTOR3(m_Info.pos.x, 0.0f, m_Info.pos.z), CParticle::TYPE_GROUND);
+		}*/
+	}
 	
 	// ˆÊ’u‚ÉˆÚ“®—Ê‰ÁŽZ
 	m_Info.pos.x += m_Info.move.x;
@@ -725,6 +743,8 @@ void CPlayer::Move(void)
 
 	if(CCollision::GetInstance() != nullptr)
 	   CCollision::GetInstance()->Map(&m_Info.pos, &m_Info.posOld, 40.0f);
+
+	CCollision::GetInstance()->MapObject(&m_Info.pos, &m_Info.posOld, 20.0f);
 }
 
 //================================================================
@@ -1561,5 +1581,26 @@ void CPlayer::MoveLimit(void)
 		{
 			m_Info.pos.z = MAP_LIMIT_MIN.z;
 		}
+	}
+}
+
+void CPlayer::DashEffect(void)
+{
+	D3DMATRIX* mtx = {};
+
+	int nNow = m_pMotion->GetNowFrame();
+
+	if (nNow == 20)
+	{
+		mtx = m_ppCharacter[12]->GetMtxWorld();
+
+		CParticle::Create(D3DXVECTOR3(mtx->_41, 0.0f, mtx->_43), CParticle::TYPE_GROUND);
+	}
+		
+	if (nNow == 40)
+	{
+		mtx = m_ppCharacter[15]->GetMtxWorld();
+
+		CParticle::Create(D3DXVECTOR3(mtx->_41, 0.0f, mtx->_43), CParticle::TYPE_GROUND);
 	}
 }

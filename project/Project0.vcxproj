@@ -169,6 +169,7 @@
     <ClCompile Include="code\character.cpp" />
     <ClCompile Include="code\collision.cpp" />
     <ClCompile Include="code\debugproc.cpp" />
+    <ClCompile Include="code\edit.cpp" />
     <ClCompile Include="code\effect.cpp" />
     <ClCompile Include="code\effect2D.cpp" />
     <ClCompile Include="code\effect3D.cpp" />
@@ -191,6 +192,7 @@
     <ClCompile Include="code\main.cpp" />
     <ClCompile Include="code\manager.cpp" />
     <ClCompile Include="code\map.cpp" />
+    <ClCompile Include="code\mapobject.cpp" />
     <ClCompile Include="code\motion.cpp" />
     <ClCompile Include="code\MyEffekseer.cpp" />
     <ClCompile Include="code\number.cpp" />
@@ -211,6 +213,7 @@
     <ClCompile Include="code\renderer.cpp" />
     <ClCompile Include="code\result.cpp" />
     <ClCompile Include="code\score.cpp" />
+    <ClCompile Include="code\shadow.cpp" />
     <ClCompile Include="code\sound.cpp" />
     <ClCompile Include="code\texture.cpp" />
     <ClCompile Include="code\time.cpp" />
@@ -231,6 +234,7 @@
     <ClInclude Include="code\character.h" />
     <ClInclude Include="code\collision.h" />
     <ClInclude Include="code\debugproc.h" />
+    <ClInclude Include="code\edit.h" />
     <ClInclude Include="code\effect.h" />
     <ClInclude Include="code\effect2D.h" />
     <ClInclude Include="code\effect3D.h" />
@@ -253,6 +257,7 @@
     <ClInclude Include="code\main.h" />
     <ClInclude Include="code\manager.h" />
     <ClInclude Include="code\map.h" />
+    <ClInclude Include="code\mapobject.h" />
     <ClInclude Include="code\motion.h" />
     <ClInclude Include="code\MyEffekseer.h" />
     <ClInclude Include="code\number.h" />
@@ -268,6 +273,7 @@
     <ClInclude Include="code\renderer.h" />
     <ClInclude Include="code\result.h" />
     <ClInclude Include="code\score.h" />
+    <ClInclude Include="code\shadow.h" />
     <ClInclude Include="code\sound.h" />
     <ClInclude Include="code\texture.h" />
     <ClInclude Include="code\time.h" />

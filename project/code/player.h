@@ -211,6 +211,7 @@ private:
 	void GrapEnemy(bool value);
 	void GrapItem(bool value);
 	void MoveLimit(void);
+	void DashEffect(void);
 	void Hit(void);
 	
 
@@ -223,6 +224,7 @@ private:
 	int m_nCntColi;
 	int m_nDamegeCounter;
 	int m_nUseCounter;
+	int m_nEffectCounter = 0;
 	char m_filename[128] = {};
 
 	D3DXVECTOR3 m_Readpos;

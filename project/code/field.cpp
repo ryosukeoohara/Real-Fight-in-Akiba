@@ -58,8 +58,9 @@ HRESULT CField::Init(void)
 	CTexture *pTexture = CManager::GetInstance()->GetTexture();
 
 	//‰Šú‰»ˆ—
+	CObject3D::SetTexPosition(D3DXVECTOR3(50.0f, 50.0f, 0.0f));
 	CObject3D::Init();
-
+	
 	return S_OK;
 }
 

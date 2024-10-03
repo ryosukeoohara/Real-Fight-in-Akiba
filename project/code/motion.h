@@ -95,6 +95,7 @@ public:
 	int GetInvincibleEnd(void);
 	int GetCancellFrame(void);
 	int GetCancellFrameEnd(void);
+	int GetKeyFrame(void) { return m_nKeyFrame; }
 	float GetKnockBack(void);
 	INFO GetInfo(void);
 
@@ -116,6 +117,7 @@ private:
 	int  m_nCntkeySet;
 	int m_nNumFrame;             //モーションのフレーム数
 	int m_nNowFrame;
+	int m_nKeyFrame = 0;             // 現在のキーの現在のフレーム数
 	bool m_bFinish;              //終了したかどうか
 	bool m_bBlend;               // モーションブレンドするかどうか
 	

@@ -425,11 +425,12 @@ void CMotion::BlendON(void)
 		m_nKey = (m_nKey + 1) % m_aInfo[m_nType].nNumKey;
 
 		m_nCounter = 0;
+		m_nKeyFrame = 0;
 	}
 
 	int Next = (m_nKey + 1) % m_aInfo[m_nType].nNumKey;
 
-	if (m_aInfo[m_nType].bFinish == false)
+	if (!m_aInfo[m_nType].bFinish)
 	{
 		for (int nCount = 0; nCount < m_nNumModel; nCount++)
 		{
@@ -504,12 +505,20 @@ void CMotion::BlendON(void)
 
 		m_nCounter++;
 		m_nNowFrame++;
+		m_nKeyFrame++;
+
 
 		if (m_aInfo[m_nType].nLoop == 0 && m_nKey + 1 >= m_aInfo[m_nType].nNumKey)
 		{
-			m_aInfo[m_nType].bFinish = true;
 			m_nNowFrame = 0;
+
+			if (m_aInfo[m_nType].nLoop == 0)
+			    m_aInfo[m_nType].bFinish = true;
+			
 		}
+
+		if (m_aInfo[m_nType].nLoop == 1 && m_nKey + 1 >= m_aInfo[m_nType].nNumKey)
+			m_nNowFrame = 0;
 
 		if (m_nCounter >= m_aInfo[m_nType].KeySet[m_nKey].nFrame)
 		{

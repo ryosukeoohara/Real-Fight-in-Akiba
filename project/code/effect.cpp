@@ -17,7 +17,7 @@
 //===========================================================
 const char *CEffect::m_apTexName[TYPE_MAX] =
 {
-	"data\\TEXTURE\\smook.png",
+	"data\\TEXTURE\\smoke.jpg",
 	"data\\TEXTURE\\smook.png",
 };
 
@@ -172,6 +172,12 @@ void CEffect::Ground(void)
 {
 	m_Info.move.x += (0.0f - m_Info.move.x) * 0.1f;
 	m_Info.move.z += (0.0f - m_Info.move.z) * 0.1f;
+
+	if(m_Info.fRadius >= 0.0f)
+	   m_Info.fRadius -= 0.5f;
+
+	SetColor(m_Info.col);
+	SetSize(m_Info.fRadius, m_Info.fRadius);
 }
 
 //===========================================================

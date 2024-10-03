@@ -26,6 +26,7 @@
 #include "MyEffekseer.h"
 #include "InputMouse.h"
 #include "InputJoyPad.h"
+#include "InputKeyBoard.h"
 
 //===========================================================
 //Ã“Iƒƒ“ƒo•Ï”

@@ -19,7 +19,7 @@
 class CObject3D : public CObject
 {
 public:
-	CObject3D(int nPriority = 3);  // コンストラクタ
+	CObject3D(D3DXVECTOR3 texpos = { 1.0f, 1.0f, 1.0f }, int nPriority = 3);  // コンストラクタ
 	CObject3D(D3DXVECTOR3 pos);    // コンストラクタ
 	~CObject3D();                  // デストラクタ
 
@@ -39,6 +39,8 @@ public:
 	void SetEdgeCenter(float fWidth, float fHeight);                      // サイズ
 	void SetDraw(bool bverdict) { m_bDraw = bverdict; }                   // 描画するかどうか
 	void SetCurrent(D3DXMATRIX *Current) { m_pCurrent = Current; }        // 親のマトリックス
+	void SetbSubBlend(bool bValue) { m_bSubBlend = bValue; }
+	void SetTexPosition(D3DXVECTOR3 pos) { m_Texpos = pos; }              // 位置
 
 	// 取得系
 	D3DXVECTOR3 GetPosition(void) { return m_pos; }     // 位置
@@ -46,7 +48,7 @@ public:
 	D3DXCOLOR GetColor(void) { return m_col; }          // 色
 	int GetIdxTex(void) { return m_nIdxTexture; }       // テクスチャのインデックス番号
 	
-	static CObject3D *Create(int nPriority = 3);  //生成
+	static CObject3D *Create(D3DXVECTOR3 texpos = { 1.0f, 1.0f, 1.0f }, int nPriority = 3);  //生成
 	static CObject3D *Create(D3DXVECTOR3 pos);    //生成
 
 private:
@@ -56,13 +58,13 @@ private:
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;        // 頂点バッファへのポインタ
 	D3DXVECTOR3 m_pos;                         // 位置
 	D3DXVECTOR3 m_rot;                         // 向き
+	D3DXVECTOR3 m_Texpos;                      // テクスチャ座標
 	D3DXCOLOR m_col;                           // 色
 	int m_nIdxTexture;                         // テクスチャのインデックス番号
 	float m_fHeight;                           // 高さ
 	float m_fWidth;                            // 幅
 	bool m_bDraw;                              // 描画するかどうか
+	bool m_bSubBlend = false;
 };
-
-
 
 #endif

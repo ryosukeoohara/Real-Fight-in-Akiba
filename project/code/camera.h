@@ -206,6 +206,21 @@ private:
 
 };
 
+//===========================================================
+// エディットカメラ
+//===========================================================
+class EditCamera : public CCameraState
+{
+public:
+	EditCamera();
+	~EditCamera();
+
+	void Update(CCamera* pCamera) override;
+
+private:
+
+};
+
 namespace camera
 {
 	CCamera *GetInstance(void);

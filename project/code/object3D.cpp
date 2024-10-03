@@ -14,14 +14,15 @@
 //===========================================================
 // コンストラクタ
 //===========================================================
-CObject3D::CObject3D(int nPriority) : CObject(nPriority)
+CObject3D::CObject3D(D3DXVECTOR3 texpos, int nPriority) : CObject(nPriority)
 {
 	//値をクリア
 	m_pTexture = NULL;  //テクスチャへのポインタ
 	m_pVtxBuff = NULL;  //頂点情報を格納
 	m_pCurrent = nullptr;
 	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);                       
-	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);                       
+	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);     
+	m_Texpos = D3DXVECTOR3(texpos.x, texpos.y, 0.0f);
 	m_col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);                   
 	m_nIdxTexture = -1;                        
 	m_fHeight = 0.0f;                           
@@ -40,6 +41,7 @@ CObject3D::CObject3D(D3DXVECTOR3 pos)
 	m_pCurrent = nullptr;
 	m_pos = pos;
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_Texpos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
 	m_nIdxTexture = -1;
 	m_fHeight = 0.0f;
@@ -58,7 +60,7 @@ CObject3D::~CObject3D()
 //===========================================================
 // 生成処理
 //===========================================================
-CObject3D *CObject3D::Create(int nPriority)
+CObject3D *CObject3D::Create(D3DXVECTOR3 texpos, int nPriority)
 {
 	// オブジェクト3Dのポインタ
 	CObject3D *pObject3D = nullptr;
@@ -66,7 +68,7 @@ CObject3D *CObject3D::Create(int nPriority)
 	if (pObject3D == nullptr)
 	{
 		// 生成
-		pObject3D = new CObject3D(nPriority);
+		pObject3D = new CObject3D(texpos, nPriority);
 
 		// 初期化処理
 		pObject3D->Init();
@@ -78,22 +80,22 @@ CObject3D *CObject3D::Create(int nPriority)
 //===========================================================
 // コンストラクタ(オーバーロード)
 //===========================================================
-CObject3D * CObject3D::Create(D3DXVECTOR3 pos)
-{
-	// オブジェクト3Dのポインタ
-	CObject3D *pObject3D = nullptr;
-
-	if (pObject3D == nullptr)
-	{
-		// オブジェクト3Dの生成
-		pObject3D = new CObject3D(pos);
-
-		// 初期化処理
-		pObject3D->Init();
-	}
-	
-	return pObject3D;
-}
+//CObject3D * CObject3D::Create(D3DXVECTOR3 pos)
+//{
+//	// オブジェクト3Dのポインタ
+//	CObject3D *pObject3D = nullptr;
+//
+//	if (pObject3D == nullptr)
+//	{
+//		// オブジェクト3Dの生成
+//		pObject3D = new CObject3D(pos);
+//
+//		// 初期化処理
+//		pObject3D->Init();
+//	}
+//	
+//	return pObject3D;
+//}
 
 //===========================================================
 // 初期化処理
@@ -137,9 +139,9 @@ HRESULT CObject3D::Init(void)
 
 	//テクスチャ座標の設定
 	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	pVtx[1].tex = D3DXVECTOR2(50.0f, 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(0.0f, 50.0f);
-	pVtx[3].tex = D3DXVECTOR2(50.0f, 50.0f);
+	pVtx[1].tex = D3DXVECTOR2(m_Texpos.x, 0.0f);
+	pVtx[2].tex = D3DXVECTOR2(0.0f, m_Texpos.y);
+	pVtx[3].tex = D3DXVECTOR2(m_Texpos.x, m_Texpos.y);
 
 	//頂点バッファをアンロックする
 	m_pVtxBuff->Unlock();
@@ -194,6 +196,14 @@ void CObject3D::Draw(void)
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 	pDevice->SetRenderState(D3DRS_ALPHAREF, 160);
+
+	if (m_bSubBlend)
+	{
+		//減算合成の設定
+		pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_REVSUBTRACT);
+		pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+		pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+	}
 
 	D3DXMATRIX m_mtxRot, m_mtxTrans;           // 計算用マトリックス
 
@@ -251,10 +261,18 @@ void CObject3D::Draw(void)
 	//pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 	//pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 
-	//αテストを有効にする
+	//αテストを無効にする
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
 	pDevice->SetRenderState(D3DRS_ALPHAREF, 160);
+
+	if (m_bSubBlend)
+	{
+		//通常の合成に戻す
+		pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+		pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+		pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+	}
 }
 
 //===========================================================

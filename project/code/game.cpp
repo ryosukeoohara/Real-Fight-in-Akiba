@@ -24,6 +24,8 @@
 #include "map.h"
 #include "audience.h"
 #include "motion.h"
+#include "edit.h"
+#include "mapobject.h"
 #include "audiencemanager.h"
 #include "InputKeyBoard.h"
 #include "InputJoyPad.h"
@@ -161,7 +163,7 @@ HRESULT CGame::Init(void)
 	m_bPause = false;
 	CField *pField = new CField;
 	pField->Init();
-	pField->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist("data\\TEXTURE\\FIELD\\concreat.png"));
+	pField->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist("data\\TEXTURE\\Field002.jpg"));
 	pField->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	pField->SetSize(5000.0f, 5000.0f);
 	pField->SetDraw(true);
@@ -171,6 +173,8 @@ HRESULT CGame::Init(void)
 	{
 		m_pMap = CMap::Create();
 	}
+
+	CMapObject* p = CMapObject::Create();
 
 	// 当たり判定
 	if (m_Collision == nullptr) 
@@ -184,11 +188,11 @@ HRESULT CGame::Init(void)
 		m_pItemManager = CItemManager::Create("data\\TEXT\\itemset_game.txt");
 	}
 
-	// 敵マネージャの生成
-	if (m_pEnemyManager == nullptr)
-	{
-		m_pEnemyManager = CEnemyManager::Create();
-	}
+	//// 敵マネージャの生成
+	//if (m_pEnemyManager == nullptr)
+	//{
+	//	m_pEnemyManager = CEnemyManager::Create();
+	//}
 
 	// プレイヤーの生成
 	if (m_pPlayer == nullptr)
@@ -285,9 +289,40 @@ void CGame::Update(void)
 	}
 
 	if (InputKeyboard->GetTrigger(DIK_F7) == true)
+	{
 		m_bUse = m_bUse ? false : true;
+	}
+		
 
-	if (m_bPause == true)
+	// エディットモード中
+	if (m_bUse)
+	{
+		if (m_pEdit == nullptr)
+		{
+			m_pEdit = new CEdit;
+			m_pEdit->Init();
+			CManager::GetInstance()->GetCamera()->ChangeState(new EditCamera);
+		}
+
+		if(m_pEdit != nullptr)
+		   m_pEdit->Update();
+			
+		return;
+	}
+
+	if (!m_bUse)
+	{
+		if (m_pEdit != nullptr)
+		{
+			m_pEdit->Uninit();
+			delete m_pEdit;
+			m_pEdit = nullptr;
+			CManager::GetInstance()->GetCamera()->ChangeState(new FollowPlayerCamera);
+		}
+	}
+
+	// ポーズ中
+	if (m_bPause)
 	{
 		if (m_pPause != nullptr)
 		{
@@ -340,5 +375,10 @@ void CGame::Update(void)
 //===========================================================
 void CGame::Draw(void)
 {
-	
+	if (m_bUse)
+	{
+		if (m_pEdit != nullptr)
+			m_pEdit->Draw();
+
+	}
 }

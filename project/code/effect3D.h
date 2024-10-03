@@ -24,6 +24,7 @@ public:
 		TYPE_NONE = 0,   // なんもない
 		TYPE_BIKE,       // 自転車
 		TYPE_GLASS,      // ガラスの破片
+		TYPE_SMOKE,      // スモーク
 		TYPE_MAX
 	};
 

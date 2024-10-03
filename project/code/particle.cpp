@@ -11,6 +11,7 @@
 #include "effect.h"
 #include "effect3D.h"
 #include "particle.h"
+#include "player.h"
 #include <time.h>
 
 //===========================================================
@@ -142,9 +143,6 @@ void CParticle::Draw(void)
 //===========================================================
 void CParticle::Move(void)
 {
-	//óêêîÇÃéÌÇê›íË
-	srand((unsigned int)time(0));
-
 	for (int nCnt = 0; nCnt < 10; nCnt++)
 	{
 		float fMove, fRot;
@@ -194,17 +192,35 @@ void CParticle::Ground(void)
 {
 	float fRot = 0.0f;
 
-	for (int nCnt = 0; nCnt < GROUND; nCnt++)
-	{
-		// å¸Ç´ê›íË
-		fRot = ((float)nCnt / (D3DX_PI * 1.0f));
+	CPlayer* pPlayer = CPlayer::GetInstance();
 
-		// à⁄ìÆó ê›íË
-		m_move.x = sinf(fRot) * SPEED;
-		m_move.z = cosf(fRot) * SPEED;
+	if (pPlayer == nullptr)
+		return;
 
-		CEffect::Create({ m_pos.x, 0.0f, m_pos.z }, { m_move.x, 0.0f, m_move.z }, { 1.0f, 1.0f, 1.0f, 0.8f }, 50.0f, 30, CEffect::TYPE_GROUND);
-	}
+	fRot = pPlayer->GetRotition().y;
+
+	// à⁄ìÆó ê›íË
+	m_move.x = sinf(fRot * -2.0f) * SPEED;
+	m_move.y = 0.0f;
+	m_move.z = cosf(fRot * -2.0f) * SPEED;
+
+	CEffect::Create({ m_pos.x, 0.0f, m_pos.z }, m_move, { 0.5f, 0.3f, 0.2f, 0.7f }, 25.0f, 30, CEffect::TYPE_GROUND);
+
+
+	// à⁄ìÆó ê›íË
+	m_move.x = sinf(fRot) * SPEED;
+	m_move.y = 0.0f;
+	m_move.z = cosf(fRot) * SPEED;
+
+	CEffect::Create({ m_pos.x, 0.0f, m_pos.z }, m_move, { 0.5f, 0.3f, 0.2f, 0.7f }, 25.0f, 30, CEffect::TYPE_GROUND);
+
+
+	// à⁄ìÆó ê›íË
+	m_move.x = sinf(fRot * 2.0f) * SPEED;
+	m_move.y = 0.0f;
+	m_move.z = cosf(fRot * 2.0f) * SPEED;
+
+	CEffect::Create({ m_pos.x, 0.0f, m_pos.z }, m_move, { 0.5f, 0.3f, 0.2f, 0.7f }, 25.0f, 30, CEffect::TYPE_GROUND);
 }
 
 //===========================================================
@@ -212,9 +228,6 @@ void CParticle::Ground(void)
 //===========================================================
 void CParticle::Smook(void)
 {
-	//óêêîÇÃéÌÇê›íË
-	srand((unsigned int)time(0));
-
 	for (int nCnt = 0; nCnt < 3; nCnt++)
 	{
 		int nLife = 0;

@@ -10,6 +10,7 @@
 #include "manager.h"
 #include "debugproc.h"
 #include "texture.h"
+#include "player.h"
 
 //===========================================================
 // コンストラクタ
@@ -214,7 +215,31 @@ void CObjectX::Uninit(void)
 //===========================================================
 void CObjectX::Update(void)
 {
-	
+	if (m_Info.pos.y >= 0.0f)
+	{
+		m_Info.pos.y -= 1.0f;
+		m_bShut = false;
+	}
+	    
+	if (m_bShut)
+	{
+		D3DXVECTOR3 rot = CPlayer::GetInstance()->GetRotition();
+
+		m_Info.rot.x = 1.57f;
+		m_Info.rot.y = sinf(rot.y);
+		m_Info.rot.z = 1.57f;
+
+		m_Info.move.x -= sinf(rot.y) * 5.0f;
+		m_Info.move.y += 1.0f;
+		m_Info.move.z -= cosf(rot.y) * 5.0f;
+	}
+
+	m_Info.pos += m_Info.move;
+
+	// 移動量を更新(減衰させる)
+	m_Info.move.x += (0.0f - m_Info.move.x) * 0.1f;
+	m_Info.move.y += (0.0f - m_Info.move.y) * 0.1f;
+	m_Info.move.z += (0.0f - m_Info.move.z) * 0.1f;
 }
 
 //===========================================================
@@ -237,7 +262,8 @@ void CObjectX::Draw(void)
 	//マテリアルデータへのポインタ
 	D3DXMATERIAL* pMat;
 
-	if (m_bDraw == true)
+	// 描画をする
+	if (m_bDraw)
 	{
 		//ワールドマトリックスの初期化
 		D3DXMatrixIdentity(&m_Info.mtxWorld);

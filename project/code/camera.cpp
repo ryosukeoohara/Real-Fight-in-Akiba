@@ -9,6 +9,7 @@
 #include "manager.h"
 #include "debugproc.h"
 #include "input.h"
+#include "InputKeyBoard.h"
 #include "InputMouse.h"
 #include "InputJoyPad.h"
 #include "title.h"
@@ -510,4 +511,50 @@ void HeatActionCamera::Update(CCamera* pCamera)
 	//位置に移動量を保存
 	pCameraInfo->posR.x += pCameraInfo->move.x;
 	pCameraInfo->posR.z += pCameraInfo->move.z;
+}
+
+//================================================================
+// コンストラクタ
+//================================================================
+EditCamera::EditCamera()
+{// ヒートアクションカメラ
+
+}
+
+//================================================================
+// デストラクタ
+//================================================================
+EditCamera::~EditCamera()
+{
+
+}
+
+//================================================================
+// 更新
+//================================================================
+void EditCamera::Update(CCamera* pCamera)
+{
+	CInputKeyboard *pInput = CManager::GetInstance()->GetKeyBoard();
+
+	CInputMouse* pInputMouse = CManager::GetInstance()->GetInputMouse();
+
+	D3DXVECTOR2 MousePos = pInputMouse->GetMouseMove();
+
+	// カメラの情報取得
+	CCamera::Info* pCameraInfo = pCamera->GetInfo();
+
+	if (pInputMouse->GetWheel() == true)
+	{
+		pCameraInfo->posV.x += MousePos.x;
+		pCameraInfo->posR.x += MousePos.x;
+		pCameraInfo->posV.z -= MousePos.y;
+		pCameraInfo->posR.z -= MousePos.y;
+	}
+
+	if (pInputMouse->GetLButton() == true)
+		pCameraInfo->rot.y += MousePos.x * 0.005f;
+
+	pCameraInfo->posV.x = pCameraInfo->posR.x - sinf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
+	pCameraInfo->posV.z = pCameraInfo->posR.z - cosf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
+
 }

@@ -6,10 +6,12 @@
 //===========================================================
 #include "renderer.h"
 #include "manager.h"
+#include "texture.h"
 #include "audience.h"
 #include "objectX.h"
 #include "debugproc.h"
 #include "object.h"
+#include "object3D.h"
 
 //================================================================
 // Ã“Iƒƒ“ƒo•Ï”
@@ -120,6 +122,7 @@ CAudience* CAudience::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, const char* filen
 	{
 		// ¶¬
 		pAudience = new CAudience(pos, rot, filename);
+		pAudience->m_pos = pos;
 
 		// ‰Šú‰»ˆ—
 		pAudience->Init();
@@ -135,6 +138,19 @@ HRESULT CAudience::Init(void)
 {
 	CObjectX::Init();
 
+	// ŠÛ‰e‚Ì¶¬
+	CObject3D* pShadow = CObject3D::Create();
+
+	if (pShadow != nullptr)
+	{
+		pShadow->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist("data\\TEXTURE\\shadow000.jpg"));
+		pShadow->SetSize(20.0f, 20.0f);
+		pShadow->SetTexPosition(D3DXVECTOR3(1.0f, 1.0f, 0.0f));
+		pShadow->SetPosition(D3DXVECTOR3(m_pos.x, 1.0f, m_pos.z));
+		pShadow->SetbSubBlend(true);
+		pShadow->SetDraw(true);
+	}
+	
 	return S_OK;
 }
 

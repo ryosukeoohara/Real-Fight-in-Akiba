@@ -27,6 +27,7 @@ private:
 	{
 		D3DXVECTOR3 pos;              // 位置
 		D3DXVECTOR3 rot;              // 向き
+		D3DXVECTOR3 move;             // 移動
 		D3DXCOLOR col;                // 色
 		D3DXVECTOR3 vtxMini;          // 最小値
 		D3DXVECTOR3 vtxMax;           // 最大値
@@ -63,6 +64,7 @@ public:
 	void SetCurrent(D3DXMATRIX *Current) { m_pCurrent = Current; }              // 親のマトリックス
 	void SetbEnable(bool bValue = true) { m_bEnable = bValue; }
 	void SetbDraw(bool bValue) { m_bDraw = bValue; }
+	void SetbShut(bool bValue) { m_bShut = bValue; }
 
 	//　取得系
 	D3DXVECTOR3 GetPosition(void) { return  m_Info.pos; }        // 位置
@@ -90,6 +92,7 @@ private:
 	int *m_nIdxTexture;
 	bool m_bEnable;
 	bool m_bDraw;
+	bool m_bShut = false; 
 };
 
 #endif

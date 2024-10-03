@@ -15,26 +15,26 @@
 //===========================================================
 // キーボードのクラス定義
 //===========================================================
-class CInputKeyboard : public CInput
+class CInputMouse : public CInput
 {
 public:
-	CInputKeyboard();   // コンストラクタ
-	~CInputKeyboard();  // デストラクタ
+	CInputMouse();   //コンストラクタ
+	~CInputMouse();  //デストラクタ
 
-	HRESULT Init(HINSTANCE hInstance, HWND hWnd);  // 初期化処理
-	void Uninit(void);                             // 終了処理
-	void Update(void);                             // 更新処理
+	HRESULT Init(HINSTANCE hInstance, HWND hWnd);  //初期化処理
+	void Uninit(void);                             //終了処理
+	void Update(void);                             //更新処理
 
-	bool GetPress(int nKey);
-	bool GetTrigger(int nKey);
-	bool GetRelease(int nKey);
-	bool GetRepeat(int nKey);
+	bool GetLButton(void);  //左クリック
+	bool GetRButton(void);  //右クリック
+	bool GetWheel(void);    //ホイール
+
+	D3DXVECTOR2 GetMouseMove(void);  //移動量取得
+	float GetMouseWheel(void);       //マウスホイールの回転量取得
 
 private:
-	BYTE m_aKeyState[NUM_KEY_MAX];
-	BYTE m_aKeyStateTrigger[NUM_KEY_MAX];
-	BYTE m_aKeyStateRelease[NUM_KEY_MAX];
-	BYTE m_aKeyStateRepeat[NUM_KEY_MAX];
+	DIMOUSESTATE  m_CurrentMouseState;
+	//BYTE rgbButtons[4];
 };
 
 #endif
