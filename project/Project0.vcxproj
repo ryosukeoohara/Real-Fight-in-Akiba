@@ -173,6 +173,7 @@
     <ClCompile Include="code\effect.cpp" />
     <ClCompile Include="code\effect2D.cpp" />
     <ClCompile Include="code\effect3D.cpp" />
+    <ClCompile Include="code\electricbox.cpp" />
     <ClCompile Include="code\enemy.cpp" />
     <ClCompile Include="code\enemymanager.cpp" />
     <ClCompile Include="code\enemy_boss.cpp" />
@@ -241,6 +242,7 @@
     <ClInclude Include="code\effect.h" />
     <ClInclude Include="code\effect2D.h" />
     <ClInclude Include="code\effect3D.h" />
+    <ClInclude Include="code\electricbox.h" />
     <ClInclude Include="code\enemy.h" />
     <ClInclude Include="code\enemymanager.h" />
     <ClInclude Include="code\enemy_boss.h" />

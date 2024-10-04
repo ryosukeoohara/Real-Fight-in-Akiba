@@ -11,6 +11,7 @@
 #include "debugproc.h"
 #include "texture.h"
 #include "player.h"
+#include "utility.h"
 
 //===========================================================
 // コンストラクタ
@@ -28,6 +29,7 @@ CObjectX::CObjectX()
 	m_Info.col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
 	m_Info.Fliename = "a";
 	D3DXMatrixIdentity(&m_Info.mtxWorld);
+	m_ShadowMat = {};
 
 	m_bDraw = true;
 }
@@ -45,6 +47,7 @@ CObjectX::CObjectX(const char *aModelFliename, int nPriority) : CObject(nPriorit
 
 	m_Info.Fliename = aModelFliename;
 	D3DXMatrixIdentity(&m_Info.mtxWorld);
+	m_ShadowMat = {};
 
 	m_bDraw = true;
 }
@@ -78,6 +81,11 @@ CObjectX *CObjectX::Create(const char *aModelFliename, int nPriority)
 	}
 	
 	return pObjectX;
+}
+
+void CObjectX::SetVtx(void)
+{
+	utility::ChangeVtx(&m_Info.vtxMax, &m_Info.vtxMini, m_Info.rot);
 }
 
 //===========================================================
@@ -145,11 +153,9 @@ void CObjectX::HitAttack(void)
 		// sin を使用した揺らし座標の算出
 		m_Info.move.y = 0.0f;
 			
-		m_Info.move.x = sinf(ShakeAngle) * (1.0f - ((float)m_nShakeTimeCounter /
-			60)) * 2.0f;
+		m_Info.move.x = sinf(ShakeAngle) * (1.0f - ((float)m_nShakeTimeCounter / 60)) * 2.0f;
 
-		m_Info.move.z = sinf(ShakeAngle) * (1.0f - ((float)m_nShakeTimeCounter /
-			60)) * 2.0f;
+		m_Info.move.z = sinf(ShakeAngle) * (1.0f - ((float)m_nShakeTimeCounter / 60)) * 2.0f;
 
 		// 揺らし処理に使用する sin に渡す角度の変更処理
 		ShakeAngle += 2.0f * 1.0f;
@@ -166,6 +172,80 @@ void CObjectX::HitAttack(void)
 		// 揺らされていない場合は揺らし処理による加算座標を０にする
 		//m_Info.move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		m_nShakeTimeCounter = 0;
+	}
+}
+
+//===========================================================
+// プレイヤーの攻撃がヒットしたとき揺らす処理
+//===========================================================
+void CObjectX::GraduallyFallDown(void)
+{
+	// カメラを揺らす処理を行うかどうかのフラグが立っていたらカメラを揺らす処理を行う
+	if (m_bFall)
+	{
+		// sin を使用した揺らし座標の算出
+		m_Info.move.y = 0.0f;
+
+		m_Info.move.x = sinf(ShakeAngle) * (1.0f - ((float)m_nShake / 60)) * 2.0f;
+
+		m_Info.move.z = sinf(ShakeAngle) * (1.0f - ((float)m_nShake / 60)) * 2.0f;
+
+		// 揺らし処理に使用する sin に渡す角度の変更処理
+		ShakeAngle += 2.0f * m_fAngle;
+
+		// 揺らす時間が経過したら揺らし処理を終了する
+		m_nShake += 1;
+		if (m_nShake >= 60)
+		{
+			m_bFall = false;
+			m_fAngle += 2.0f;
+			//m_nFallDownCounter++;
+		}
+	}
+	else
+	{
+		// 揺らされていない場合は揺らし処理による加算座標を０にする
+		//m_Info.move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		m_nShake = 0;
+	}
+
+	if ((m_Info.rot.x >= 1.57f || m_Info.rot.x <= -1.57f))
+	{
+		//m_bFall = false;
+		m_bFallDown = true;
+		return;
+	}
+		
+	D3DXVECTOR3 pos = {};
+	D3DXVECTOR3 rot = {};
+
+	pos = CPlayer::GetInstance()->GetPosition();
+	rot = CPlayer::GetInstance()->GetRotition();
+
+	
+	if (m_nFallDownCounter >= 15)
+	{
+		if (pos.x >= m_Info.pos.x && pos.z >= m_Info.pos.z)
+		{
+			m_Info.rot.x -= 0.1f;
+		}
+
+		if (pos.x >= m_Info.pos.x && pos.z <= m_Info.pos.z)
+		{
+			m_Info.rot.x -= 0.1f;
+		}
+
+		if (pos.x <= m_Info.pos.x && pos.z >= m_Info.pos.z)
+		{
+			m_Info.rot.x += 0.1f;
+		}
+
+		if (pos.x <= m_Info.pos.x && pos.z <= m_Info.pos.z)
+		{
+			m_Info.rot.x += 0.1f;
+		}
+
+		utility::ChangeVtx(&m_Info.vtxMax, &m_Info.vtxMini, m_Info.rot);
 	}
 }
 
@@ -267,6 +347,8 @@ HRESULT CObjectX::Init(void)
 	//頂点バッファをアンロック
 	m_pMesh->UnlockVertexBuffer();
 
+	
+
 	return S_OK;
 }
 
@@ -304,10 +386,7 @@ void CObjectX::Uninit(void)
 //===========================================================
 void CObjectX::Update(void)
 {
-	if (m_bShut)
-	{
-		int i = 0l;
-	}
+	
 
 	if (m_Info.pos.y - m_Info.vtxMax.x >= 0.0f)
 	{
@@ -329,6 +408,9 @@ void CObjectX::Update(void)
 
 	// 
 	HitAttack();
+
+	// 
+	GraduallyFallDown();
 
 	m_Info.pos += m_Info.move;
 
@@ -416,5 +498,59 @@ void CObjectX::Draw(void)
 
 		//保存していたマテリアルを戻す
 		pDevice->SetMaterial(&matDef);
+
+		//D3DXMATRIX mtxShadow;
+		//D3DLIGHT9 light;
+		//D3DXVECTOR4 posLight;
+		//D3DXVECTOR3 pos, normal;
+		//D3DXPLANE plane;
+
+		//// ライトの位置を設定
+		//pDevice->GetLight(0, &light);
+		//posLight = D3DXVECTOR4(-light.Direction.x, -light.Direction.y, -light.Direction.z, 0.0f);
+
+		//// 平面情報を設定
+		//pos = D3DXVECTOR3(m_Info.mtxWorld._41, 0.5f, m_Info.mtxWorld._43);
+		//normal = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+		//D3DXPlaneFromPointNormal(&plane, &pos, &normal);
+
+		//// シャドウマトリックスの初期化
+		//D3DXMatrixIdentity(&mtxShadow);
+
+		//// シャドウマトリックスの作成
+		//D3DXMatrixShadow(&mtxShadow, &posLight, &plane);
+		//D3DXMatrixMultiply(&mtxShadow, &m_Info.mtxWorld, &mtxShadow);
+
+		////ワールドマトリックスの設定
+		//pDevice->SetTransform(D3DTS_WORLD, &mtxShadow);
+
+		////現在のマテリアルを取得
+		//pDevice->GetMaterial(&matDef);
+
+		////マテリアルデータへのポインタを取得
+		//pMat = (D3DXMATERIAL*)m_pBuffMat->GetBufferPointer();
+		//for (int nCntMat = 0; nCntMat < (int)m_dwNumMat; nCntMat++)
+		//{
+		//	m_ShadowMat.Emissive.r = 0.0f;
+		//	m_ShadowMat.Emissive.g = 0.0f;
+		//	m_ShadowMat.Emissive.b = 0.0f;
+		//	m_ShadowMat.Emissive.a = 1.0f;
+		//	m_ShadowMat.Diffuse.r = 0.0f;
+		//	m_ShadowMat.Diffuse.g = 0.0f;
+		//	m_ShadowMat.Diffuse.b = 0.0f;
+		//	m_ShadowMat.Diffuse.a = 1.0f;
+
+		//	//マテリアルの設定
+		//	pDevice->SetMaterial(&m_ShadowMat);
+
+		//	//テクスチャの設定
+		//	pDevice->SetTexture(0, nullptr);
+
+		//	//モデル(パーツ)の描画
+		//	m_pMesh->DrawSubset(nCntMat);
+		//}
+
+		////保存していたマテリアルを戻す
+		//pDevice->SetMaterial(&matDef);
 	}
 }

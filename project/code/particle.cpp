@@ -12,6 +12,7 @@
 #include "effect3D.h"
 #include "particle.h"
 #include "player.h"
+#include "utility.h"
 #include <time.h>
 
 //===========================================================
@@ -199,26 +200,37 @@ void CParticle::Ground(void)
 
 	fRot = pPlayer->GetRotition().y;
 
+
+	fRot = fRot * -2.0f;
+
+	fRot = utility::CorrectAngle(fRot);
+
 	// à⁄ìÆó ê›íË
-	m_move.x = sinf(fRot * -2.0f) * SPEED;
+	m_move.x = sinf(fRot);
 	m_move.y = 0.0f;
-	m_move.z = cosf(fRot * -2.0f) * SPEED;
+	m_move.z = cosf(fRot);
 
 	CEffect::Create({ m_pos.x, 0.0f, m_pos.z }, m_move, { 0.5f, 0.3f, 0.2f, 0.7f }, 25.0f, 30, CEffect::TYPE_GROUND);
 
 
+	fRot = utility::CorrectAngle(fRot);
+
 	// à⁄ìÆó ê›íË
-	m_move.x = sinf(fRot) * SPEED;
+	m_move.x = sinf(fRot);
 	m_move.y = 0.0f;
-	m_move.z = cosf(fRot) * SPEED;
+	m_move.z = cosf(fRot);
 
 	CEffect::Create({ m_pos.x, 0.0f, m_pos.z }, m_move, { 0.5f, 0.3f, 0.2f, 0.7f }, 25.0f, 30, CEffect::TYPE_GROUND);
 
 
+	fRot = fRot * 2.0f;
+
+	fRot = utility::CorrectAngle(fRot);
+
 	// à⁄ìÆó ê›íË
-	m_move.x = sinf(fRot * 2.0f) * SPEED;
-	m_move.y = 0.0f;
-	m_move.z = cosf(fRot * 2.0f) * SPEED;
+	m_move.x = sinf(fRot);
+	m_move.y = 0.0f;	 
+	m_move.z = cosf(fRot);
 
 	CEffect::Create({ m_pos.x, 0.0f, m_pos.z }, m_move, { 0.5f, 0.3f, 0.2f, 0.7f }, 25.0f, 30, CEffect::TYPE_GROUND);
 }

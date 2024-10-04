@@ -184,38 +184,49 @@ void CMapObject::TextLoad(void)
 						m_appObjectX[nCntItem]->SetRotition(rot);
 						m_appObjectX[nCntItem]->SetIdxModel(nType);
 						m_appObjectX[nCntItem]->SetbEnable(true);
+
+						if(nType == 3)
+						   m_appObjectX[nCntItem]->SetVtx();
 					}
 
-					//if (nType == 0)
-					//{
-					//	
-					//}
+				/*	if (nType == 0)
+					{
+						m_appObjectX[nCntItem] = CMapObject_Fance::Create(m_aTex[nType].aName);
 
-					//if (nType == 1)
-					//{
-					//	m_appObjectX[nCntItem] = CMapObject_TrashBox::Create(m_aTex[nType].aName);
+						if (m_appObjectX[nCntItem] != nullptr)
+						{
+							m_appObjectX[nCntItem]->SetPosition(pos);
+							m_appObjectX[nCntItem]->SetRotition(rot);
+							m_appObjectX[nCntItem]->SetIdxModel(nType);
+							m_appObjectX[nCntItem]->SetbEnable(true);
+						}
+					}
 
-					//	if (m_appObjectX[nCntItem] != nullptr)
-					//	{
-					//		m_appObjectX[nCntItem]->SetPosition(pos);
-					//		m_appObjectX[nCntItem]->SetRotition(rot);
-					//		m_appObjectX[nCntItem]->SetIdxModel(nType);
-					//		m_appObjectX[nCntItem]->SetbEnable(true);
-					//	}
-					//}
+					if (nType == 1)
+					{
+						m_appObjectX[nCntItem] = CMapObject_TrashBox::Create(m_aTex[nType].aName);
 
-					//if (nType == 2)
-					//{
-					//	m_appObjectX[nCntItem] = CMapObject_Can::Create(m_aTex[nType].aName);
+						if (m_appObjectX[nCntItem] != nullptr)
+						{
+							m_appObjectX[nCntItem]->SetPosition(pos);
+							m_appObjectX[nCntItem]->SetRotition(rot);
+							m_appObjectX[nCntItem]->SetIdxModel(nType);
+							m_appObjectX[nCntItem]->SetbEnable(true);
+						}
+					}
 
-					//	if (m_appObjectX[nCntItem] != nullptr)
-					//	{
-					//		m_appObjectX[nCntItem]->SetPosition(pos);
-					//		m_appObjectX[nCntItem]->SetRotition(rot);
-					//		m_appObjectX[nCntItem]->SetIdxModel(nType);
-					//		m_appObjectX[nCntItem]->SetbEnable(true);
-					//	}
-					//}
+					if (nType == 2)
+					{
+						m_appObjectX[nCntItem] = CMapObject_Can::Create(m_aTex[nType].aName);
+
+						if (m_appObjectX[nCntItem] != nullptr)
+						{
+							m_appObjectX[nCntItem]->SetPosition(pos);
+							m_appObjectX[nCntItem]->SetRotition(rot);
+							m_appObjectX[nCntItem]->SetIdxModel(nType);
+							m_appObjectX[nCntItem]->SetbEnable(true);
+						}
+					}*/
 
 					
 					

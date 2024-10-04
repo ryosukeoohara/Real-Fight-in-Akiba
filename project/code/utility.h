@@ -23,7 +23,7 @@ namespace utility
 	void Enlarge(CObject2D* pObj, float fHei, float fWid);                          // ƒ|ƒŠƒSƒ“‚ğŠg‘å
 	void Shrink(CObject2D* pObj, float fHei, float fWid);                           // ƒ|ƒŠƒSƒ“‚ğ¬‚³‚­
 	void Color_A2D(CObject2D* pObj, float fValue);                                  // ƒ|ƒŠƒSƒ“‚ÌF
-	//void 
+	void ChangeVtx(D3DXVECTOR3* pVtxMax, D3DXVECTOR3* pVtxMin, D3DXVECTOR3 rot);          // 90“x‰ñ“]‰ñ“]‚µ‚½Û‚Ìvtx‚Ì•ÏX
 }
 
 #endif

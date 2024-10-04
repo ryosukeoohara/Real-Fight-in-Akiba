@@ -54,6 +54,8 @@ public:
 
 	void BindModel(INFO pObjX);
 
+	void SetVtx(void);
+
 	// 設定系
 	void SetPosition(D3DXVECTOR3 pos) { m_Info.pos = pos; }                     // 位置
 	void SetPositionOri(D3DXVECTOR3 posOrigin) { m_posOrigin = posOrigin; }     // 原点の位置
@@ -67,6 +69,8 @@ public:
 	void SetbShut(bool bValue) { m_bShut = bValue; }
 	void SetbDown(bool bValue) { m_bDown = bValue; }
 	void SetbHitAttack(bool bValue) { m_bHitAttack = bValue; }
+	void SetbFall(bool bValue) { m_bFall = bValue; }
+	void SetFallCounter(int n) { m_nFallDownCounter = n; }
 
 	//　取得系
 	D3DXVECTOR3 GetPosition(void) { return  m_Info.pos; }        // 位置
@@ -80,12 +84,16 @@ public:
 	int GetIdxModel(void) { return m_Info.nIdxModel; }           // モデルのインデックス番号
 	const char *GetFileName(void) { return m_Info.Fliename; }    // モデルのファイルネーム
 	bool IsEnable(void) { return m_bEnable; }
+	int GetFallCounter(void) { return m_nFallDownCounter; }
+	bool GetFallDown(void) { return m_bFallDown; }
 
 private:
 	
 	void Shoot(void);
 	void FallDown(void);
 	void HitAttack(void);
+	void GraduallyFallDown(void);
+
 	D3DXVECTOR3 m_posOrigin;
 	D3DXVECTOR3 m_rotOrigin;
 	LPD3DXMESH m_pMesh;       //テクスチャへのポインタ
@@ -93,9 +101,13 @@ private:
 	DWORD m_dwNumMat;         //マテリアルの数
 	LPDIRECT3DTEXTURE9 *m_pTexture;     //テクスチャへのポインタ
 	D3DXMATRIX *m_pCurrent;                     // 親のマトリックス
+	D3DMATERIAL9 m_ShadowMat;
 	float m_fFallDownSpeed = 0.0f;
 	int m_nShakeTimeCounter = 0;
+	int m_nShake = 0;
+	int m_nFallDownCounter = 0;
 	float ShakeAngle = 0.0f;
+	float m_fAngle = 1.0f;
 
 	int *m_nIdxTexture;
 	bool m_bEnable;
@@ -103,6 +115,8 @@ private:
 	bool m_bShut = false; 
 	bool m_bDown = false;
 	bool m_bHitAttack = false;
+	bool m_bFall = false;
+	bool m_bFallDown = false;
 };
 
 #endif

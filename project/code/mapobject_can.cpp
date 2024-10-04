@@ -32,6 +32,8 @@ CMapObject_Can::~CMapObject_Can()
 //===========================================================
 HRESULT CMapObject_Can::Init(void)
 {
+	CObjectX::Init();
+
 	return S_OK;
 }
 
@@ -40,6 +42,7 @@ HRESULT CMapObject_Can::Init(void)
 //===========================================================
 void CMapObject_Can::Uninit(void)
 {
+	CObjectX::Uninit();
 }
 
 //===========================================================
@@ -47,6 +50,7 @@ void CMapObject_Can::Uninit(void)
 //===========================================================
 void CMapObject_Can::Update(void)
 {
+	CObjectX::Update();
 }
 
 //===========================================================

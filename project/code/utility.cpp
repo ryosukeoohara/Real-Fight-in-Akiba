@@ -111,4 +111,61 @@ namespace utility
 		// FÝ’è
 		pObj->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, fColor_a));
 	}
+
+	//===========================================================
+    // 90“x‰ñ“]‰ñ“]‚µ‚½Û‚Ìvtx‚Ì•ÏX
+    //===========================================================
+	void ChangeVtx(D3DXVECTOR3* pVtxMax, D3DXVECTOR3* pVtxMin, D3DXVECTOR3 rot)
+	{
+		float MaxX = 0.0f, MaxY = 0.0f, MaxZ = 0.0f,   MinX = 0.0f, MinY = 0.0f, MinZ = 0.0f;
+
+		if (rot.x >= 1.57)
+		{
+			MaxY = pVtxMax->y;
+			MinY = pVtxMin->y;
+
+			pVtxMax->y = pVtxMax->x;
+			pVtxMin->y = pVtxMin->x;
+
+			pVtxMax->x = MaxY;
+			pVtxMin->x = MinY;
+
+			return;
+		}
+
+		if (rot.x <= -1.57)
+		{
+			MaxY = pVtxMax->y;
+			MinY = pVtxMin->y;
+
+			pVtxMax->y = pVtxMax->x;
+			pVtxMin->y = pVtxMin->x;
+			
+			pVtxMax->x = -MinY;
+			pVtxMin->x = -MaxY;
+
+			return;
+		}
+
+		if (rot.y >= 1.57 || rot.y <= -1.57)
+		{
+			MaxX = pVtxMax->x;
+			MaxZ = pVtxMax->z;
+			MinX = pVtxMin->x;
+			MinZ = pVtxMin->z;
+
+			pVtxMax->x = pVtxMax->z;
+			pVtxMin->x = pVtxMin->z;
+
+			pVtxMax->z = MaxX;
+			pVtxMin->z = MinX;
+
+			return;
+		}
+		
+		if (rot.z >= 1.57 || rot.z <= -1.57)
+		{
+			int n = 0;
+		}
+	}
 }

@@ -61,6 +61,9 @@
     <Filter Include="ソース ファイル\item">
       <UniqueIdentifier>{076a54c5-d185-41c9-93a1-c87bf807036e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\character\edit">
+      <UniqueIdentifier>{49b12c32-a443-427a-86fa-ebb23f50459e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="code\game.cpp">
@@ -225,26 +228,29 @@
     <ClCompile Include="code\shadow.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="code\edit.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="code\mapobject.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="code\effect.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
     <ClCompile Include="code\gage.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
-    <ClCompile Include="code\mapobject_can.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="code\mapobject.cpp">
+      <Filter>ソース ファイル\map</Filter>
     </ClCompile>
-    <ClCompile Include="code\mapobject_trashbox.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="code\mapobject_can.cpp">
+      <Filter>ソース ファイル\map</Filter>
     </ClCompile>
     <ClCompile Include="code\mapobject_fance.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\map</Filter>
+    </ClCompile>
+    <ClCompile Include="code\mapobject_trashbox.cpp">
+      <Filter>ソース ファイル\map</Filter>
+    </ClCompile>
+    <ClCompile Include="code\edit.cpp">
+      <Filter>ソース ファイル\character\edit</Filter>
+    </ClCompile>
+    <ClCompile Include="code\electricbox.cpp">
+      <Filter>ソース ファイル\map</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -416,20 +422,23 @@
     <ClInclude Include="code\shadow.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="code\edit.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="code\mapobject_can.h">
+      <Filter>ソース ファイル\map</Filter>
     </ClInclude>
     <ClInclude Include="code\mapobject.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="code\mapobject_can.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="code\mapobject_trashbox.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ソース ファイル\map</Filter>
     </ClInclude>
     <ClInclude Include="code\mapobject_fance.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ソース ファイル\map</Filter>
+    </ClInclude>
+    <ClInclude Include="code\mapobject_trashbox.h">
+      <Filter>ソース ファイル\map</Filter>
+    </ClInclude>
+    <ClInclude Include="code\edit.h">
+      <Filter>ソース ファイル\character\edit</Filter>
+    </ClInclude>
+    <ClInclude Include="code\electricbox.h">
+      <Filter>ソース ファイル\map</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

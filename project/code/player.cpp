@@ -963,6 +963,9 @@ void CPlayer::State(void)
 			if(CCollision::GetInstance()->HitMapObject(D3DXVECTOR3(mtx->_41, mtx->_42, mtx->_43), {}, 30.0f, 10.0f))
 				CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(mtx->_41, mtx->_42, mtx->_43));
 
+			if (CCollision::GetInstance()->HitElectricBox(D3DXVECTOR3(mtx->_41, mtx->_42, mtx->_43), {}, 30.0f, 30.0f))
+				CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(mtx->_41, mtx->_42, mtx->_43));
+
 		}
 			
 	}
@@ -1588,16 +1591,16 @@ void CPlayer::DashEffect(void)
 {
 	D3DMATRIX* mtx = {};
 
-	int nNow = m_pMotion->GetNowFrame();
+	int nNow = m_pMotion->GetKeyFrame();
 
-	if (nNow == 20)
+	if (nNow == 1)
 	{
 		mtx = m_ppCharacter[12]->GetMtxWorld();
 
 		CParticle::Create(D3DXVECTOR3(mtx->_41, 0.0f, mtx->_43), CParticle::TYPE_GROUND);
 	}
 		
-	if (nNow == 40)
+	if (nNow % 20 == 0)
 	{
 		mtx = m_ppCharacter[15]->GetMtxWorld();
 

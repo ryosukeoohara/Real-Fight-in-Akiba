@@ -35,6 +35,8 @@ CMapObject_TrashBox::~CMapObject_TrashBox()
 //===========================================================
 HRESULT CMapObject_TrashBox::Init(void)
 {
+	CObjectX::Init();
+
 	return S_OK;
 }
 
@@ -43,6 +45,7 @@ HRESULT CMapObject_TrashBox::Init(void)
 //===========================================================
 void CMapObject_TrashBox::Uninit(void)
 {
+	CObjectX::Uninit();
 }
 
 //===========================================================
@@ -57,6 +60,7 @@ void CMapObject_TrashBox::Update(void)
 //===========================================================
 void CMapObject_TrashBox::Draw(void)
 {
+	CObjectX::Draw();
 }
 
 //===========================================================

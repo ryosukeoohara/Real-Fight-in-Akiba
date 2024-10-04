@@ -32,6 +32,8 @@ CMapObject_Fance::~CMapObject_Fance()
 //===========================================================
 HRESULT CMapObject_Fance::Init(void)
 {
+	CObjectX::Init();
+
 	return S_OK;
 }
 
@@ -40,6 +42,7 @@ HRESULT CMapObject_Fance::Init(void)
 //===========================================================
 void CMapObject_Fance::Uninit(void)
 {
+	CObjectX::Uninit();
 }
 
 //===========================================================
@@ -47,6 +50,7 @@ void CMapObject_Fance::Uninit(void)
 //===========================================================
 void CMapObject_Fance::Update(void)
 {
+	CObjectX::Update();
 }
 
 //===========================================================
@@ -54,6 +58,7 @@ void CMapObject_Fance::Update(void)
 //===========================================================
 void CMapObject_Fance::Draw(void)
 {
+	CObjectX::Draw();
 }
 
 //===========================================================

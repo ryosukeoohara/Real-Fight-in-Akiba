@@ -10,14 +10,16 @@ SCRIPT			# この行は絶対消さないこと！
 #------------------------------------------------------------------------------
 # モデル数
 #------------------------------------------------------------------------------
-NUM_MODEL = 3
+NUM_MODEL = 4
 
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
-MODEL_FILENAME = data/MODEL/map/saku.x     	# [0]工事現場の柵
-MODEL_FILENAME = data/MODEL/map/turshbox.x  # [1]ゴミ箱
-MODEL_FILENAME = data/MODEL/map/kan.x       # [2]空き缶
+MODEL_FILENAME = data/MODEL/map/saku.x          	# [0]工事現場の柵
+MODEL_FILENAME = data/MODEL/map/turshbox.x          # [1]ゴミ箱
+MODEL_FILENAME = data/MODEL/map/kan.x               # [2]空き缶
+MODEL_FILENAME = data/MODEL/map/electricbox.x       # [3]道端にあるよく落書きしてあるやつ
+MODEL_FILENAME = data/MODEL/map/electricbox.x       # [3]道端にあるよく落書きしてあるやつ
 
 #------------------------------------------------------------------------------
 # モデルの情報
@@ -140,6 +142,24 @@ MODELSET
     TYPE = 2
     POS = 492.07 0.00 297.35
     ROT = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+    TYPE = 3
+    POS = -518.85 1.00 109.69
+    ROT = 0.00 1.57 0.00
+END_MODELSET
+
+MODELSET
+    TYPE = 3
+    POS = 534.62 1.00 -323.62
+    ROT = 0.00 1.57 0.00
+END_MODELSET
+
+MODELSET
+    TYPE = 3
+    POS = -68.00 1.00 276.00
+    ROT = 0.00 1.57 0.00
 END_MODELSET
 
 END_SCRIPT		# この行は絶対消さないこと！
