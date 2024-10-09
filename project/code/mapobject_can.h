@@ -11,6 +11,7 @@
 // インクルードファイル
 //===========================================================
 #include "objectX.h"
+#include "mapobject.h"
 
 // 前方宣言
 class CCanState;
@@ -18,7 +19,7 @@ class CCanState;
 //===========================================================
 // 缶クラス定義
 //===========================================================
-class CMapObject_Can : public CObjectX
+class CMapObject_Can : public CMapObject
 {
 public:
 	CMapObject_Can();
@@ -31,8 +32,21 @@ public:
 	void Draw(void);              // 描画処理
 
 	static CMapObject_Can* Create(const char* aModelFliename, int nPriority = 3);  //生成
-	
+	void ChangeState(CCanState* pState);
+	static CMapObject_Can* GetInstance(void) { return m_pInstance; }  // 自分自身
+
+	// 取得
+	CMapObject_Can* GetTop(void) { return m_pTop; }  // リストの先頭
+
 private:
+
+	static CMapObject_Can* m_pInstance;
+	CCanState* m_pState;
+
+	static CMapObject_Can* m_pTop;  // 先頭のオブジェクトへのポインタ
+	static CMapObject_Can* m_pCur;  // 最後尾のオブジェクトへのポインタ
+	CMapObject_Can* m_pNext;        // 次のオブジェクトへのポインタ
+	CMapObject_Can* m_pPrev;        // 前のオブジェクトへのポインタ
 
 };
 
@@ -61,6 +75,8 @@ public:
 	void Update(CMapObject_Can* pCan) override;
 
 private:
+
+	D3DXVECTOR3 m_move;
 
 };
 

@@ -29,6 +29,7 @@
 #include "audiencemanager.h"
 #include "InputKeyBoard.h"
 #include "InputJoyPad.h"
+#include "ripples.h"
 
 //================================================================
 // 静的メンバ変数
@@ -173,8 +174,6 @@ HRESULT CGame::Init(void)
 	{
 		m_pMap = CMap::Create();
 	}
-
-	CMapObject* p = CMapObject::Create();
 
 	// 当たり判定
 	if (m_Collision == nullptr) 
@@ -339,6 +338,9 @@ void CGame::Update(void)
 		m_bOnStage = true;
 	}
 
+	if (InputKeyboard->GetTrigger(DIK_V))
+		CRipples::Create(m_pPlayer->GetPosition());
+
 	//if (InputKeyboard->GetTrigger(DIK_RETURN) == true)
 	//{//ENTERキーを押したかつシーンがタイトルのとき
 
@@ -381,4 +383,7 @@ void CGame::Draw(void)
 			m_pEdit->Draw();
 
 	}
+
+	if (m_pMap != nullptr)
+		m_pMap->Draw();
 }

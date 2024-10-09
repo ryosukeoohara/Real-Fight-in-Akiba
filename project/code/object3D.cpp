@@ -23,7 +23,7 @@ CObject3D::CObject3D(D3DXVECTOR3 texpos, int nPriority) : CObject(nPriority)
 	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);                       
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);     
 	m_Texpos = D3DXVECTOR3(texpos.x, texpos.y, 0.0f);
-	m_col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);                   
+	m_col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	m_nIdxTexture = -1;                        
 	m_fHeight = 0.0f;                           
 	m_fWidth = 0.0f;                            
@@ -42,7 +42,7 @@ CObject3D::CObject3D(D3DXVECTOR3 pos)
 	m_pos = pos;
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_Texpos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
+	m_col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	m_nIdxTexture = -1;
 	m_fHeight = 0.0f;
 	m_fWidth = 0.0f;
@@ -176,7 +176,7 @@ void CObject3D::Uninit(void)
 //===========================================================
 void CObject3D::Update(void)
 {
-	
+	//SetSize(m_fHeight, m_fWidth);
 }
 
 //===========================================================
@@ -286,6 +286,46 @@ void CObject3D::BindTexture(LPDIRECT3DTEXTURE9 m_Texture)
 //===========================================================
 // サイズ設定処理
 //===========================================================
+void CObject3D::EaseToTarget(D3DXVECTOR2 current, float adjustSpeed)
+{
+	if (adjustSpeed > 1.0f)
+		adjustSpeed = 1.0f;
+
+	if (adjustSpeed < 0.0f)
+		adjustSpeed = 0.01f;
+
+	m_fHeight = m_fHeight + (current.x - m_fHeight) * adjustSpeed;
+	m_fWidth = m_fWidth + (current.x - m_fWidth) * adjustSpeed;
+
+	// サイズ設定
+	SetSize(m_fHeight, m_fWidth);
+}
+
+//===========================================================
+// α値を下げる処理
+//===========================================================
+void CObject3D::GradualFadeOut(float cola)
+{
+	VERTEX_3D* pVtx;     //頂点情報へのポインタ
+
+	//頂点バッファをロックし、頂点情報へポインタを取得
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	m_col.a = m_col.a - cola;
+
+	//頂点カラーの設定
+	pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, m_col.a);
+	pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, m_col.a);
+	pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, m_col.a);
+	pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, m_col.a);
+
+	//頂点バッファをアンロックする
+	m_pVtxBuff->Unlock();
+}
+
+//===========================================================
+// サイズ設定処理
+//===========================================================
 void CObject3D::SetSize(float fHeight, float fWidth)
 {
 	m_fHeight = fHeight;
@@ -297,18 +337,18 @@ void CObject3D::SetSize(float fHeight, float fWidth)
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点座標の設定
-	pVtx[0].pos.x = m_pos.x - m_fHeight;
+	pVtx[0].pos.x =  -m_fHeight;
 	pVtx[0].pos.y = 0.0f;
-	pVtx[0].pos.z = m_pos.z + m_fWidth;
-	pVtx[1].pos.x = m_pos.x + m_fHeight;
+	pVtx[0].pos.z = m_fWidth;
+	pVtx[1].pos.x = m_fHeight;
 	pVtx[1].pos.y = 0.0f;
-	pVtx[1].pos.z = m_pos.z + m_fWidth;
-	pVtx[2].pos.x = m_pos.x - m_fHeight;
+	pVtx[1].pos.z = m_fWidth;
+	pVtx[2].pos.x =  -m_fHeight;
 	pVtx[2].pos.y = 0.0f;
-	pVtx[2].pos.z = m_pos.z - m_fWidth;
-	pVtx[3].pos.x = m_pos.x + m_fHeight;
+	pVtx[2].pos.z = -m_fWidth;
+	pVtx[3].pos.x = m_fHeight;
 	pVtx[3].pos.y = 0.0f;
-	pVtx[3].pos.z = m_pos.z - m_fWidth;
+	pVtx[3].pos.z =  -m_fWidth;
 
 	//頂点バッファをアンロックする
 	m_pVtxBuff->Unlock();

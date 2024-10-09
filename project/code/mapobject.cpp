@@ -9,12 +9,16 @@
 #include "debugproc.h"
 #include "mapobject_can.h"
 #include "mapobject_trashbox.h"
-#include"mapobject_fance.h"
+#include "mapobject_fance.h"
+#include "mapobject_dramcan.h"
+#include "mapobject_light.h"
+#include "mapobject_sign.h"
 
 //===========================================================
 // 静的メンバ変数
 //===========================================================
 CMapObject* CMapObject::m_pMap = nullptr;
+
 
 //===========================================================
 // 定数定義
@@ -36,6 +40,17 @@ CMapObject::CMapObject()
 }
 
 //===========================================================
+// コンストラクタ
+//===========================================================
+CMapObject::CMapObject(const char* aModelFliename, int nPriority) : CObjectX(aModelFliename, nPriority)
+{
+	m_nNumModel = 0;
+	m_nNumItem = 0;
+
+	m_pMap = this;
+}
+
+//===========================================================
 // デストラクタ
 //===========================================================
 CMapObject::~CMapObject()
@@ -49,7 +64,9 @@ CMapObject::~CMapObject()
 HRESULT CMapObject::Init(void)
 {
 	// マップのテキストファイル読込
-	TextLoad();
+	//TextLoad();
+
+	CObjectX::Init();
 
 	return S_OK;
 }
@@ -59,17 +76,10 @@ HRESULT CMapObject::Init(void)
 //===========================================================
 void CMapObject::Uninit(void)
 {
-	if (m_appObjectX != nullptr)
-	{
-		for (int nCount = 0; nCount < m_nNumModel; nCount++)
-		{
-			m_appObjectX[nCount]->Uninit();
-			m_appObjectX[nCount] = nullptr;
-		}
+	// 自身をリストから消す
+	//ListOut();
 
-		delete m_appObjectX;
-		m_appObjectX = nullptr;
-	}
+	CObjectX::Uninit();
 }
 
 //===========================================================
@@ -77,7 +87,15 @@ void CMapObject::Uninit(void)
 //===========================================================
 void CMapObject::Update(void)
 {
+	CObjectX::Update();
+}
 
+//===========================================================
+// 描画処理
+//===========================================================
+void CMapObject::Draw(void)
+{
+	CObjectX::Draw();
 }
 
 //===========================================================
@@ -99,6 +117,56 @@ CMapObject* CMapObject::Create(void)
 
 	return pMap;
 }
+
+////===========================================================
+//// リストから自分を消す処理
+////===========================================================
+//void CMapObject::ListOut(void)
+//{
+//	if (m_pTop == this)
+//	{// 自身が先頭
+//
+//		if (m_pNext != nullptr)
+//		{// 次が存在している
+//
+//			m_pTop = m_pNext;	// 次を先頭にする
+//			m_pNext->m_pPrev = nullptr;	// 次の前のポインタを覚えていないようにする
+//		}
+//		else
+//		{// 存在していない
+//
+//			m_pTop = nullptr;	// 先頭がない状態にする
+//			m_pCur = nullptr;	// 最後尾がない状態にする
+//		}
+//	}
+//	else if (m_pCur == this)
+//	{// 自身が最後尾
+//
+//		if (m_pPrev != nullptr)
+//		{// 次が存在している
+//
+//			m_pCur = m_pPrev;			// 前を最後尾にする
+//			m_pPrev->m_pNext = nullptr;	// 前の次のポインタを覚えていないようにする
+//		}
+//		else
+//		{// 存在していない
+//
+//			m_pTop = nullptr;	// 先頭がない状態にする
+//			m_pCur = nullptr;	// 最後尾がない状態にする
+//		}
+//	}
+//	else
+//	{
+//		if (m_pNext != nullptr)
+//		{
+//			m_pNext->m_pPrev = m_pPrev;	// 自身の次に前のポインタを覚えさせる
+//		}
+//		if (m_pPrev != nullptr)
+//		{
+//			m_pPrev->m_pNext = m_pNext;	// 自身の前に次のポインタを覚えさせる
+//		}
+//	}
+//}
 
 //===========================================================
 // テキストファイル読込処理
@@ -176,20 +244,21 @@ void CMapObject::TextLoad(void)
 						}
 					}
 
-					m_appObjectX[nCntItem] = CObjectX::Create(m_aTex[nType].aName);
-
-					if (m_appObjectX[nCntItem] != nullptr)
+					if (nType == 3)
 					{
-						m_appObjectX[nCntItem]->SetPosition(pos);
-						m_appObjectX[nCntItem]->SetRotition(rot);
-						m_appObjectX[nCntItem]->SetIdxModel(nType);
-						m_appObjectX[nCntItem]->SetbEnable(true);
+						m_appObjectX[nCntItem] = CObjectX::Create(m_aTex[nType].aName);
 
-						if(nType == 3)
-						   m_appObjectX[nCntItem]->SetVtx();
+						if (m_appObjectX[nCntItem] != nullptr)
+						{
+							m_appObjectX[nCntItem]->SetPosition(pos);
+							m_appObjectX[nCntItem]->SetRotition(rot);
+							m_appObjectX[nCntItem]->SetIdxModel(nType);
+							m_appObjectX[nCntItem]->SetbEnable(true);
+							m_appObjectX[nCntItem]->SetVtx();
+						}
 					}
 
-				/*	if (nType == 0)
+					if (nType == 0)
 					{
 						m_appObjectX[nCntItem] = CMapObject_Fance::Create(m_aTex[nType].aName);
 
@@ -226,9 +295,46 @@ void CMapObject::TextLoad(void)
 							m_appObjectX[nCntItem]->SetIdxModel(nType);
 							m_appObjectX[nCntItem]->SetbEnable(true);
 						}
-					}*/
+					}
 
-					
+					if (nType == 4)
+					{
+						m_appObjectX[nCntItem] = CMapObject_Dramcan::Create(m_aTex[nType].aName);
+
+						if (m_appObjectX[nCntItem] != nullptr)
+						{
+							m_appObjectX[nCntItem]->SetPosition(pos);
+							m_appObjectX[nCntItem]->SetRotition(rot);
+							m_appObjectX[nCntItem]->SetIdxModel(nType);
+							m_appObjectX[nCntItem]->SetbEnable(true);
+						}
+					}
+
+					if (nType == 5)
+					{
+						m_appObjectX[nCntItem] = CMapObject_Sign::Create(m_aTex[nType].aName);
+
+						if (m_appObjectX[nCntItem] != nullptr)
+						{
+							m_appObjectX[nCntItem]->SetPosition(pos);
+							m_appObjectX[nCntItem]->SetRotition(rot);
+							m_appObjectX[nCntItem]->SetIdxModel(nType);
+							m_appObjectX[nCntItem]->SetbEnable(true);
+						}
+					}
+
+					if (nType == 6)
+					{
+						m_appObjectX[nCntItem] = CMapObject_Light::Create(m_aTex[nType].aName);
+
+						if (m_appObjectX[nCntItem] != nullptr)
+						{
+							m_appObjectX[nCntItem]->SetPosition(pos);
+							m_appObjectX[nCntItem]->SetRotition(rot);
+							m_appObjectX[nCntItem]->SetIdxModel(nType);
+							m_appObjectX[nCntItem]->SetbEnable(true);
+						}
+					}
 					
 					nCntItem++;
 

@@ -83,7 +83,7 @@ HRESULT CAppearanceUI::Init(void)
 		{
 			m_pFrontObj2D = CObject2D::Create();
 			m_pFrontObj2D->SetPosition(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f));
-			m_pFrontObj2D->SetSize(1200.0f, 600.0f);
+			m_pFrontObj2D->SetSize(1300.0f, 600.0f);
 			m_pFrontObj2D->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist(TEXTURENAME[m_type]));
 			m_pFrontObj2D->SetDraw();
 		}

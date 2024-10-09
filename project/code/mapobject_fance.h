@@ -11,7 +11,7 @@
 // インクルードファイル
 //===========================================================
 #include "objectX.h"
-
+#include "mapobject.h"
 
 // 前方宣言
 class CFanceState;
@@ -19,7 +19,7 @@ class CFanceState;
 //===========================================================
 // 柵クラス定義
 //===========================================================
-class CMapObject_Fance : public CObjectX
+class CMapObject_Fance : public CMapObject
 {
 public:
 	CMapObject_Fance();
@@ -32,13 +32,23 @@ public:
 	void Draw(void);              // 描画処理
 
 	static CMapObject_Fance* Create(const char* aModelFliename, int nPriority = 3);  //生成
+	void ChangeState(CFanceState* pState);  // ステートの変更
+
+	// 取得
+	CMapObject_Fance* GetTop(void) { return m_pTop; }  // リストの先頭
 
 private:
 
+	CFanceState* m_pState;  // ステートのポインタ
+
+	static CMapObject_Fance* m_pTop;  // 先頭のオブジェクトへのポインタ
+	static CMapObject_Fance* m_pCur;  // 最後尾のオブジェクトへのポインタ
+	CMapObject_Fance* m_pNext;        // 次のオブジェクトへのポインタ
+	CMapObject_Fance* m_pPrev;        // 前のオブジェクトへのポインタ
 };
 
 //===========================================================
-// ステイト
+// ステート
 //===========================================================
 class CFanceState
 {
@@ -46,7 +56,7 @@ public:
 	CFanceState() {}
 	~CFanceState() {}
 
-	virtual void Update(CFanceState* pFance) = 0;
+	virtual void Update(CMapObject_Fance* pFance) = 0;
 
 private:
 
@@ -59,20 +69,22 @@ public:
 	CFanceBlowAway();
 	~CFanceBlowAway() {}
 
-	void Update(CFanceState* pFance) override;
+	void Update(CMapObject_Fance* pFance) override;
 
 private:
+
+	float m_fFallDownSpeed = 0.0f;
 
 };
 
 // バウンド
-class CFanceFallDown : public CFanceState
+class CFanceNeutral : public CFanceState
 {
 public:
-	CFanceFallDown();
-	~CFanceFallDown() {}
+	CFanceNeutral();
+	~CFanceNeutral() {}
 
-	void Update(CFanceState* pFance) override;
+	void Update(CMapObject_Fance* pFance) override;
 
 private:
 

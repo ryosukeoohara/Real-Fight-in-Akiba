@@ -18,20 +18,20 @@ NUM_MODEL = 16
 #------------------------------------------------------------------------------
 MODEL_FILENAME = data/MODEL/Player/00_neet2waist.x		    # [0]腰
 MODEL_FILENAME = data/MODEL/Player/01_neet2body.x		    # [1]体
-MODEL_FILENAME = data/MODEL/Player/02_neet2hed.x		        # [2]頭
+MODEL_FILENAME = data/MODEL/Player/02_neet2hed.x		    # [2]頭
 MODEL_FILENAME = data/MODEL/Player/03_neet2hair.x		    # [3]髪
-MODEL_FILENAME = data/MODEL/Player/04_neet2leftupperarm.x    # [4]左上腕
-MODEL_FILENAME = data/MODEL/Player/05_neet2leftforearm.x     # [5]左前腕
+MODEL_FILENAME = data/MODEL/Player/04_neet2leftupperarm.x   # [4]左上腕
+MODEL_FILENAME = data/MODEL/Player/05_neet2leftforearm.x    # [5]左前腕
 MODEL_FILENAME = data/MODEL/Player/06_neet2lefthand.x	    # [6]左手
 MODEL_FILENAME = data/MODEL/Player/07_neet2rightupperarm.x	# [7]右上腕
 MODEL_FILENAME = data/MODEL/Player/08_neet2rightforearm.x	# [8]右前腕
 MODEL_FILENAME = data/MODEL/Player/09_neet2righthand.x		# [9]右手
 MODEL_FILENAME = data/MODEL/Player/10_neet2leftthigh.x		# [10]左太もも
 MODEL_FILENAME = data/MODEL/Player/11_neet2leftshin.x		# [11]左脛
-MODEL_FILENAME = data/MODEL/Player/12_neet2leftleg.x		    # [12]左足
+MODEL_FILENAME = data/MODEL/Player/12_neet2leftleg.x		# [12]左足
 MODEL_FILENAME = data/MODEL/Player/13_neet2rightthigh.x	    # [13]右太もも
 MODEL_FILENAME = data/MODEL/Player/14_neet2rightshin.x	    # [14]右脛
-MODEL_FILENAME = data/MODEL/Player/15_neet2rightleg.x        # [15]右足
+MODEL_FILENAME = data/MODEL/Player/15_neet2rightleg.x       # [15]右足
 
 
 #------------------------------------------------------------------------------

@@ -173,7 +173,6 @@
     <ClCompile Include="code\effect.cpp" />
     <ClCompile Include="code\effect2D.cpp" />
     <ClCompile Include="code\effect3D.cpp" />
-    <ClCompile Include="code\electricbox.cpp" />
     <ClCompile Include="code\enemy.cpp" />
     <ClCompile Include="code\enemymanager.cpp" />
     <ClCompile Include="code\enemy_boss.cpp" />
@@ -194,8 +193,13 @@
     <ClCompile Include="code\manager.cpp" />
     <ClCompile Include="code\map.cpp" />
     <ClCompile Include="code\mapobject.cpp" />
+    <ClCompile Include="code\mapobject_brokenlight.cpp" />
     <ClCompile Include="code\mapobject_can.cpp" />
+    <ClCompile Include="code\mapobject_dramcan.cpp" />
+    <ClCompile Include="code\mapobject_electricbox.cpp" />
     <ClCompile Include="code\mapobject_fance.cpp" />
+    <ClCompile Include="code\mapobject_light.cpp" />
+    <ClCompile Include="code\mapobject_sign.cpp" />
     <ClCompile Include="code\mapobject_trashbox.cpp" />
     <ClCompile Include="code\motion.cpp" />
     <ClCompile Include="code\MyEffekseer.cpp" />
@@ -216,6 +220,7 @@
     </ClCompile>
     <ClCompile Include="code\renderer.cpp" />
     <ClCompile Include="code\result.cpp" />
+    <ClCompile Include="code\ripples.cpp" />
     <ClCompile Include="code\score.cpp" />
     <ClCompile Include="code\shadow.cpp" />
     <ClCompile Include="code\sound.cpp" />
@@ -242,7 +247,6 @@
     <ClInclude Include="code\effect.h" />
     <ClInclude Include="code\effect2D.h" />
     <ClInclude Include="code\effect3D.h" />
-    <ClInclude Include="code\electricbox.h" />
     <ClInclude Include="code\enemy.h" />
     <ClInclude Include="code\enemymanager.h" />
     <ClInclude Include="code\enemy_boss.h" />
@@ -263,8 +267,13 @@
     <ClInclude Include="code\manager.h" />
     <ClInclude Include="code\map.h" />
     <ClInclude Include="code\mapobject.h" />
+    <ClInclude Include="code\mapobject_brokenlight.h" />
     <ClInclude Include="code\mapobject_can.h" />
+    <ClInclude Include="code\mapobject_dramcan.h" />
+    <ClInclude Include="code\mapobject_electricbox.h" />
     <ClInclude Include="code\mapobject_fance.h" />
+    <ClInclude Include="code\mapobject_light.h" />
+    <ClInclude Include="code\mapobject_sign.h" />
     <ClInclude Include="code\mapobject_trashbox.h" />
     <ClInclude Include="code\motion.h" />
     <ClInclude Include="code\MyEffekseer.h" />
@@ -280,6 +289,7 @@
     <ClInclude Include="code\precompile.h" />
     <ClInclude Include="code\renderer.h" />
     <ClInclude Include="code\result.h" />
+    <ClInclude Include="code\ripples.h" />
     <ClInclude Include="code\score.h" />
     <ClInclude Include="code\shadow.h" />
     <ClInclude Include="code\sound.h" />

@@ -100,8 +100,7 @@ void CCamera::Uninit(void)
 //================================================================
 void CCamera::Update(void)
 {
-	
-
+	// ステートの更新
 	if (m_pState != nullptr)
 		m_pState->Update(this);
 } 
@@ -553,6 +552,16 @@ void EditCamera::Update(CCamera* pCamera)
 
 	if (pInputMouse->GetLButton() == true)
 		pCameraInfo->rot.y += MousePos.x * 0.005f;
+
+	if (pInput->GetPress(DIK_J) == true)
+	{
+		pCameraInfo->posV.y += 1.0f;
+	}
+
+	if (pInput->GetPress(DIK_K) == true)
+	{
+		pCameraInfo->posV.y -= 1.0f;
+	}
 
 	pCameraInfo->posV.x = pCameraInfo->posR.x - sinf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
 	pCameraInfo->posV.z = pCameraInfo->posR.z - cosf(pCameraInfo->rot.y) * -pCameraInfo->fLength;

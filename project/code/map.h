@@ -11,6 +11,7 @@
 // 前方宣言
 //===========================================================
 class CObjectX;
+class CMapObject;
 
 // マクロ定義
 #define MAX_MODEL (512)  // モデルの最大数
@@ -29,6 +30,7 @@ public:
 	HRESULT Init(void);   // 初期化処理    
 	void Uninit(void);    // 終了処理
 	void Update(void);    // 更新処理
+	void Draw(void);
 
 	static CMap *Create(void); // 生成処理
 	
@@ -39,6 +41,8 @@ public:
 	CObjectX **GetObjectX(void) { return m_appObjectX; }
 	int GetNum(void) { return m_nNumModel; }
 	static CMap *GetInstance(void) { return m_pMap; }
+	static CMapObject* GetTop(void) { return m_pTop; }  // リストの先頭
+	static CObjectX* GetTopObjX(void) { return m_pObjXTop; }
 
 private:
 
@@ -49,8 +53,15 @@ private:
 	
 
 	void TextLoad(void);
+	void MapObjectLoad(void);
 
 	static CMap* m_pMap;
+
+	static CMapObject* m_pTop;  // 先頭のオブジェクトへのポインタ
+	static CMapObject* m_pCur;  // 最後尾のオブジェクトへのポインタ
+	static CObjectX* m_pObjXTop;  // 先頭のオブジェクトへのポインタ
+	static CObjectX* m_pObjXCur;  // 最後尾のオブジェクトへのポインタ
+
 	CObjectX **m_appObjectX;
 	int m_nNumModel;
 	int m_nNumItem;

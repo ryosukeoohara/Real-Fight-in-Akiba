@@ -10,7 +10,7 @@ SCRIPT			# この行は絶対消さないこと！
 #------------------------------------------------------------------------------
 # モデル数
 #------------------------------------------------------------------------------
-NUM_MODEL = 4
+NUM_MODEL = 7
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -19,7 +19,9 @@ MODEL_FILENAME = data/MODEL/map/saku.x          	# [0]工事現場の柵
 MODEL_FILENAME = data/MODEL/map/turshbox.x          # [1]ゴミ箱
 MODEL_FILENAME = data/MODEL/map/kan.x               # [2]空き缶
 MODEL_FILENAME = data/MODEL/map/electricbox.x       # [3]道端にあるよく落書きしてあるやつ
-MODEL_FILENAME = data/MODEL/map/electricbox.x       # [3]道端にあるよく落書きしてあるやつ
+MODEL_FILENAME = data/MODEL/map/drumcan.x           # [4]ドラム缶
+MODEL_FILENAME = data/MODEL/small/single_light.x	# [5]外灯
+MODEL_FILENAME = data/MODEL/small/sign_02.x		    # [6]標識
 
 #------------------------------------------------------------------------------
 # モデルの情報
@@ -160,6 +162,74 @@ MODELSET
     TYPE = 3
     POS = -68.00 1.00 276.00
     ROT = 0.00 1.57 0.00
+END_MODELSET
+
+MODELSET
+    TYPE = 4
+    POS = -189.17 1.00 444.53
+    ROT = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+    TYPE = 4
+    POS = -284.37 1.00 -257.32
+    ROT = 0.00 0.00 0.00
+END_MODELSET
+
+MODELSET
+	TYPE = 5
+	POS = -544.29 0.00 1438.99
+	ROT = 0.00 -1.57 0.00
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 5
+	POS = 536.57 0.00 1175.66
+	ROT = 0.00 1.57 0.00
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 5
+	POS = -534.50 0.00 20.58
+	ROT = 0.00 -1.57 0.00
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 5
+	POS = 541.63 0.00 -428.08
+	ROT = 0.00 1.57 0.00
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 5
+	POS = 539.50 0.00 -1236.08
+	ROT = 0.00 1.57 0.00
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 5
+	POS = -540.87 0.00 -721.18
+	ROT = 0.00 -1.57 0.00
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 6
+	POS = -539.52 0.00 454.11
+	ROT = 0.00 0.00 0.00
+	SHADOW = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 6
+	POS = 528.27 0.00 235.63
+	ROT = 0.00 -3.14 0.00
+	SHADOW = 1
 END_MODELSET
 
 END_SCRIPT		# この行は絶対消さないこと！

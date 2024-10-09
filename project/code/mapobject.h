@@ -7,6 +7,8 @@
 #ifndef _MAPOBJECT_H_             //このマクロ定義がされてなかったら
 #define _MAPOBJECT_H_             //2重インクルード防止のマクロ定義をする
 
+#include "objectX.h"
+
 //===========================================================
 // 前方宣言
 //===========================================================
@@ -19,7 +21,7 @@ class CObjectX;
 //===========================================================
 // マップクラス定義
 //===========================================================
-class CMapObject
+class CMapObject : public CObjectX
 {
 public:
 
@@ -32,25 +34,30 @@ public:
 	};*/
 
 	CMapObject();   // コンストラクタ
+	CMapObject(const char* aModelFliename, int nPriority = 3);
 	~CMapObject();  // デストラクタ
 
 	HRESULT Init(void);   // 初期化処理    
 	void Uninit(void);    // 終了処理
 	void Update(void);    // 更新処理
+	void Draw(void);      // 描画処理
 
 	static CMapObject* Create(void); // 生成処理
 
 	// 設定系
-	//void SetType(TYPE n) { m_type = n; }
+	void SetNext(CMapObject* pNext) { m_pNext = pNext; }
+	void SetPrev(CMapObject* pPrev) { m_pPrev = pPrev; }
+	//void SetbShut(bool bValue) { m_bShut = bValue; }
 
 	// 取得系
 	CObjectX** GetObjectX(void) { return m_appObjectX; }
 	int GetNum(void) { return m_nNumModel; }
 	static CMapObject* GetInstance(void) { return m_pMap; }
+	CMapObject* GetNext(void) { return m_pNext; }
 	
-	void SetbShut(bool bValue) { m_bShut = bValue; }
-
 private:
+
+	void ListOut(void);  // 自身をリストから消す
 
 	struct TEX
 	{
@@ -66,6 +73,10 @@ private:
 	CObjectX** m_appObjectX;
 	int m_nNumModel;
 	int m_nNumItem;
+	CMapObject* m_pNext;        // 次のオブジェクトへのポインタ
+	CMapObject* m_pPrev;        // 前のオブジェクトへのポインタ
+	
+	bool m_bDeath;              // 死亡フラグ
 
 	TEX m_aTex[MAX_MODEL];
 

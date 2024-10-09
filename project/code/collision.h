@@ -16,6 +16,7 @@ class CEnemy;
 class CBullet;
 class CObjectX;
 class CItem;
+class CMapObject;
 
 //===========================================================
 // コリジョンクラス定義
@@ -39,11 +40,14 @@ public:
 	bool HitMapObject(D3DXVECTOR3 pMyPos, D3DXVECTOR3 pTargetPos, float fMyRadius, float fTargetRadius);
 	bool HitElectricBox(D3DXVECTOR3 pMyPos, D3DXVECTOR3 pTargetPos, float fMyRadius, float fTargetRadius);
 	void MapObject(D3DXVECTOR3* pos, D3DXVECTOR3* posOld, float fRadius);
+	bool CheckPlayerMapObject(CPlayer* pPlayer, CMapObject* pMapObject, float fRadius);
+	bool HitOBJ(CPlayer* pPlayer, CMapObject* pMapObject, float fMyRadius, float fTargetRadius);
 	void MapEnemy(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, CObjectX **pObjectX, CEnemy *enemy);            // マップにある建物との当たり判定
 	bool Item(D3DXVECTOR3 *pos);
 	void ItemAttack(CObjectX *pobj);
 	bool ItemEnemy(CItem *pItem, CEnemy *pEnemy, float fMyRadius, float fTargetRadius, float fHeight);   // アイテムと敵の判定
 	D3DXVECTOR3 *CheckEnemy(D3DXVECTOR3 *pMyPos, D3DXVECTOR3 *pMyOldPos, D3DXVECTOR3 *pTargetPos, float fMyRadius);                      // 敵との当たり判定
+	bool aaa(CMapObject* p);
 
 	void SetbColli(bool bValue) { m_bColli = bValue; }
 	bool GetbColli(void) { return m_bColli; }

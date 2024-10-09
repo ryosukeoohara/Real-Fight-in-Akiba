@@ -150,9 +150,7 @@ namespace utility
 		if (rot.y >= 1.57 || rot.y <= -1.57)
 		{
 			MaxX = pVtxMax->x;
-			MaxZ = pVtxMax->z;
 			MinX = pVtxMin->x;
-			MinZ = pVtxMin->z;
 
 			pVtxMax->x = pVtxMax->z;
 			pVtxMin->x = pVtxMin->z;

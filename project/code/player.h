@@ -106,16 +106,6 @@ public:
 		MAX
 	};
 
-private:
-
-	enum DAMEGESTATE
-	{
-		DAMEGE_NONE = 0,
-		DAMEGE_SMALL,
-		DAMEGE_BIG,
-		DAMEGE_MAX
-	};
-
 	// 情報
 	struct INFO
 	{
@@ -129,6 +119,16 @@ private:
 		ATTACKTYPE Atc;                   // 攻撃を種類
 		int nLife;                        // 体力
 		float fRadius;                    // 横幅
+	};
+
+private:
+
+	enum DAMEGESTATE
+	{
+		DAMEGE_NONE = 0,
+		DAMEGE_SMALL,
+		DAMEGE_BIG,
+		DAMEGE_MAX
 	};
 
 	struct GRAP
@@ -156,6 +156,7 @@ public:
 	static CPlayer *Create(void);
 	void Damage(int nDamage, float fKnockBack);			              // 攻撃をくらった時の処理
 	void TitleWalk(void);                     // タイトル
+	void CreateRippleshEffect(void);  // 水たまりに入った時のエフェクトを生成
 
 	//　設定系
 	void SetPosition(D3DXVECTOR3 pos) { m_Info.pos = pos; }         // 位置設定
@@ -191,6 +192,8 @@ public:
 	HEAT GetHeatAct(void) { return m_HeatAct; }
 	bool GetHeatActFlag(void) { return m_bHeatActFlag; }
 	MOBILITY GetMobility(void) { return m_Mobility; }
+	CPlayer::INFO* GetInfo(void) { return &m_Info; }
+	bool IsHitCollision(void);
 
 private:
 

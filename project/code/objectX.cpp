@@ -12,6 +12,8 @@
 #include "texture.h"
 #include "player.h"
 #include "utility.h"
+#include "object3D.h"
+#include "collision.h"
 
 //===========================================================
 // コンストラクタ
@@ -170,7 +172,6 @@ void CObjectX::HitAttack(void)
 	else
 	{
 		// 揺らされていない場合は揺らし処理による加算座標を０にする
-		//m_Info.move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		m_nShakeTimeCounter = 0;
 	}
 }
@@ -246,6 +247,40 @@ void CObjectX::GraduallyFallDown(void)
 		}
 
 		utility::ChangeVtx(&m_Info.vtxMax, &m_Info.vtxMini, m_Info.rot);
+	}
+}
+
+//===========================================================
+// 水が漏れる
+//===========================================================
+void CObjectX::WaterLeak(void)
+{
+	if (!m_bWaterLeak)
+		return;
+
+	if (!m_bShut)
+	{
+		if (m_pWater == nullptr)
+		{
+			m_pWater = CObject3D::Create();
+			m_pWater->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist("data\\TEXTURE\\water.png"));
+			m_pWater->SetSize(100.0f, 100.0f);
+			m_pWater->SetDraw(true);
+			m_pWater->SetPosition(D3DXVECTOR3(m_Info.pos.x, 1.0f, m_Info.pos.z));
+		}
+
+		if (m_pWater != nullptr)
+		{
+			CPlayer *pPlayer = CPlayer::GetInstance();
+			if (CCollision::GetInstance()->Circle(m_pWater->GetPosition(), pPlayer->GetPosition(), 75.0f, 50.0f))
+			{
+				int i = 0;
+			}
+			else
+			{
+
+			}
+		}
 	}
 }
 
@@ -347,8 +382,6 @@ HRESULT CObjectX::Init(void)
 	//頂点バッファをアンロック
 	m_pMesh->UnlockVertexBuffer();
 
-	
-
 	return S_OK;
 }
 
@@ -386,38 +419,43 @@ void CObjectX::Uninit(void)
 //===========================================================
 void CObjectX::Update(void)
 {
-	
+	//// プレイヤーに蹴られて吹き飛ぶ処理
+	//Shoot();
 
-	if (m_Info.pos.y - m_Info.vtxMax.x >= 0.0f)
-	{
-		m_Info.pos.y -= 1.0f;
-		m_bShut = false;
-	}
+	//// プレイヤーが柵に触れて倒れる
+	//FallDown();
 
-	if (m_Info.pos.y <= 0.0f)
-	{
-		m_Info.pos.y = 1.0f;
-		m_bShut = false;
-	}
+	//// 
+	//HitAttack();
 
-	// プレイヤーに蹴られて吹き飛ぶ処理
-	Shoot();
+	//// 
+	//GraduallyFallDown();
 
-	// プレイヤーが柵に触れて倒れる
-	FallDown();
+	//WaterLeak();
 
-	// 
-	HitAttack();
+	//if (m_Info.pos.y - m_Info.vtxMax.x >= 0.0f)
+	//{
+	//	m_Info.pos.y -= m_fGravity;
+	//	m_bShut = false;                                      
+	//}
 
-	// 
-	GraduallyFallDown();
+	//if (m_Info.pos.y <= 0.0f)
+	//{
+	//	m_Info.pos.y = 0.0f;
+	//	m_bShut = false;
+	//}
 
-	m_Info.pos += m_Info.move;
+	//if (m_nHitCounter >= 3 && m_bDamage)
+	//{
+	//	m_nHitCounter = 0;
+	//}
 
-	// 移動量を更新(減衰させる)
-	m_Info.move.x += (0.0f - m_Info.move.x) * 0.1f;
-	m_Info.move.y += (0.0f - m_Info.move.y) * 0.1f;
-	m_Info.move.z += (0.0f - m_Info.move.z) * 0.1f;
+	//m_Info.pos += m_Info.move;
+
+	//// 移動量を更新(減衰させる)
+	//m_Info.move.x += (0.0f - m_Info.move.x) * 0.1f;
+	//m_Info.move.y += (0.0f - m_Info.move.y) * 0.1f;
+	//m_Info.move.z += (0.0f - m_Info.move.z) * 0.1f;
 }
 
 //===========================================================

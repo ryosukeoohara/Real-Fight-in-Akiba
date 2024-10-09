@@ -36,6 +36,7 @@
 #include "heataction.h"
 #include "particle.h"
 #include "MyEffekseer.h"
+#include "ripples.h"
 
 //===========================================================
 // 静的メンバ変数
@@ -534,6 +535,17 @@ void CPlayer::Draw(void)
 }
 
 //================================================================
+// 攻撃が発生しているかどうか
+//================================================================
+bool CPlayer::IsHitCollision(void)
+{
+	if (m_pMotion->GetAttackOccurs() <= m_pMotion->GetNowFrame() && m_pMotion->GetAttackEnd() >= m_pMotion->GetNowFrame())
+		return true;
+
+	return false;
+}
+
+//================================================================
 // 制御処理
 //================================================================
 void CPlayer::Control(void)
@@ -733,7 +745,7 @@ void CPlayer::Move(void)
 	{
 		CCollision::GetInstance()->Map(&m_Info.pos, &m_Info.posOld, 40.0f);
 
-		CCollision::GetInstance()->MapObject(&m_Info.pos, &m_Info.posOld, 20.0f);
+		//CCollision::GetInstance()->MapObject(&m_Info.pos, &m_Info.posOld, 20.0f);
 	}
 }
 
@@ -867,9 +879,9 @@ void CPlayer::Grap(void)
 		float f = EnemyDistance();
 		float g = ItemDistance();
 
-		if (m_pMotion->GetAttackOccurs() <= m_pMotion->GetNowFrame() && m_pMotion->GetAttackEnd() >= m_pMotion->GetNowFrame())
-		{// 現在のフレームが攻撃判定発生フレーム以上かつ攻撃判定終了フレームない
-
+		// 攻撃が発生していたら
+		if (IsHitCollision())
+		{
 			if (f > g)
 			{// 範囲内
 
@@ -955,16 +967,16 @@ void CPlayer::State(void)
 		else 
 			mtx = m_ppCharacter[9]->GetMtxWorld();
 
-		// 現在のフレームが攻撃判定発生フレーム以上かつ攻撃判定終了フレームない
-		if (m_pMotion->GetAttackOccurs() <= m_pMotion->GetNowFrame() && m_pMotion->GetAttackEnd() >= m_pMotion->GetNowFrame())
+		// 攻撃が発生していたら
+		if (IsHitCollision())
 		{
 			CGame::GetCollision()->AttackCircle(&D3DXVECTOR3(mtx->_41, mtx->_42, mtx->_43), 50.0f, 50.0f, 100.0f);
 
-			if(CCollision::GetInstance()->HitMapObject(D3DXVECTOR3(mtx->_41, mtx->_42, mtx->_43), {}, 30.0f, 10.0f))
+			/*if(CCollision::GetInstance()->HitMapObject(D3DXVECTOR3(mtx->_41, mtx->_42, mtx->_43), {}, 30.0f, 10.0f))
 				CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(mtx->_41, mtx->_42, mtx->_43));
 
 			if (CCollision::GetInstance()->HitElectricBox(D3DXVECTOR3(mtx->_41, mtx->_42, mtx->_43), {}, 30.0f, 30.0f))
-				CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(mtx->_41, mtx->_42, mtx->_43));
+				CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(mtx->_41, mtx->_42, mtx->_43));*/
 
 		}
 			
@@ -1605,5 +1617,38 @@ void CPlayer::DashEffect(void)
 		mtx = m_ppCharacter[15]->GetMtxWorld();
 
 		CParticle::Create(D3DXVECTOR3(mtx->_41, 0.0f, mtx->_43), CParticle::TYPE_GROUND);
+	}
+}
+
+//================================================================
+// 水たまりに入った時のエフェクトを生成する処理
+//================================================================
+void CPlayer::CreateRippleshEffect(void)
+{
+	//// 移動状態以外の時処理を抜ける
+	//if (m_Info.state != STATE_MOVE)
+	//	return;
+
+	D3DMATRIX* mtx = {};
+
+	// 現在のフレーム数を取得
+	int nNow = m_pMotion->GetKeyFrame();
+
+	//if (nNow == 1)
+	//{
+	//	// 左足のマトリックスを取得
+	//	mtx = m_ppCharacter[12]->GetMtxWorld();
+
+	//	// 波紋を生成
+	//	CRipples::Create(D3DXVECTOR3(mtx->_41, 1.0f, mtx->_43));
+	//}
+
+	if (nNow % 20 == 0)
+	{
+		// 右足のマトリックスを取得
+		mtx = m_ppCharacter[15]->GetMtxWorld();
+
+		// 波紋を生成
+		CRipples::Create(D3DXVECTOR3(m_Info.pos.x, 1.0f, m_Info.pos.z));
 	}
 }

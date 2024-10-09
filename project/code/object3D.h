@@ -29,6 +29,8 @@ public:
 	void Draw(void);               // 描画処理
 
 	void BindTexture(LPDIRECT3DTEXTURE9 m_Texture);  // テクスチャをバインド
+	void EaseToTarget(D3DXVECTOR2 current, float adjustSpeed);
+	void GradualFadeOut(float cola);
 
 	// 設定系
 	void SetPosition(D3DXVECTOR3 pos) { m_pos = pos; }                    // 位置
