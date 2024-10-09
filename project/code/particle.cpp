@@ -198,41 +198,24 @@ void CParticle::Ground(void)
 	if (pPlayer == nullptr)
 		return;
 
-	fRot = pPlayer->GetRotition().y;
+	for (int i = 0; i < 3; i++)
+	{
+		float fMove = 0.0f, fMoveY = 0.0f, fRot = 0.0f;
 
+		fMove = (float)(rand() % 25 * 0.1f);
+		fMoveY = (float)(rand() % 10 * 0.1f);
 
-	fRot = fRot * -2.0f;
+		fRot = pPlayer->GetRotition().y + (float)(rand() % 10 * 0.1f);
 
-	fRot = utility::CorrectAngle(fRot);
+		fRot = utility::CorrectAngle(fRot);
 
-	// à⁄ìÆó ê›íË
-	m_move.x = sinf(fRot);
-	m_move.y = 0.0f;
-	m_move.z = cosf(fRot);
+		// à⁄ìÆó ê›íË
+		m_move.x = sinf(fRot) * fMove;
+		m_move.y = fMoveY;
+		m_move.z = cosf(fRot) * fMove;
 
-	CEffect::Create({ m_pos.x, 0.0f, m_pos.z }, m_move, { 0.5f, 0.3f, 0.2f, 0.7f }, 25.0f, 30, CEffect::TYPE_GROUND);
-
-
-	fRot = utility::CorrectAngle(fRot);
-
-	// à⁄ìÆó ê›íË
-	m_move.x = sinf(fRot);
-	m_move.y = 0.0f;
-	m_move.z = cosf(fRot);
-
-	CEffect::Create({ m_pos.x, 0.0f, m_pos.z }, m_move, { 0.5f, 0.3f, 0.2f, 0.7f }, 25.0f, 30, CEffect::TYPE_GROUND);
-
-
-	fRot = fRot * 2.0f;
-
-	fRot = utility::CorrectAngle(fRot);
-
-	// à⁄ìÆó ê›íË
-	m_move.x = sinf(fRot);
-	m_move.y = 0.0f;	 
-	m_move.z = cosf(fRot);
-
-	CEffect::Create({ m_pos.x, 0.0f, m_pos.z }, m_move, { 0.5f, 0.3f, 0.2f, 0.7f }, 25.0f, 30, CEffect::TYPE_GROUND);
+		CEffect::Create({ m_pos.x, -10.0f, m_pos.z }, m_move, { 0.5f, 0.3f, 0.2f, 0.7f }, 25.0f, 30, CEffect::TYPE_GROUND);
+	}
 }
 
 //===========================================================

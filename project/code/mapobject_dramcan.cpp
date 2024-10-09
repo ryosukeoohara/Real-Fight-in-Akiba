@@ -27,7 +27,7 @@ namespace
 {
 	const char* TEXTURE_PATH = "data\\TEXTURE\\water.png";  // 水たまりのテクスチャ
 	const D3DXVECTOR2 TARGET_POS = { 100.0f, 100.0f };        // 目標の値
-	const float LERP_SPEED = 0.025f;                        // 目標の値までの補正係数
+	const float LERP_SPEED = 0.0015f;                        // 目標の値までの補正係数
 }
 
 //===========================================================
@@ -257,6 +257,7 @@ void CDramcanWaterLeak::Update(CMapObject_Dramcan* pDramcan)
 		m_pPuddle = CObject3D::Create();
 		m_pPuddle->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist(TEXTURE_PATH));
 		m_pPuddle->SetSize(1.0f, 1.0f);
+		m_pPuddle->SetColor({ 1.0f, 1.0f, 1.0f, 0.8f });
 		m_pPuddle->SetDraw(true);
 		m_pPuddle->SetPosition(D3DXVECTOR3(pInfo->pos.x, 0.5f, pInfo->pos.z));
 	}

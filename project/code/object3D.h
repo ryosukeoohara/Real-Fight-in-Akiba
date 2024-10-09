@@ -35,7 +35,7 @@ public:
 	// 設定系
 	void SetPosition(D3DXVECTOR3 pos) { m_pos = pos; }                    // 位置
 	void SetRotition(D3DXVECTOR3 rot) { m_rot = rot; }                    // 向き
-	void SetColor(D3DXCOLOR col) { m_col = col; }                         // 色
+	void SetColor(D3DXCOLOR col);
 	void SetIdxTex(int Idx) { m_nIdxTexture = Idx; }                      // テクスチャのインデックス番号
 	void SetSize(float fHeight, float fWidth);                            // サイズ
 	void SetEdgeCenter(float fWidth, float fHeight);                      // サイズ

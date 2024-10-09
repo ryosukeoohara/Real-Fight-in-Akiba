@@ -17,8 +17,8 @@
 //===========================================================
 const char *CEffect::m_apTexName[TYPE_MAX] =
 {
+	"data\\TEXTURE\\smoke_05.png",
 	"data\\TEXTURE\\smoke.jpg",
-	"data\\TEXTURE\\smook.png",
 };
 
 //===========================================================
@@ -149,10 +149,10 @@ void CEffect::Draw(void)
 	CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 
-	//αブレンディングを加算合計に設定
-	pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+	////αブレンディングを加算合計に設定
+	//pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+	//pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	//pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
 
 	pDevice->SetTexture(0, pTexture->GetAddress(m_nIdxTexture));
 

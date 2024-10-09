@@ -317,7 +317,7 @@ void CBillBoard::Draw(void)
 		//αテストを有効にする
 		pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 		pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-		pDevice->SetRenderState(D3DRS_ALPHAREF, 160);
+		pDevice->SetRenderState(D3DRS_ALPHAREF, 0);
 
 		D3DXMATRIX m_mtxTrans;           // 計算用マトリックス
 

@@ -110,6 +110,7 @@ CRipples* CRipples::Create(D3DXVECTOR3 pos)
 	{
 		pRipples->Init();
 		pRipples->SetPosition(pos);
+		pRipples->SetColor({1.0f, 1.0f, 1.0f, 0.8f});
 		pRipples->SetSize(1.0f, 1.0f);
 		pRipples->SetDraw(true);
 	}
