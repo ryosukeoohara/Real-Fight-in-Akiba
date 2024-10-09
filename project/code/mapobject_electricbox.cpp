@@ -8,6 +8,7 @@
 #include "player.h"
 #include "collision.h"
 #include "utility.h"
+#include "effect.h"
 
 //===========================================================
 // 静的メンバ変数
@@ -114,10 +115,21 @@ void CMapObject_ElectricBox::Update(void)
 		{
 			// ステートの変更：殴られた状態
 			ChangeState(new CElectrictBeaten);
+
+			m_nFallDownCount++;
 		}
 	}
 
 	CCollision::GetInstance()->CheckPlayerMapObject(pPlayer, this, 20.0f);
+
+	CObjectX::INFO* pInfo = GetInfo();
+
+	D3DXVECTOR3 posmax = pInfo->vtxMax + pInfo->pos;
+	D3DXVECTOR3 posmin = pInfo->vtxMini + pInfo->pos;
+
+	CEffect::Create(posmax, { 0.0f, 0.0f, 0.0f }, {1.0f, 0.0f, 0.0f, 1.0f}, 10.0f, 60, CEffect::TYPE_GROUND);
+	CEffect::Create(posmin, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }, 10.0f, 60, CEffect::TYPE_GROUND);
+	
 }
 
 //===========================================================
@@ -193,6 +205,9 @@ void CElectricFallDown::Update(CMapObject_ElectricBox* pElectricBox)
 
 	if ((pInfo->rot.x >= D3DX_PI * 0.5f || pInfo->rot.x <= -D3DX_PI * 0.5f))
 	{
+		// vtxの変更
+		utility::ChangeVtx(&pInfo->vtxMax, &pInfo->vtxMini, pInfo->rot);
+
 		// ステートの変更：ニュートラル
 		pElectricBox->ChangeState(new CElectricNeutral);
 	}
@@ -217,8 +232,7 @@ void CElectricFallDown::Update(CMapObject_ElectricBox* pElectricBox)
 		pInfo->rot.x += 0.1f;
 	}
 
-	// vtxの変更
-	utility::ChangeVtx(&pInfo->vtxMax, &pInfo->vtxMini, pInfo->rot);
+
 }
 
 //===========================================================
@@ -253,8 +267,8 @@ void CElectrictBeaten::Update(CMapObject_ElectricBox* pElectricBox)
 	{
 		m_nShakeTimeCounter = 0;
 		int nNum = pElectricBox->GetFallDownCount();
-		nNum++;
-		pElectricBox->SetFallDown(nNum);
+		/*nNum++;
+		pElectricBox->SetFallDown(nNum);*/
 
 		if (nNum >= FALL_DOWN)
 		{

@@ -119,7 +119,7 @@ namespace utility
 	{
 		float MaxX = 0.0f, MaxY = 0.0f, MaxZ = 0.0f,   MinX = 0.0f, MinY = 0.0f, MinZ = 0.0f;
 
-		if (rot.x >= 1.57)
+		if (rot.x >= 1.57f)
 		{
 			MaxY = pVtxMax->y;
 			MinY = pVtxMin->y;
@@ -133,13 +133,13 @@ namespace utility
 			return;
 		}
 
-		if (rot.x <= -1.57)
+		if (rot.x <= -1.57f)
 		{
 			MaxY = pVtxMax->y;
 			MinY = pVtxMin->y;
 
-			pVtxMax->y = pVtxMax->x;
-			pVtxMin->y = pVtxMin->x;
+			pVtxMax->y = -pVtxMin->x;
+			pVtxMin->y = -pVtxMax->x;
 			
 			pVtxMax->x = -MinY;
 			pVtxMin->x = -MaxY;
@@ -147,7 +147,7 @@ namespace utility
 			return;
 		}
 
-		if (rot.y >= 1.57 || rot.y <= -1.57)
+		if (rot.y >= 1.57f || rot.y <= -1.57f)
 		{
 			MaxX = pVtxMax->x;
 			MinX = pVtxMin->x;

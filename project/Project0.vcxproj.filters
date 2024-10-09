@@ -234,9 +234,6 @@
     <ClCompile Include="code\shadow.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="code\effect.cpp">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClCompile>
     <ClCompile Include="code\gage.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
@@ -272,6 +269,9 @@
     </ClCompile>
     <ClCompile Include="code\ripples.cpp">
       <Filter>ソース ファイル\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="code\effect.cpp">
+      <Filter>ソース ファイル\VFX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
