@@ -47,6 +47,7 @@ public:
 		STATE_HEATACTELECTRO,       // ヒートアクション:電子レンジびりびり
 		STATE_HEATACTFAINTING,      // ヒートアクション:電子レンジ気絶
 		STATE_FALLDOWN,             // 転ぶ
+		STATE_ONSTEGE,
 		STATE_DEATH,                // 死亡
 		STATE_MAX
 	};
@@ -54,23 +55,22 @@ public:
 	// モーション
 	enum MOTIONTYPE
 	{
-		MOTIONE_NONE = 0,             // なんもない
-		MOTIONE_NEUTRAL,              // 待機
-		MOTIONE_DASH,                 // 移動
+		MOTIONE_NEUTRAL = 0,              // 待機
 		MOTIONE_WALK,                 // 移動
 		MOTIONE_ATTACK,               // 攻撃
-		MOTIONE_GRAP,                 // 投げられ待ち
 		MOTIONE_DAMEGE,               // 攻撃受けた
-		MOTIONE_PAINFULDAMAGE,        // 痛い攻撃を受けた
+		MOTIONE_GRAP,                 // 投げられ待ち
 		MOTIONE_HEATDAMEGE,           // 攻撃受けた
-		MOTIONE_GETUP,                // 起き上がり
 		MOTIONE_HEATACTELECTROWAIT,   // ヒートアクション:電子レンジ待機
 		MOTIONE_HEATACTELECTRO,       // ヒートアクション:電子レンジびりびり
-		MOTIONE_HEATACTFAINTING,      // ヒートアクション:電子レンジ気絶
-		MOTIONE_FALLDOWN,             // 転ぶ
+		MOTIONE_HEATACTFAINTING,      // ヒートアクション:電子レンジ気絶MOTIONE_PAINFULDAMAGE,        // 痛い攻撃を受けた
+		MOTIONE_GETUP,                // 起き上がり
 		MOTIONE_DEATH,                // 死亡
-		MOTION_PUNCH,                 // パンチ
+		MOTIONE_FALLDOWN,             // 転ぶ
 		MOTION_GURUGURU,              // ぐるぐるパンチ
+		MOTION_PUNCH,                 // パンチ
+		MOTION_ONSTEGE,
+		MOTION_KUGIKIRI,
 		MOTION_MAX
 	};
 
@@ -137,6 +137,19 @@ public:
 
 private:
 	
+};
+
+class CEnemyBossOnStege : public CEnemyBossState
+{
+public:
+	CEnemyBossOnStege();
+	~CEnemyBossOnStege() {}
+
+	void Update(CEnemyBoss* pEnemyBoss) override;
+
+private:
+
+
 };
 
 // 攻撃している状態

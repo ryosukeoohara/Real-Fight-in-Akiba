@@ -87,6 +87,7 @@ public:
 	void SetRotation(D3DXVECTOR3 Rot);
 	void SetDistnce(float fLen);
 	void ChangeState(CCameraState* pBehaviour);
+	void AdjustToTarget(D3DXVECTOR3 posR, D3DXVECTOR3 targetPosR, D3DXVECTOR3 posV, D3DXVECTOR3 targetPosV);
 
 	// 取得系
 	MODE GetMode(void);
@@ -94,6 +95,7 @@ public:
 	D3DXMATRIX GetView(void) { return m_Info.mtxView; }
 	D3DXMATRIX GetProjection(void) { return m_Info.mtxProjection; }
 	Info *GetInfo(void) { return &m_Info; }
+	static CCamera* GetInstance(void) { return m_pCamera; }
 
 private:
 	void Mode(void);
@@ -139,6 +141,58 @@ class FollowPlayerCamera : public CCameraState
 public:
 	FollowPlayerCamera();
 	~FollowPlayerCamera();
+
+	void Update(CCamera* pCamera) override;
+
+private:
+
+};
+
+//===========================================================
+// ゲームスタート時に敵を様々な角度から見るカメラ
+//===========================================================
+class CameraEnemyOverview : public CCameraState
+{
+public:
+	CameraEnemyOverview();
+	~CameraEnemyOverview() {}
+
+	void Update(CCamera* pCamera) override;
+
+private:
+
+	CEnemy* m_pEnemy = nullptr;
+
+	int m_nFocusCounter = 0;
+	int m_nLookCount = 0;
+
+};
+
+//===========================================================
+// ゲームスタート時に敵を様々な角度から見るカメラ
+//===========================================================
+class FollowEnemyCamera : public CCameraState
+{
+public:
+	FollowEnemyCamera();
+	~FollowEnemyCamera();
+
+	void Update(CCamera* pCamera) override;
+
+private:
+
+	D3DXVECTOR3 m_move = {};
+
+};
+
+//===========================================================
+// 引いていくカメラ
+//===========================================================
+class CameraZoomOut : public CCameraState
+{
+public:
+	CameraZoomOut();
+	~CameraZoomOut() {}
 
 	void Update(CCamera* pCamera) override;
 

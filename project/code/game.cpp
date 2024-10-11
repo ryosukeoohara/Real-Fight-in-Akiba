@@ -107,13 +107,9 @@ void CGame::WaveControll(void)
 	case CGame::WAVE_00:
 
 		CManager::GetInstance()->GetCamera()->Reset();
-		m_bOnStage = false;
 
-		if (pFade->Get() != pFade->FADE_BLACK)
-			pFade->Set();
 
-		if (pFade->GetCol() >= 1.0f)
-		{
+
 			m_pEnemyManager->SetBossEnemy();
 
 			if (m_pPlayer != nullptr)
@@ -128,10 +124,12 @@ void CGame::WaveControll(void)
 				if (m_pPlayer->GetMotion() != nullptr)
 					m_pPlayer->GetMotion()->Set(CPlayer::TYPE_NEUTRAL);
 
+				CManager::GetInstance()->GetCamera()->ChangeState(new FollowEnemyCamera);
+
 			}
 
 			m_Wave = WAVE_01;
-		}
+		
 		
 		break;
 
@@ -187,11 +185,11 @@ HRESULT CGame::Init(void)
 		m_pItemManager = CItemManager::Create("data\\TEXT\\itemset_game.txt");
 	}
 
-	//// 敵マネージャの生成
-	//if (m_pEnemyManager == nullptr)
-	//{
-	//	m_pEnemyManager = CEnemyManager::Create();
-	//}
+	// 敵マネージャの生成
+	if (m_pEnemyManager == nullptr)
+	{
+		m_pEnemyManager = CEnemyManager::Create();
+	}
 
 	// プレイヤーの生成
 	if (m_pPlayer == nullptr)
@@ -332,9 +330,9 @@ void CGame::Update(void)
 		return;
 	}
 
-	if (pFade->Get() != pFade->FADE_BLACK &&  pFade->GetCol() == 0.0f && m_bOnStage == false)
+	if (pFade->Get() != pFade->FADE_BLACK &&  pFade->GetCol() <= 0.8f && m_bOnStage == false)
 	{
-		CManager::GetInstance()->GetCamera()->ChangeState(new CutSceneCamera);
+		CManager::GetInstance()->GetCamera()->ChangeState(new CameraEnemyOverview);
 		m_bOnStage = true;
 	}
 
@@ -384,6 +382,6 @@ void CGame::Draw(void)
 
 	}
 
-	if (m_pMap != nullptr)
-		m_pMap->Draw();
+	/*if (m_pMap != nullptr)
+		m_pMap->Draw();*/
 }

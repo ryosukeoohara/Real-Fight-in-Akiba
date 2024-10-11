@@ -195,6 +195,8 @@ void CEnemyWeak::Update(void)
 		pMotion->Set(CEnemy::MOTION_DEATH);
 		ChangeState(new CEnemyWeakStateDeath);
 	}
+
+	CManager::GetInstance()->GetDebugProc()->Print("“G‚ÌˆÊ’uF[%f, %f, %f]\n", Info->pos.x, Info->pos.y, Info->pos.z);
 }
 
 //===========================================================

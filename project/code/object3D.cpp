@@ -311,13 +311,13 @@ void CObject3D::GradualFadeOut(float cola)
 	//頂点バッファをロックし、頂点情報へポインタを取得
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
-	m_col.a = m_col.a - cola;
+	m_col.a -= cola;
 
 	//頂点カラーの設定
-	pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, m_col.a);
-	pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, m_col.a);
-	pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, m_col.a);
-	pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, m_col.a);
+	pVtx[0].col = m_col;
+	pVtx[1].col = m_col;
+	pVtx[2].col = m_col;
+	pVtx[3].col = m_col;
 
 	//頂点バッファをアンロックする
 	m_pVtxBuff->Unlock();

@@ -52,7 +52,8 @@ public:
 		STATE_DAMEGE,       // ダメージ
 		STATE_INVINCIBE,    // 無敵
 		STATE_DEATH,        // 死亡
-		STATE_OTA,
+		STATE_OTA,          // タイトルのオタ芸
+		STATE_MOVESTOP,     // 移動停止
 		STATE_MAX
 	};
 
@@ -96,6 +97,7 @@ public:
 		TYPE_POWERFUL,          // 地面たたきつけ
 		TYPE_DAMAGE,            // ダメージ
 		TYPE_OTA,               // タイトルでするオタ芸
+		TYPE_MOVESTOP,          // 移動停止
 		TYPE_MAX
 	};
 
@@ -157,6 +159,7 @@ public:
 	void Damage(int nDamage, float fKnockBack);			              // 攻撃をくらった時の処理
 	void TitleWalk(void);                     // タイトル
 	void CreateRippleshEffect(void);  // 水たまりに入った時のエフェクトを生成
+	void CreateMoveStopEffect(void);  // 移動停止した際に出るエフェクトを生成
 
 	//　設定系
 	void SetPosition(D3DXVECTOR3 pos) { m_Info.pos = pos; }         // 位置設定

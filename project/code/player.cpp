@@ -1048,13 +1048,24 @@ void CPlayer::State(void)
 		m_Grap.pEnemy->SetRotition(D3DXVECTOR3(-0.2f, 1.27f, -1.4f));
 	}
 
+	if (!m_bDesh && m_Info.state == STATE_MOVE)
+	{
+		m_pMotion->Set(TYPE_MOVESTOP);
+		m_Info.state = STATE_MOVESTOP;
+	}
+
+	if (m_Info.state == STATE_MOVESTOP)
+	{
+		CreateMoveStopEffect();
+	}
+
 	// 待機モーションにする
 	if (m_pMotion->IsFinish() == true || (m_bDesh == false && m_bLift == true && m_Info.state == STATE_GRAPDASH)
 		|| (m_bDesh == false && m_bGrap == true && m_Info.state == STATE_GRAPWALK)
 		|| (m_bDesh == false && m_bGrap == false && m_bLift == false 
 		 && m_Info.state != STATE_NEUTRAL && m_Info.state != STATE_ATTACK && m_Info.state != STATE_EVASION
 		 && m_Info.state != STATE_LIFT && m_Info.state != STATE_HEAT && m_Info.state != STATE_THROW
-		 && m_Info.state != STATE_EVASION && m_Info.state != STATE_GRAP))
+		 && m_Info.state != STATE_EVASION && m_Info.state != STATE_GRAP && m_Info.state != STATE_MOVESTOP))
 	{
 		//モーションをセット(待機)
 		m_pMotion->Set(TYPE_NEUTRAL);
@@ -1080,6 +1091,32 @@ void CPlayer::State(void)
 			m_bGrap = true;
 		}
 	}
+
+	/*if (m_Info.state == STATE_NEUTRAL)
+	{
+		m_pMotion->Set(TYPE_NEUTRAL);
+		m_Info.state = STATE_NEUTRAL;
+		m_bLift = false;
+		m_bAttack = false;
+		m_nCntColi = 0;
+
+		if (CGame::GetCollision() != nullptr)
+			CGame::GetCollision()->SetbColli(false);
+
+		if (m_Grap.pItem != nullptr)
+		{
+			m_Info.state = STATE_LIFT;
+			m_pMotion->Set(TYPE_LIFT);
+			m_bLift = true;
+		}
+
+		if (m_Grap.pEnemy != nullptr)
+		{
+			m_Info.state = STATE_GRAPNEUTRAL;
+			m_pMotion->Set(TYPE_GRAPNEUTRAL);
+			m_bGrap = true;
+		}
+	}*/
 }
 
 //================================================================
@@ -1651,4 +1688,9 @@ void CPlayer::CreateRippleshEffect(void)
 		// 波紋を生成
 		CRipples::Create(D3DXVECTOR3(m_Info.pos.x, 1.0f, m_Info.pos.z));
 	}
+}
+
+void CPlayer::CreateMoveStopEffect(void)
+{
+	CParticle::Create(m_Info.pos, CParticle::TYPE_SMOOK);
 }

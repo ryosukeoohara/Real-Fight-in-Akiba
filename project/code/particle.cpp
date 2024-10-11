@@ -223,28 +223,30 @@ void CParticle::Ground(void)
 //===========================================================
 void CParticle::Smook(void)
 {
-	for (int nCnt = 0; nCnt < 3; nCnt++)
+	float fRot = 0.0f;
+
+	CPlayer* pPlayer = CPlayer::GetInstance();
+
+	if (pPlayer == nullptr)
+		return;
+
+	for (int i = 0; i < 1; i++)
 	{
-		int nLife = 0;
-		float fRadius = 0;
-		D3DXVECTOR3 move = {};
-		D3DXCOLOR col = {};
+		float fMove = 0.0f, fMoveY = 0.0f, fRot = 0.0f;
 
-		//à⁄ìÆó ÇÃê›íË
-		move.x = sinf((float)(rand() % 629 - 314) * 0.01f) * 0.09f;
-		move.y = 20.0f * 0.05f;
-		move.z = cosf((float)(rand() % 629 - 314) * 0.01f) * 0.09f;
+		fMove = (float)(rand() % 25 * 0.1f);
+		fMoveY = (float)(rand() % 10 * 0.1f);
 
-		//êFÇÃê›íË
-		col = D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.0f);
+		fRot = pPlayer->GetRotition().y + (float)(rand() % 10 * 0.1f);
 
-		//îºåaÇÃê›íË
-		fRadius = 10.0f;
+		fRot = utility::CorrectAngle(fRot);
 
-		//éıñΩÇÃê›íË
-		nLife = 500;
+		// à⁄ìÆó ê›íË
+		m_move.x = sinf(fRot) * fMove;
+		m_move.y = fMoveY;
+		m_move.z = cosf(fRot) * fMove;
 
-		CEffect::Create(m_pos, move, col, fRadius, nLife, CEffect::TYPE_SMOOK);
+		CEffect::Create({ m_pos.x, -10.0f, m_pos.z }, m_move, { 0.5f, 0.3f, 0.2f, 0.7f }, 25.0f, 30, CEffect::TYPE_SMOOK);
 	}
 }
 

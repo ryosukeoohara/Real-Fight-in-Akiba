@@ -75,6 +75,7 @@ public:
 
 		MOTION_PAINFULDAMAGE,        // ’É‚¢UŒ‚‚ðŽó‚¯‚½
 		MOTION_HEATDAMEGE,           // UŒ‚Žó‚¯‚½
+		//MOTION_ONSTEGE,
 		MOTION_MAX
 	};
 

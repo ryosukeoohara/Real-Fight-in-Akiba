@@ -275,6 +275,14 @@ HRESULT CEnemyBoss::Init(void)
 	SetType(BOSS);
 	ReadText(ENEMY_TEXT);
 
+	CMotion* pMotion = GetMotion();
+
+	if (pMotion != nullptr)
+	{
+		pMotion->Set(MOTION_ONSTEGE);
+		ChangeState(new CEnemyBossOnStege);
+	}
+
 	// “G‚Ìî•ñŽæ“¾
 	CEnemy::INFO* Info = GetInfo();
 
@@ -312,7 +320,7 @@ void CEnemyBoss::Update(void)
 	// “G‚Ìî•ñŽæ“¾
 	CEnemy::INFO* Info = GetInfo();
 
-	if (Info != nullptr)
+	if (Info == nullptr)
 		return;
 
 	CMotion* pMotion = GetMotion();
@@ -678,3 +686,31 @@ void CEnemyBossStateDeath::Update(CEnemyBoss* pEnemyBoss)
 //
 //	m_pAttackType = pAttackType;
 //}
+
+CEnemyBossOnStege::CEnemyBossOnStege()
+{
+}
+
+void CEnemyBossOnStege::Update(CEnemyBoss* pEnemyBoss)
+{
+	// ƒ‚[ƒVƒ‡ƒ“‚Ìî•ñŽæ“¾
+	CMotion* pMotion = pEnemyBoss->GetMotion();
+
+	if (pMotion == nullptr)
+		return;
+
+	// “G‚Ìî•ñŽæ“¾
+	CEnemy::INFO* Info = pEnemyBoss->GetInfo();
+
+	if (Info == nullptr)
+		return;
+
+	if (pMotion->IsFinish())
+	{
+		//pEnemyBoss->ChangeState(new CEnemyBossStateMove);
+		pMotion->Set(pEnemyBoss->MOTION_NEUTRAL);
+		//CManager::GetInstance()->GetCamera()->ChangeState(new FollowPlayerCamera);
+	}
+		
+
+}
