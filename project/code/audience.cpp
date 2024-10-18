@@ -12,6 +12,9 @@
 #include "debugproc.h"
 #include "object.h"
 #include "object3D.h"
+#include "collision.h"
+#include "player.h"
+#include "mapobject_can.h"
 
 //================================================================
 // 静的メンバ変数
@@ -24,7 +27,8 @@ CAudience* CAudience::m_pCur = nullptr;
 //===========================================================
 namespace
 {
-	const int JUMPWAITTIME = 60;  // 再びジャンプできるようになるまでの時間
+	const int JUMP_WAIT_TIME = 60;  // 再びジャンプできるようになるまでの時間
+	const int THROW_WAIT_TIME = 60;  // 再び缶を投げられるようになるまでの時間
 	const float JUMP = 8.0f;      // ジャンプの高さ
 	const float GRAVITY = -1.0f;  // 重力
 }
@@ -37,7 +41,9 @@ CAudience::CAudience()
 	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_nJumpWaitTime = 0;
+	m_nThrowWaitTime = 0;
 	m_bJump = false;
+	m_bThrow = false;
 
 	if (m_pTop != nullptr)
 	{// 先頭が存在している場合
@@ -194,7 +200,7 @@ void CAudience::Update(void)
 			// ジャンプさせて再びジャンプできるまでの時間を設定
 			m_bJump = true;
 			m_move.y = JUMP + fjump;
-			m_nJumpWaitTime = JUMPWAITTIME;
+			m_nJumpWaitTime = JUMP_WAIT_TIME;
 		}
 	}
 
@@ -218,8 +224,41 @@ void CAudience::Update(void)
 		m_bJump = false;
 	}
 
+	CCollision *pColl = CCollision::GetInstance();
+
 	// 位置設定
 	SetPosition(m_pos);
+
+
+	if (pColl == nullptr)
+		return;
+
+	// プレイヤーが範囲内に入ったかつ、缶を投げていない
+	if (pColl->Circle(m_pos, CPlayer::GetInstance()->GetPosition(), 200.0f, 50.0f) && !m_bThrow)
+	{
+		int i = rand() % 3;
+
+		if (i == 1)
+		{
+			CMapObject_Can* pCan = CMapObject_Can::Create("data\\MODEL\\map\\kan.x");
+			pCan->SetPosition(D3DXVECTOR3(m_pos.x, m_pos.y + 50.0f, m_pos.z));
+			D3DXVECTOR3 rot = GetRotition();
+			pCan->SetRotition(rot);
+			pCan->ChangeState(new CCanThrow);
+		}
+
+		m_bThrow = true;
+		m_nThrowWaitTime = THROW_WAIT_TIME;
+	}
+
+	// 缶を投げた
+	if (m_bThrow)
+		m_nThrowWaitTime--;
+
+	// 再び投げられるようにする
+	if (m_nThrowWaitTime <= 0)
+		m_bThrow = false;
+		
 }
 
 //================================================================

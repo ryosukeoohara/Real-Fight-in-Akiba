@@ -6,6 +6,8 @@
 //===========================================================
 #include "utility.h"
 #include "object2D.h"
+#include <iostream>
+#include <cmath>
 
 namespace utility
 {
@@ -49,14 +51,13 @@ namespace utility
 	{
 		float fLenght = 0.0f;
 
-		fLenght = (MyPos.x + MyPos.z) - (TargetPos.x + TargetPos.z);
+		//fLenght = (MyPos.x + MyPos.z) - (TargetPos.x + TargetPos.z);
 
-		if (fLenght < 0.0f)
-		{
-			fLenght *= -1.0f;
-		}
+		// 点1から点2へのベクトルを計算
+		D3DXVECTOR3 diff = TargetPos - MyPos;
 
-		return fLenght;
+		// ベクトルの長さ（距離）を計算
+		return D3DXVec3Length(&diff);
 	}
 
 	//===========================================================

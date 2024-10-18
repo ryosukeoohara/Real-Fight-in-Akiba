@@ -28,6 +28,28 @@ class CEnemyWeak : public CEnemy
 {
 public:
 
+	// モーション
+	enum MOTIONTYPE
+	{
+		MOTION_NEUTRAL = 0,          // 待機
+		MOTION_DASH,                 // 移動
+		MOTION_ATTACK,               // 攻撃
+		MOTION_DAMEGE,               // 攻撃受けた
+		MOTION_GRAP,                 // 投げられ待ち
+		MOTION_FALLDOWN,             // 転ぶ
+
+		MOTION_HEATACTELECTROWAIT,   // ヒートアクション:電子レンジ待機
+		MOTION_HEATACTELECTRO,       // ヒートアクション:電子レンジびりびり
+		MOTION_HEATACTFAINTING,      // ヒートアクション:電子レンジ気絶
+
+		MOTION_GETUP,                // 起き上がり
+		MOTION_DEATH,                // 死亡
+
+		MOTION_PAINFULDAMAGE,        // 痛い攻撃を受けた
+		MOTION_HEATDAMEGE,           // 攻撃受けた
+		MOTION_MAX
+	};
+
 	CEnemyWeak();                                  //コンストラクタ
 	CEnemyWeak(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nPriority = 5);                   //コンストラクタ
 	~CEnemyWeak();                                 //デストラクタ
@@ -37,15 +59,17 @@ public:
 	void Update(void) override;                         //更新
 	void Draw(void) override;                           //描画
 
-	static CEnemyWeak *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife);    //生成
+	static CEnemyWeak *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nPriority = 5);    //生成
 	void ChangeState(CEnemyWeakState* pState);  // ステイトの切り替え
 	void RecoverFromDamage(void) override;  // ダメージ状態からの復帰
 
 	void Damege(void) override;
+	void HardDamege(void) override;
+	void Grabbed(void) override;
 
 	 // 設定系
 	void SetChase(CHASE cha) { m_Chase = cha; }
-	
+	void SetbDamage(void) { m_bDamage = false; }
 	
 private:
 
@@ -55,9 +79,12 @@ private:
 	int m_nBiriBiriCount;
 	int m_nAtcCounter;             // 攻撃のインターバル
 	int m_nIdx;
+	bool m_bDamage;               // 攻撃を受けたかどうか
 };
 
-// ステイト
+//=================================================================
+// ステート
+//=================================================================
 class CEnemyWeakState
 {
 public:
@@ -70,6 +97,9 @@ private:
 
 };
 
+//===========================================================
+// 移動待機状態
+//===========================================================
 class CEnemyWeakStateMoveWait : public CEnemyWeakState
 {
 public:
@@ -82,7 +112,9 @@ private:
 
 };
 
-// 移動待機状態
+//===========================================================
+// 移動状態
+//===========================================================
 class CEnemyWeakStateMove : public CEnemyWeakState
 {
 public:
@@ -95,7 +127,9 @@ private:
 
 };
 
+//===========================================================
 // 攻撃待機状態
+//===========================================================
 class CEnemyWeakStateAttackWait : public CEnemyWeakState
 {
 public:
@@ -109,6 +143,9 @@ private:
 
 };
 
+//===========================================================
+// 攻撃状態
+//===========================================================
 class CEnemyWeakStateAttack : public CEnemyWeakState
 {
 public:
@@ -121,7 +158,9 @@ private:
 
 };
 
+//===========================================================
 // 攻撃をくらった状態
+//===========================================================
 class CEnemyWeakStateDamege : public CEnemyWeakState
 {
 public:
@@ -134,7 +173,54 @@ private:
 
 };
 
+//===========================================================
+// つよい攻撃をくらった状態
+//===========================================================
+class CEnemyWeakStateHeavyDamege : public CEnemyWeakState
+{
+public:
+	CEnemyWeakStateHeavyDamege();
+	~CEnemyWeakStateHeavyDamege() {};
+
+	void Update(CEnemyWeak* pEnemyWeak) override;
+
+private:
+
+};
+
+//===========================================================
+// 起き上がり状態
+//===========================================================
+class CEnemyWeakStateGetUp : public CEnemyWeakState
+{
+public:
+	CEnemyWeakStateGetUp();
+	~CEnemyWeakStateGetUp() {}
+
+	void Update(CEnemyWeak* pEnemyWeak) override;
+
+private:
+
+};
+
+//===========================================================
+// 捕まれている状態
+//===========================================================
+class CEnemyWeakStateGrabbed : public CEnemyWeakState
+{
+public:
+	CEnemyWeakStateGrabbed();
+	~CEnemyWeakStateGrabbed() {}
+
+	void Update(CEnemyWeak* pEnemyWeak) override;
+
+private:
+
+};
+
+//===========================================================
 // 死亡状態
+//===========================================================
 class CEnemyWeakStateDeath : public CEnemyWeakState
 {
 public:

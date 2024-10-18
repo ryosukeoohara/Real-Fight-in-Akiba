@@ -87,7 +87,8 @@ public:
 	void SetRotation(D3DXVECTOR3 Rot);
 	void SetDistnce(float fLen);
 	void ChangeState(CCameraState* pBehaviour);
-	void AdjustToTarget(D3DXVECTOR3 posR, D3DXVECTOR3 targetPosR, D3DXVECTOR3 posV, D3DXVECTOR3 targetPosV);
+	void AdjustToTarget(D3DXVECTOR3 targetPosR, D3DXVECTOR3 targetPosV, float fCorrent);
+	void Follow(D3DXVECTOR3 posV, D3DXVECTOR3 posR, D3DXVECTOR3 rot);
 
 	// 取得系
 	MODE GetMode(void);
@@ -169,7 +170,7 @@ private:
 };
 
 //===========================================================
-// ゲームスタート時に敵を様々な角度から見るカメラ
+// 敵を追従するカメラ
 //===========================================================
 class FollowEnemyCamera : public CCameraState
 {
@@ -181,8 +182,25 @@ public:
 
 private:
 
-	D3DXVECTOR3 m_move = {};
+};
 
+//===========================================================
+// 敵を追従するカメラ
+//===========================================================
+class FollowEnemyOverviewCamera : public CCameraState
+{
+public:
+	FollowEnemyOverviewCamera();
+	~FollowEnemyOverviewCamera() {}
+
+	void Update(CCamera* pCamera) override;
+
+private:
+
+	CEnemy* m_pEnemy = nullptr;
+	
+	int m_nFocusCounter = 0;
+	int m_nLookCount = 0;
 };
 
 //===========================================================
@@ -198,6 +216,25 @@ public:
 
 private:
 
+	D3DXVECTOR3 TargetPosV = {};
+	int n = 0;
+};
+
+//===========================================================
+// 目標の位置を向くカメラ
+//===========================================================
+class CameraTargetFocus : public CCameraState
+{
+public:
+	CameraTargetFocus();
+	~CameraTargetFocus() {}
+
+	void Update(CCamera* pCamera) override;
+
+private:
+
+	int n = 0;
+	D3DXVECTOR3 TargetPosV = {};
 };
 
 //===========================================================
@@ -228,6 +265,7 @@ public:
 
 private:
 
+	D3DXVECTOR3 TargetPosV = {};
 };
 
 //===========================================================
@@ -243,6 +281,35 @@ public:
 
 private:
 
+};
+
+//===========================================================
+// ボス撃破演出用カメラ
+//===========================================================
+class FinalBlowCamera : public CCameraState
+{
+public:
+	FinalBlowCamera();
+	~FinalBlowCamera() {}
+
+	void Update(CCamera* pCamera) override;
+
+private:
+
+	CEnemy* m_pEnemy = nullptr;
+
+	int m_nFocusCounter = 0;
+	int m_nLookCount = 0;
+
+	D3DXVECTOR3 m_ShakePosV = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 m_ShakePosR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+	float m_fShankeX = 0.0f;
+	float m_fShankeZ = 0.0f;
+
+	int m_nShakeTimeCounter = 0;
+	int m_nFallDownCount = 0;
+	float m_fShakeAngle = 0.0f;
 };
 
 //===========================================================

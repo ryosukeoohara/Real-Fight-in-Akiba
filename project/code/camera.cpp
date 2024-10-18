@@ -40,6 +40,7 @@ namespace
 	const float CAMERA_MOVE = 2.0f;       // 移動量
 	const float CAMERA_ROT_Y = 0.03f;     // Y軸の回転量
 	const float CORRECT_TO_FACT = 0.05f;  // 補正する値
+	const int SHAKE_TIME = 60;  // 殴られてから揺れている時間
 	const int TIME_TO_CORRECT = 90;       // 補正する時間
 	const int FOCUS_ENEMY = 120;          // ゲームスタート時に敵を注視する時間
 	const int FOCUS_COUNT = 3;            // ゲームスタート時にカメラの位置が変わる回数
@@ -55,6 +56,13 @@ namespace
 		{ -740.0f, 500.0f, 1000.0f},
 		{ -53.0f, 30.0f, 120.0f},
 		{ 650.0f, 300.0f, -1000.0f},
+	};
+
+	const float CAMERA_ROT[3] =
+	{
+		D3DX_PI,
+		D3DX_PI * 0.5f,
+		D3DX_PI * -0.5f,
 	};
 }
 
@@ -225,16 +233,45 @@ void CCamera::ChangeState(CCameraState* pBehaviour)
 //================================================================
 // 目標の位置まで補正する処理
 //================================================================
-void CCamera::AdjustToTarget(D3DXVECTOR3 posR, D3DXVECTOR3 targetPosR, D3DXVECTOR3 posV, D3DXVECTOR3 targetPosV)
+void CCamera::AdjustToTarget(D3DXVECTOR3 targetPosR, D3DXVECTOR3 targetPosV, float fCorrent)
 {
-	D3DXVECTOR3 posDestR = targetPosR - posR;
-	m_Info.posR = m_Info.posR + posDestR * 0.005f;
+	D3DXVECTOR3 posDestR = targetPosR - m_Info.posR;
+	m_Info.posR = m_Info.posR + posDestR * fCorrent;
 
-	D3DXVECTOR3 posDestV = targetPosV - posV;
-	m_Info.posV = m_Info.posV + posDestV * 0.005f;
+	D3DXVECTOR3 posDestV = targetPosV - m_Info.posV;
+	m_Info.posV = m_Info.posV + posDestV * fCorrent;
 
 	//pCameraInfo->posV.x = pCameraInfo->posR.x - sinf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
 	//pCameraInfo->posV.z = pCameraInfo->posR.z - cosf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
+}
+
+//================================================================
+// 追従する処理
+//================================================================
+void CCamera::Follow(D3DXVECTOR3 posV, D3DXVECTOR3 posR, D3DXVECTOR3 rot)
+{
+	m_Info.posV.x = m_Info.posR.x - sinf(rot.y) * -m_Info.fLength;
+	m_Info.posV.z = m_Info.posR.z - cosf(rot.y) * -m_Info.fLength;
+
+	m_Info.posV = D3DXVECTOR3(0.0f + m_Info.posV.x, 150.0f, 0.0f + m_Info.posV.z);
+	m_Info.posR = D3DXVECTOR3(posR.x, 75.0f, posR.z);
+
+	//目標の注視点を設定
+	m_Info.posRDest.x = posR.x;
+	m_Info.posRDest.z = posR.z;
+
+	//カメラの移動量
+	m_Info.move.x = m_Info.posRDest.x - m_Info.posR.x;
+	m_Info.move.z = m_Info.posRDest.z - m_Info.posR.z;
+
+	//位置に移動量を保存
+	m_Info.posR.x += m_Info.move.x;
+	m_Info.posR.z += m_Info.move.z;
+
+	m_Info.OldposR = m_Info.posR;
+	m_Info.OldposV = m_Info.posV;
+	m_Info.Oldrot = m_Info.rot;
+	m_Info.fOldLength = m_Info.fLength;
 }
 
 //================================================================
@@ -357,7 +394,7 @@ void FollowPlayerCamera::Update(CCamera* pCamera)
 //================================================================
 FollowEnemyCamera::FollowEnemyCamera()
 {
-	m_move = { 5.0f, 0.0f, 5.0f };
+	
 }
 
 //================================================================
@@ -380,42 +417,10 @@ void FollowEnemyCamera::Update(CCamera* pCamera)
 
 	if (pEnemy != nullptr)
 	{
-		D3DXVECTOR3 rot = pEnemy->GetRotition();
+		CEnemy::INFO* pEnemyInfo = pEnemy->GetInfo();
 
-		pCameraInfo->posV.x = pCameraInfo->posR.x - sinf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
-		pCameraInfo->posV.z = pCameraInfo->posR.z - cosf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
-
-		D3DXVECTOR3 pos = pEnemy->GetPosition();
-
-		pCameraInfo->posV = D3DXVECTOR3(0.0f + pCameraInfo->posV.x, 150.0f, 0.0f + pCameraInfo->posV.z);
-		pCameraInfo->posR = D3DXVECTOR3(pos.x, 75.0f, pos.z);
-
-		//目標の注視点を設定
-		pCameraInfo->posRDest.x = pos.x;
-		pCameraInfo->posRDest.z = pos.z;
-
-		//カメラの移動量
-		pCameraInfo->move.x = pCameraInfo->posRDest.x - pCameraInfo->posR.x;
-		pCameraInfo->move.z = pCameraInfo->posRDest.z - pCameraInfo->posR.z;
-
-		//位置に移動量を保存
-		pCameraInfo->posR.x += pCameraInfo->move.x;
-		pCameraInfo->posR.z += pCameraInfo->move.z;
-
-		pCameraInfo->OldposR = pCameraInfo->posR;
-		pCameraInfo->OldposV = pCameraInfo->posV;
-		pCameraInfo->Oldrot = pCameraInfo->rot;
-		pCameraInfo->fOldLength = pCameraInfo->fLength;
-
-		pos += m_move;
-
-		pEnemy->SetPosition(pos);
-
-		if (pos.z > 0.0f)
-		{
-			pEnemy->GetMotion()->Set(CEnemyBoss::MOTION_KUGIKIRI);
-			pCamera->ChangeState(new CutSceneCamera);
-		}
+		// 追従処理
+		pCamera->Follow(D3DXVECTOR3(0.0f, 0.0f, 0.0f), pEnemyInfo->pos, pCameraInfo->rot);
 	}
 }
 
@@ -454,11 +459,8 @@ void CameraEnemyOverview::Update(CCamera* pCamera)
 	// カメラの情報取得
 	CCamera::Info* pCameraInfo = pCamera->GetInfo();
 
-	pCamera->AdjustToTarget(pCameraInfo->posR, pCameraInfo->posR, pCameraInfo->posV, CAMERA_POSV[m_nLookCount]);
-	//// 注視点と視点を設定
-	//pCameraInfo->posR = D3DXVECTOR3(posEnemy.x, posEnemy.y + 50.0f, posEnemy.z);
-	//pCameraInfo->posV = CAMERA_POS[m_nLookCount];
-
+	pCamera->AdjustToTarget(pCameraInfo->posR, CAMERA_POSV[m_nLookCount], 0.005f);
+	
 	// カウントアップ
 	m_nFocusCounter++;
 
@@ -488,6 +490,76 @@ void CameraEnemyOverview::Update(CCamera* pCamera)
 }
 
 //=============================================================================
+// 敵に追従しながら様々な角度から見るカメラ
+//=============================================================================
+//================================================================
+// コンストラクタ
+//================================================================
+FollowEnemyOverviewCamera::FollowEnemyOverviewCamera()
+{
+	// 敵の先頭を取得
+	m_pEnemy = CEnemy::GetTop();
+
+	// カメラのインスタンスを取得
+	CCamera* pCamera = CCamera::GetInstance();
+
+	// カメラの情報取得
+	CCamera::Info* pCameraInfo = pCamera->GetInfo();
+
+	// 敵の位置を取得
+	D3DXVECTOR3 posEnemy = m_pEnemy->GetPosition();
+
+	CPlayer* pPlayer = CPlayer::GetInstance();
+
+	pCameraInfo->posR = D3DXVECTOR3(posEnemy.x, posEnemy.y + 50.0f, posEnemy.z);
+
+	pCameraInfo->rot.y = utility::MoveToPosition(m_pEnemy->GetPosition(), pPlayer->GetPosition(), pCameraInfo->rot.y);
+
+	pCameraInfo->rot.y += D3DX_PI;
+
+	pCameraInfo->rot.y = utility::CorrectAngle(pCameraInfo->rot.y);
+}
+
+//================================================================
+// 更新処理
+//================================================================
+void FollowEnemyOverviewCamera::Update(CCamera* pCamera)
+{
+	// どちらかが使用されていないとき処理を抜ける
+	if (pCamera == nullptr || m_pEnemy == nullptr)
+		return;
+
+	// カメラの情報取得
+	CCamera::Info* pCameraInfo = pCamera->GetInfo();
+	
+	pCamera->Follow(pCameraInfo->posV, m_pEnemy->GetPosition(), pCameraInfo->rot);
+
+	// カウントアップ
+	m_nFocusCounter++;
+
+	// 規定の時間がすぎた
+	if (m_nFocusCounter >= FOCUS_ENEMY)
+	{
+		m_nFocusCounter = 0;
+		m_nLookCount++;
+
+		if (m_pEnemy != nullptr)
+		{
+			// 敵の位置を取得
+			D3DXVECTOR3 posEnemy = m_pEnemy->GetPosition();
+			pCameraInfo->rot.y = CAMERA_ROT[m_nLookCount];
+			
+			//pCameraInfo->posV = CAMERA_POS[m_nLookCount];
+		}
+	}
+
+	// 3回敵を注視したら、カメラのステートを変更する
+	//if (m_nLookCount >= FOCUS_COUNT)
+		//pCamera->ChangeState(new CutSceneCamera);
+
+}
+
+//=============================================================================
 // 引いてくカメラ
 //=============================================================================
 //================================================================
@@ -495,21 +567,74 @@ void CameraEnemyOverview::Update(CCamera* pCamera)
 //================================================================
 CameraZoomOut::CameraZoomOut()
 {
+	// カメラの情報取得
+	CCamera::Info* pCameraInfo = CCamera::GetInstance()->GetInfo();
 
+	TargetPosV.x = pCameraInfo->posV.x + pCameraInfo->posR.x - sinf(pCameraInfo->rot.y) * 400.0f;
+	TargetPosV.y = pCameraInfo->posV.y;
+	TargetPosV.z = pCameraInfo->posV.z + pCameraInfo->posR.z - sinf(pCameraInfo->rot.y) * 400.0f;
 }
 
 //================================================================
 // 更新
 //================================================================
-void FixedCamera::Update(CCamera* pCamera)
+void CameraZoomOut::Update(CCamera* pCamera)
 {
 	// カメラの情報取得
 	CCamera::Info* pCameraInfo = pCamera->GetInfo();
 
-	pCameraInfo->posV.x = pCameraInfo->posR.x - sinf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
-	pCameraInfo->posV.z = pCameraInfo->posR.z - cosf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
+	pCamera->AdjustToTarget(pCameraInfo->posR, TargetPosV, 0.005f);
+	n++;
+	if (n >= 120)
+	{
+		CEnemyManager::GetInstance()->SetBossEnemy();
+		pCamera->ChangeState(new CameraTargetFocus);
+	}
+		
+}
 
-	pCameraInfo->posV = D3DXVECTOR3(100.0f, 50.0f, 100.0f);
+//=============================================================================
+// 目標の位置を向くカメラ
+//=============================================================================
+//================================================================
+// コンストラクタ
+//================================================================
+CameraTargetFocus::CameraTargetFocus()
+{
+	// カメラの情報取得
+	CCamera::Info* pCameraInfo = CCamera::GetInstance()->GetInfo();
+
+	CEnemy* pEnemy = CEnemy::GetTop();
+
+	if (pEnemy == nullptr)
+		return;
+
+	D3DXVECTOR3 posEnemy = pEnemy->GetPosition();
+
+	TargetPosV.x = sinf(pCameraInfo->rot.y) + (posEnemy.x * 0.8f);
+	TargetPosV.y = posEnemy.y + 100.0f;
+	TargetPosV.z = cosf(pCameraInfo->rot.y) + (posEnemy.z * 0.8f);
+}
+
+//================================================================
+// 更新
+//================================================================
+void CameraTargetFocus::Update(CCamera* pCamera)
+{
+	// カメラの情報取得
+	CCamera::Info* pCameraInfo = pCamera->GetInfo();
+
+	CEnemy* pEnemy = CEnemy::GetTop();
+
+	if (pEnemy == nullptr)
+		return;
+
+	D3DXVECTOR3 posEnemy = pEnemy->GetPosition();
+
+	pCamera->AdjustToTarget(D3DXVECTOR3(posEnemy.x, posEnemy.y + 100.0f, posEnemy.z), TargetPosV, 0.05f);
+	n++;
+	if (n >= 120)
+		pCamera->ChangeState(new FollowEnemyOverviewCamera);
 
 }
 
@@ -555,7 +680,22 @@ void FixedCamera::Update(CCamera* pCamera)
 //================================================================
 CutSceneCamera::CutSceneCamera()
 {
+	// カメラの情報取得
+	CCamera::Info* pCameraInfo = CCamera::GetInstance()->GetInfo();
 
+	CEnemy* pEnemy = CEnemy::GetTop();
+	CPlayer* pPlayer = CPlayer::GetInstance();
+
+	pCameraInfo->rot.y = pEnemy->GetRotition().y;
+	pCameraInfo->rot.y += D3DX_PI;
+	pCameraInfo->rot.y = utility::CorrectAngle(pCameraInfo->rot.y);
+	pCameraInfo->posV.x = sinf(pCameraInfo->rot.y) * pCameraInfo->fLength;
+	pCameraInfo->posV.y = 100.0f;
+	pCameraInfo->posV.z = cosf(pCameraInfo->rot.y) * pCameraInfo->fLength;
+	TargetPosV.x = pCameraInfo->posV.x * 0.7f;
+	TargetPosV.y = 75.0f;
+	TargetPosV.z = pCameraInfo->posV.z * 0.7f;
+	pCameraInfo->posR = D3DXVECTOR3(pEnemy->GetPosition().x, 75.0f, pEnemy->GetPosition().z);
 }
 
 //================================================================
@@ -576,14 +716,7 @@ void CutSceneCamera::Update(CCamera* pCamera)
 
 	if (pCameraInfo->nCounter <= TIME_TO_CORRECT)
 	{
-		D3DXVECTOR3 posDestR = ONSTAGE_POSR - pCameraInfo->posR;
-		pCamera->SetPositionR(pCameraInfo->posR + posDestR * CORRECT_TO_FACT);
-
-		D3DXVECTOR3 posDestV = ONSTAGE_POSV - pCameraInfo->posV;
-		pCamera->SetPositionV(pCameraInfo->posV + posDestV * CORRECT_TO_FACT);
-
-		pCameraInfo->posV.x = pCameraInfo->posR.x - sinf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
-		pCameraInfo->posV.z = pCameraInfo->posR.z - cosf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
+		pCamera->AdjustToTarget(pCameraInfo->posR, TargetPosV, CORRECT_TO_FACT);
 
 		pCameraInfo->nCounter++;
 	}
@@ -673,6 +806,58 @@ void ReturnPlayerBehindCamera::Update(CCamera* pCamera)
 
 		// 敵を行動可能にする
 		CEnemyManager::GetInstance()->SetMobility();
+	}
+}
+
+//=============================================================================
+// ボス撃破演出用のカメラ
+//=============================================================================
+//================================================================
+// コンストラクタ
+//================================================================
+FinalBlowCamera::FinalBlowCamera()
+{
+	// カメラの情報取得
+	CCamera::Info* pCameraInfo = CCamera::GetInstance()->GetInfo();
+	m_pEnemy = CEnemy::GetTop();
+	D3DXVECTOR3 pos = m_pEnemy->GetPosition();
+	pCameraInfo->posR = D3DXVECTOR3(pos.x, pos.y + 75.0f, pos.z);
+	pCameraInfo->rot.y = CAMERA_ROT[m_nLookCount];
+	m_fShankeX = m_fShankeZ = sinf(m_fShakeAngle) * (1.0f - ((float)m_nShakeTimeCounter / SHAKE_TIME)) * 0.5f;
+}
+
+//================================================================
+// 更新
+//================================================================
+void FinalBlowCamera::Update(CCamera* pCamera)
+{
+	// どちらかが使用されていないとき処理を抜ける
+	if (pCamera == nullptr || m_pEnemy == nullptr)
+		return;
+
+	// カメラの情報取得
+	CCamera::Info* pCameraInfo = pCamera->GetInfo();
+
+	//pCamera->Follow(pCameraInfo->posV, m_pEnemy->GetPosition(), pCameraInfo->rot);
+
+	pCameraInfo->posV.x = pCameraInfo->posR.x + sinf(pCameraInfo->rot.y) * 100.0f;
+	pCameraInfo->posV.z = pCameraInfo->posR.z + cosf(pCameraInfo->rot.y) * 100.0f;
+
+	// カウントアップ
+	m_nFocusCounter++;
+
+	// 規定の時間がすぎた
+	if (m_nFocusCounter >= FOCUS_ENEMY)
+	{
+		m_nFocusCounter = 0;
+		m_nLookCount++;
+		pCameraInfo->rot.y = CAMERA_ROT[m_nLookCount];
+	}
+
+	if (m_nLookCount >= 3)
+	{
+		pCamera->ChangeState(new FollowPlayerCamera);
+		CGame::GetInstance()->SetbFinish(false);
 	}
 }
 

@@ -53,7 +53,7 @@ HRESULT CAudienceManager::Init(void)
 		float fPosX = rand() % 21;
 		float fPosZ = rand() % 101;
 		
-		CAudience* pAudience = CAudience::Create(D3DXVECTOR3((800.0f - i * 35.0f) + fPosX, 0.0f, -1000.0f + fPosZ), D3DXVECTOR3(0.0f, D3DX_PI, 0.0f), MODELNAME[nModelFileIdx]);
+		CAudience* pAudience = CAudience::Create(D3DXVECTOR3((800.0f - i * 35.0f) + fPosX, 0.0f, -800.0f + fPosZ), D3DXVECTOR3(0.0f, D3DX_PI, 0.0f), MODELNAME[nModelFileIdx]);
 	}
 
 	// ”w–Ê

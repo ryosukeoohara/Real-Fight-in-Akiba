@@ -57,14 +57,14 @@ CEnemyWeak::CEnemyWeak()
 	m_pLife2D = nullptr;*/
 	m_pLife3D = nullptr;
 	//m_bDeath = false;
-
+	m_bDamage = false;
 	ChangeState(new CEnemyWeakStateMoveWait);
 }
 
 //===========================================================
 // コンストラクタ
 //===========================================================
-CEnemyWeak::CEnemyWeak(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nPriority)
+CEnemyWeak::CEnemyWeak(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nPriority) : CEnemy(pos, rot, nlife, nPriority)
 {
 	// 値をクリア
 	//SetState(CEnemy::STATE_NONE);
@@ -74,7 +74,7 @@ CEnemyWeak::CEnemyWeak(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nPriorit
 	m_Mobility = Immobile;
 	m_nDamegeCounter = 0;
 	m_pLife3D = nullptr;
-
+	m_bDamage = false;
 	ChangeState(new CEnemyWeakStateMoveWait);
 }
 
@@ -89,13 +89,13 @@ CEnemyWeak::~CEnemyWeak()
 //===========================================================
 // 生成処理
 //===========================================================
-CEnemyWeak * CEnemyWeak::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife)
+CEnemyWeak * CEnemyWeak::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nPriority)
 {
 	CEnemyWeak *pEnemy = nullptr;
 
 	if (pEnemy == nullptr)
 	{
-		pEnemy = new CEnemyWeak(pos, rot, nlife);
+		pEnemy = new CEnemyWeak(pos, rot, nlife, nPriority);
 
 		pEnemy->Init();
 
@@ -177,6 +177,9 @@ void CEnemyWeak::Update(void)
 
 	CEnemy::Update();
 
+	if (GetMobility() == Immobile)
+		return;
+
 	// ステイトの更新
 	if (m_pState != nullptr)
 		m_pState->Update(this);
@@ -233,7 +236,63 @@ void CEnemyWeak::RecoverFromDamage(void)
 //===========================================================
 void CEnemyWeak::Damege(void)
 {
-	ChangeState(new CEnemyWeakStateDamege);
+	// すでにダメージ状態
+	if (m_bDamage)
+		return;
+
+	// 敵の情報取得
+	CEnemy::INFO* Info = GetInfo();
+
+	if (Info == nullptr)
+		return;
+
+	if (CPlayer::GetInstance()->GetHeatAct() == CPlayer::HEAT_NONE)
+	{
+		GetMotion()->Set(MOTION_DAMEGE);
+	}
+	else if (CPlayer::GetInstance()->GetHeatAct() == CPlayer::HEAT_FIRE || CPlayer::GetInstance()->GetHeatAct() == CPlayer::HEAT_SMASH)
+	{
+		GetMotion()->Set(MOTION_DAMEGE);
+	}
+
+	Info->nLife -= CPlayer::GetInstance()->GetMotion()->GetAttackDamege();
+	m_bDamage = true;
+
+	if (Info->nLife > 0 && CPlayer::GetInstance()->GetHeatAct() == CPlayer::HEAT_NONE)
+	{// 体力が５０以上のとき
+
+		// ダメージ状態に切り替える
+		ChangeState(new CEnemyWeakStateDamege);
+	}
+	if (Info->nLife > 0 && (CPlayer::GetInstance()->GetHeatAct() == CPlayer::HEAT_FIRE || CPlayer::GetInstance()->GetHeatAct() == CPlayer::HEAT_SMASH))
+ 	{// 体力が５０以上のとき
+
+		// ダメージ状態に切り替える
+		ChangeState(new CEnemyWeakStateHeavyDamege);
+	}
+	else if (Info->nLife <= 0)
+	{// 体力が０以下のとき
+
+		// 死亡状態に切り替える
+		CGame::GetInstance()->SetbFinish(true);
+		CCamera::GetInstance()->ChangeState(new FinalBlowCamera);
+		ChangeState(new CEnemyWeakStateDeath);
+	}
+}
+
+void CEnemyWeak::HardDamege(void)
+{
+}
+
+void CEnemyWeak::Grabbed(void)
+{
+	CPlayer* pPlayer = CPlayer::GetInstance();
+
+	if (pPlayer->GetbGrap() == true)
+		ChangeState(new CEnemyWeakStateGrabbed);
+
+	else if (pPlayer->GetbGrap() == false)
+		ChangeState(new CEnemyWeakStateMoveWait);
 }
 
 //======================================================================
@@ -468,16 +527,39 @@ void CEnemyWeakStateDamege::Update(CEnemyWeak* pEnemyWeak)
 	// モーションが終了していたら
 	if (pMotion->IsFinish())
 	{
-		Info->state = pEnemyWeak->STATE_NEUTRAL;
 		pMotion->Set(pEnemyWeak->MOTION_NEUTRAL);
 		pEnemyWeak->ChangeState(new CEnemyWeakStateMoveWait);
+		pEnemyWeak->SetbDamage();
 	}
+}
 
-	if (Info->state != pEnemyWeak->STATE_DAMEGE)
+//===========================================================
+// 強い攻撃を受けた状態の処理
+//===========================================================
+CEnemyWeakStateHeavyDamege::CEnemyWeakStateHeavyDamege()
+{
+
+}
+
+//===========================================================
+// 強い攻撃を受けた状態の更新処理
+//===========================================================
+void CEnemyWeakStateHeavyDamege::Update(CEnemyWeak* pEnemyWeak)
+{
+	// モーションの情報取得
+	CMotion* pMotion = pEnemyWeak->GetMotion();
+
+	if (pMotion == nullptr)
+		return;
+
+	// モーションがノックダウン以外のとき
+	if (pMotion->GetType() != pEnemyWeak->MOTION_FALLDOWN)
+		pMotion->Set(pEnemyWeak->MOTION_FALLDOWN);
+
+	// モーションが終了していたら
+	if (pMotion->IsFinish())
 	{
-		Info->state = pEnemyWeak->STATE_DAMEGE;
-		pMotion->Set(pEnemyWeak->MOTION_DAMEGE);
-		Info->nLife -= pPlayer->GetMotion()->GetAttackDamege();
+		pEnemyWeak->ChangeState(new CEnemyWeakStateGetUp);
 	}
 }
 
@@ -512,4 +594,43 @@ void CEnemyWeakStateDeath::Update(CEnemyWeak* pEnemyWeak)
 			CPlayer::GetInstance()->SetDefeat(nDefeat);
 		}
 	}
+}
+
+CEnemyWeakStateGetUp::CEnemyWeakStateGetUp()
+{
+}
+
+void CEnemyWeakStateGetUp::Update(CEnemyWeak* pEnemyWeak)
+{
+	// モーションの情報取得
+	CMotion* pMotion = pEnemyWeak->GetMotion();
+
+	if (pMotion == nullptr)
+		return;
+
+	// 敵の情報取得
+	CEnemy::INFO* Info = pEnemyWeak->GetInfo();
+
+	if (Info == nullptr)
+		return;
+
+	// モーションが起き上がり以外のとき
+	if (pMotion->GetType() != pEnemyWeak->MOTION_GETUP)
+		pMotion->Set(pEnemyWeak->MOTION_GETUP);
+
+	else if (pMotion->IsFinish())
+	{// モーションが終了している
+
+		// 移動状態に切り替える
+		pEnemyWeak->ChangeState(new CEnemyWeakStateMoveWait);
+		pEnemyWeak->SetbDamage();
+	}
+}
+
+CEnemyWeakStateGrabbed::CEnemyWeakStateGrabbed()
+{
+}
+
+void CEnemyWeakStateGrabbed::Update(CEnemyWeak* pEnemyWeak)
+{
 }

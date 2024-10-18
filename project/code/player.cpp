@@ -553,9 +553,6 @@ void CPlayer::Control(void)
 	// 移動
 	Move();
 
-	// 当たり判定
-	Collision();
-	
 	// 攻撃
 	Attack();
 
@@ -570,6 +567,9 @@ void CPlayer::Control(void)
 
 	// 状態
 	State();   
+
+	// 当たり判定
+	Collision();
 
 	CManager::GetInstance()->GetDebugProc()->Print("\nプレイヤーの位置：%f,%f,%f\n", m_Info.pos.x, m_Info.pos.y, m_Info.pos.z);
 	CManager::GetInstance()->GetDebugProc()->Print("プレイヤーの向き：%f,%f,%f\n", m_Info.rot.x, m_Info.rot.y, m_Info.rot.z);
@@ -742,11 +742,8 @@ void CPlayer::Move(void)
 	m_Info.move.z += (0.0f - m_Info.move.z) * 0.1f;
 
 	if (CCollision::GetInstance() != nullptr)
-	{
 		CCollision::GetInstance()->Map(&m_Info.pos, &m_Info.posOld, 40.0f);
 
-		//CCollision::GetInstance()->MapObject(&m_Info.pos, &m_Info.posOld, 20.0f);
-	}
 }
 
 //================================================================
@@ -1252,7 +1249,7 @@ bool CPlayer::IsHeatAct(D3DXVECTOR3 TargetPos)
 	if (pInputJoyPad == nullptr)
 		return false;
 
-	if (CGame::GetCollision()->Circle(m_Info.pos, TargetPos, 30.0f, 40.0f))
+	if (CGame::GetCollision()->Circle(m_Info.pos, TargetPos, 40.0f, 40.0f))
 	{// 範囲内
 
 		// Xボタンが出てくる
@@ -1549,6 +1546,7 @@ void CPlayer::GrapEnemy(bool value)
 		m_nIdxEne = m_Grap.pEnemy->GetIdxID();
 		m_Grap.pItem = nullptr;
 		m_bGrap = true;
+		m_Grap.pEnemy->Grabbed();
 	}
 	else
 	{
@@ -1558,11 +1556,12 @@ void CPlayer::GrapEnemy(bool value)
 		m_Grap.pEnemy->SetState(CEnemy::STATE_NEUTRAL);
 		m_Grap.pEnemy->SetChase(CEnemy::CHASE_ON);
 		m_Grap.pEnemy->GetMotion()->Set(CEnemy::MOTION_NEUTRAL);
-		m_Grap.pEnemy = nullptr;
 		m_nIdxEne = -1;
 		m_Info.state = STATE_NEUTRAL;
 		m_pMotion->Set(TYPE_NEUTRAL);
 		m_bGrap = false;
+		m_Grap.pEnemy->Grabbed();
+		m_Grap.pEnemy = nullptr;
 	}
 }
 

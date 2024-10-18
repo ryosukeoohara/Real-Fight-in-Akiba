@@ -34,6 +34,7 @@
 //================================================================
 // Ã“Iƒƒ“ƒo•Ï”
 //================================================================
+CGame* CGame::m_pInstance = nullptr;
 CPause *CGame::m_pPause = nullptr;
 CPlayer *CGame::m_pPlayer = nullptr;
 CEnemy *CGame::m_pEnemy = nullptr;
@@ -55,6 +56,9 @@ CGame::CGame()
 	m_bOnStage = false;
 	m_nOnStageCounter = 0;
 	m_pEdit = nullptr;
+	m_bFinish = false;
+
+	m_pInstance = this;
 }
 
 //===========================================================
@@ -67,6 +71,9 @@ CGame::CGame(CScene::MODE mode)
 	m_bOnStage = false;
 	m_nOnStageCounter = 0;
 	m_pEdit = nullptr;
+	m_bFinish = false;
+
+	m_pInstance = this;
 }
 
 //===========================================================
@@ -108,9 +115,7 @@ void CGame::WaveControll(void)
 
 		CManager::GetInstance()->GetCamera()->Reset();
 
-
-
-			m_pEnemyManager->SetBossEnemy();
+			//m_pEnemyManager->SetBossEnemy();
 
 			if (m_pPlayer != nullptr)
 			{
@@ -118,13 +123,13 @@ void CGame::WaveControll(void)
 				m_pPlayer->SetImmobile();
 				m_pPlayer->SetState(CPlayer::STATE_NEUTRAL);
 				m_pPlayer->SetUseMicroCount(0);
-				m_pPlayer->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 500.0f));
-				m_pPlayer->SetRotition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+				//m_pPlayer->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 500.0f));
+				//m_pPlayer->SetRotition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 				if (m_pPlayer->GetMotion() != nullptr)
 					m_pPlayer->GetMotion()->Set(CPlayer::TYPE_NEUTRAL);
 
-				CManager::GetInstance()->GetCamera()->ChangeState(new FollowEnemyCamera);
+				CManager::GetInstance()->GetCamera()->ChangeState(new CameraZoomOut);
 
 			}
 
@@ -135,8 +140,8 @@ void CGame::WaveControll(void)
 
 	case CGame::WAVE_01:
 
-		if (pFade->Get() != pFade->FADE_OUT)
-			pFade->Set(CScene::MODE_RESULT);
+		/*if (pFade->Get() != pFade->FADE_OUT)
+			pFade->Set(CScene::MODE_RESULT);*/
 	
 		break;
 
@@ -335,6 +340,14 @@ void CGame::Update(void)
 		CManager::GetInstance()->GetCamera()->ChangeState(new CameraEnemyOverview);
 		m_bOnStage = true;
 	}
+
+	if (InputKeyboard->GetTrigger(DIK_9) == true)
+	{
+		m_bFinish = m_bFinish ? false : true;
+	}
+
+	if (m_bFinish)
+		return;
 
 	if (InputKeyboard->GetTrigger(DIK_V))
 		CRipples::Create(m_pPlayer->GetPosition());

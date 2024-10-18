@@ -42,6 +42,7 @@ private:
 
 	static CMapObject_Can* m_pInstance;
 	CCanState* m_pState;
+	bool m_b = false;
 
 	static CMapObject_Can* m_pTop;  // 先頭のオブジェクトへのポインタ
 	static CMapObject_Can* m_pCur;  // 最後尾のオブジェクトへのポインタ
@@ -51,7 +52,7 @@ private:
 };
 
 //===========================================================
-// ステイト
+// ステート
 //===========================================================
 class CCanState
 {
@@ -86,6 +87,21 @@ class CCanBound : public CCanState
 public:
 	CCanBound();
 	~CCanBound() {}
+
+	void Update(CMapObject_Can* pCan) override;
+
+private:
+
+	float m_fTime = 0.0f;
+
+};
+
+// 投げられる
+class CCanThrow : public CCanState
+{
+public:
+	CCanThrow();
+	~CCanThrow() {}
 
 	void Update(CMapObject_Can* pCan) override;
 

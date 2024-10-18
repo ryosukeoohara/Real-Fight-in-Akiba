@@ -232,6 +232,25 @@ void CEnemy::Update(void)
 			m_apModel[nCount]->Update();
 
 	}
+
+	// “G‚Æ‚Ì“–‚½‚è”»’è
+	CEnemy* pEnemy = CEnemy::GetTop();
+
+	// “–‚½‚è”»’èŽæ“¾
+	CCollision* pCollision = CGame::GetCollision();
+
+	while (pEnemy != nullptr)
+	{
+		CEnemy* pEnemyNext = pEnemy->GetNext();
+
+		if (m_Info.nIdxID != pEnemy->GetIdxID() && pCollision != nullptr)
+			m_Info.pos = *pCollision->CheckEnemy(&m_Info.pos, &m_Info.posOld, &pEnemy->GetPosition(), 50.0f);
+
+		pEnemy = pEnemyNext;
+	}
+
+	CManager::GetInstance()->GetDebugProc()->Print("\n“G‚ÌˆÊ’uF%f,%f,%f\n", m_Info.pos.x, m_Info.pos.y, m_Info.pos.z);
+	CManager::GetInstance()->GetDebugProc()->Print("“G‚ÌŒü‚«F%f,%f,%f\n", m_Info.rot.x, m_Info.rot.y, m_Info.rot.z);
 }
 
 //===========================================================

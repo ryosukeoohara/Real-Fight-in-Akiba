@@ -7,6 +7,7 @@
 #include "mapobject_can.h"
 #include "player.h"
 #include "collision.h"
+#include "utility.h"
 
 //===========================================================
 // 静的メンバ変数
@@ -97,8 +98,12 @@ void CMapObject_Can::Update(void)
 		return;
 
 	// プレイヤーとの当たり判定：プレイヤーが範囲内に入った時
-	if (CCollision::GetInstance()->CheckPlayerMapObject(pPlayer, this, 20.0f))
+	if (CCollision::GetInstance()->CheckPlayerMapObject(pPlayer, this, 20.0f) && !m_b)
+	{
 		ChangeState(new CCanBlowAway);
+		m_b = true;
+	}
+		
 
 	// ステートの更新
 	if (m_pState != nullptr)
@@ -197,7 +202,7 @@ void CCanBlowAway::Update(CMapObject_Can* pCan)
 //===========================================================
 CCanBound::CCanBound()
 {
-
+	m_fTime = 1.0f;
 }
 
 //===========================================================
@@ -207,17 +212,52 @@ void CCanBound::Update(CMapObject_Can* pCan)
 {
 	CObjectX::INFO* pInfo = pCan->GetInfo();
 
-	if (pInfo->pos.y > 0.0f)
-	{
-		pInfo->pos.y -= 1.0f;
-	}
+	//if (pInfo->pos.y > 0.0f)
+	//{
+	//	pInfo->pos.y -= 1.0f;
+	//}
 
-	if (pInfo->pos.y < 0.0f)
-	{
-		pInfo->pos.y = 0.0f;
-	}
+	//if (pInfo->pos.y < 0.0f)
+	//{
+	//	pInfo->pos.y = 0.0f;
+	//}
 
 	pInfo->pos += pInfo->move;
+
+	// 移動量を更新(減衰させる)
+	pInfo->move.x += (0.0f - pInfo->move.x) * 0.1f;
+	pInfo->move.y += (0.0f - pInfo->move.y) * 0.1f;
+	pInfo->move.z += (0.0f - pInfo->move.z) * 0.1f;
+
+	pInfo->pos.y = easing::EaseInBounce(m_fTime);
+
+	if (m_fTime > 0.0f)
+		m_fTime -= 0.1f;
+}
+
+//===========================================================
+// 投げられた状態の処理
+//===========================================================
+CCanThrow::CCanThrow()
+{
+
+}
+
+//===========================================================
+// 投げられた状態の更新処理
+//===========================================================
+void CCanThrow::Update(CMapObject_Can* pCan)
+{
+	CObjectX::INFO* pInfo = pCan->GetInfo();
+
+	pInfo->move.x -= sinf(pInfo->rot.y);
+	pInfo->move.y -= 1.0f;
+	pInfo->move.z -= cosf(pInfo->rot.y);
+
+	pInfo->pos += pInfo->move;
+
+	if (pInfo->pos.y <= 0.0f)
+		pCan->ChangeState(new CCanBound);
 
 	// 移動量を更新(減衰させる)
 	pInfo->move.x += (0.0f - pInfo->move.x) * 0.1f;

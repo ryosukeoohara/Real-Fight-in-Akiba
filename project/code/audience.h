@@ -45,10 +45,12 @@ private:
 	CAudience* m_pNext;        //次のオブジェクトへのポインタ
 	CAudience* m_pPrev;        //前のオブジェクトへのポインタ
 
-	D3DXVECTOR3 m_pos;  // 位置
-	D3DXVECTOR3 m_move; // 移動量
-	int m_nJumpWaitTime;    // 再びジャンプ可能になるまでの時間
-	bool m_bJump;  // ジャンプしているかどうか
+	D3DXVECTOR3 m_pos;         // 位置
+	D3DXVECTOR3 m_move;        // 移動量
+	int m_nJumpWaitTime;       // 再びジャンプ可能になるまでの時間
+	int m_nThrowWaitTime;      // 再び缶を投げれるようになるまでの時間
+	bool m_bJump;              // ジャンプしているかどうか
+	bool m_bThrow;             // 缶を投げたかどうか
 };
 
 #endif

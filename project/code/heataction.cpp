@@ -283,8 +283,9 @@ void MicroWave::Update(CHeatAction* pHeatAct)
 				pEnemy->GetMotion()->Set(CEnemy::MOTION_HEATACTELECTROWAIT);
 				CManager::GetInstance()->GetSound()->Play(CSound::SOUND_LABEL_SE_GRASS);
 
+				D3DXVECTOR3 pos = pPlayer->GetItem()->GetPosition();
 				// ガラス片のパーティクルを生成
-				CParticle::Create(pPlayer->GetItem()->GetPosition(), CParticle::TYPE_GLASS);
+				CParticle::Create(pos, CParticle::TYPE_GLASS);
 
 				// 電子レンジの中に入った
 				m_bInMicroWave = true;
@@ -330,6 +331,7 @@ void MicroWave::Update(CHeatAction* pHeatAct)
 			pEnemy->SetState(CEnemy::STATE_HEATACTFAINTING);
 			pEnemy->GetMotion()->Set(CEnemy::MOTION_HEATACTFAINTING);
 			pEnemy->Damege();
+			pEnemy->GetInfo()->nLife -= 100;
 			CManager::GetInstance()->GetCamera()->ChangeState(new ReturnPlayerBehindCamera);
 			pPlayer->SetState(CPlayer::STATE_NEUTRAL);
 			pPlayer->SetUseMicroCount(3600);

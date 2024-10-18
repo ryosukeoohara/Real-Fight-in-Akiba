@@ -14,6 +14,7 @@
 #include "enemy_boss.h"
 #include "manager.h"
 #include "input.h"
+#include "utility.h"
 #include "debugproc.h"
 
 //===========================================================
@@ -33,6 +34,14 @@ namespace
 	const char* TUTORIALENEMYTEXT = "data\\TEXT\\enemy\\tutorialenemyinformation.txt";  // チュートリアルの敵の配置情報
 	const char* ENEMYTEXT = "data\\TEXT\\enemy\\enemyinformation.txt";  // 雑魚敵の配置情報
 	const char* BOSSTEXT = "data\\TEXT\\enemy\\enemyboss.txt";          // ボス敵の配置情報
+
+	const D3DXVECTOR3 BOSS_CREATE_POS[4] =
+	{
+		{ 500.0f, 0.0f, 500.0f },
+		{ 500.0f, 0.0f, -500.0f },
+		{ -500.0f, 0.0f, 500.0f },
+		{ -500.0f, 0.0f, -500.0f },
+	};
 }
 
 //===========================================================
@@ -188,7 +197,19 @@ void CEnemyManager::ReadText(const char *text)
 					else if (nType == CEnemy::BOSS)
 					{// ボス敵
 
-						CEnemyBoss::Create(m_Readpos, m_Readrot, nLife);
+						// ボス敵の出現位置設定処理
+						SetSpawnPosition();
+						
+						CPlayer* pPlayer = CPlayer::GetInstance();
+						D3DXVECTOR3 Playerpos = { 0.0f, 0.0f, 0.0f };
+						float rot = 0.0f;
+
+						if (pPlayer != nullptr)
+							Playerpos = pPlayer->GetPosition();
+
+						rot = utility::MoveToPosition(m_Readpos, Playerpos, rot);
+
+						CEnemyBoss::Create(m_Readpos, D3DXVECTOR3(m_Readrot.x, rot, m_Readrot.z), nLife);
 					}
 
 					m_nNum++;
@@ -221,6 +242,33 @@ void CEnemyManager::AllDelete(void)
 
 		pEnemy = pEnemyNext;
 	}
+}
+
+//===========================================================
+// ボス敵の出現位置設定処理
+//===========================================================
+void CEnemyManager::SetSpawnPosition(void)
+{
+	CPlayer* pPlayer = CPlayer::GetInstance();
+
+	D3DXVECTOR3 posPlayer = pPlayer->GetPosition();
+
+	float x = 0.0f - posPlayer.x;
+	float z = 0.0f - posPlayer.z;
+
+	if (x > 0.0f)
+		m_Readpos.x = 500.0f;
+
+	if (x < 0.0f)
+		m_Readpos.x = -500.0f;
+
+	if (z > 0.0f)
+		m_Readpos.z = 500.0f;
+
+	if (z < 0.0f)
+		m_Readpos.z = -500.0f;
+
+
 }
 
 //===========================================================

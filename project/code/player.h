@@ -196,6 +196,7 @@ public:
 	bool GetHeatActFlag(void) { return m_bHeatActFlag; }
 	MOBILITY GetMobility(void) { return m_Mobility; }
 	CPlayer::INFO* GetInfo(void) { return &m_Info; }
+	bool GetbGrap(void) { return m_bGrap; }
 	bool IsHitCollision(void);
 
 private:

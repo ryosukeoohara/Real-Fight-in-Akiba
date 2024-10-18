@@ -53,6 +53,7 @@ public:
 
 	// 設定系
 	static void SetbPause(bool bpause) { m_bPause = bpause; }
+	void SetbFinish(bool bValue) { m_bFinish = bValue; }
 
 	// 取得系
 	static bool GetbPause(void) { return m_bPause; }
@@ -63,11 +64,13 @@ public:
 	static CItemManager *GetItemManager(void) { return m_pItemManager; }
 	static CMap *GetMap(void) { return m_pMap; }
 	static WAVE GetWave(void) { return m_Wave; }
+	static CGame* GetInstance(void) { return m_pInstance; }
 
 private:
 
 	static void WaveControll(void);
 
+	static CGame* m_pInstance;
 	static CPause *m_pPause;
 	static CPlayer *m_pPlayer;
 	static CEnemy *m_pEnemy;
@@ -79,6 +82,7 @@ private:
 	int m_nOnStageCounter;
 	static bool m_bPause;
 	bool m_bUse;  //エディットモード中かどうか
+	bool m_bFinish;
 	static bool m_bOnStage;
 	static int m_nCounter;
 };

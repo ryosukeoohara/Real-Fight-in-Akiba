@@ -29,6 +29,9 @@ public:
 	void ReadText(const char *text);      // テキストファイル読み込み
 	void AllDelete(void);                 // 全消去
 
+	void SetSpawnPosition(void);
+
+
 	// 設定系
 	static void SetNum(int num) { m_nNum = num; }
 	void SetTarget(int idx);
