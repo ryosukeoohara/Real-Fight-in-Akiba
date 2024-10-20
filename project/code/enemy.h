@@ -31,6 +31,7 @@ public:
 	enum TYPE
 	{
 		WEAK = 0,  // ザコ
+		WEAK_FAR,  // 遠距離ザコ
 		BOSS,      // ボス
 		MAX
 	};

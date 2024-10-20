@@ -43,6 +43,7 @@ private:
 	static CMapObject_Can* m_pInstance;
 	CCanState* m_pState;
 	bool m_b = false;
+	
 
 	static CMapObject_Can* m_pTop;  // 先頭のオブジェクトへのポインタ
 	static CMapObject_Can* m_pCur;  // 最後尾のオブジェクトへのポインタ
@@ -107,6 +108,8 @@ public:
 
 private:
 
+	float m_fGravity = 0.0f;
+	float m_moveY = 0.0f;
 };
 
 #endif

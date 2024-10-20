@@ -27,6 +27,7 @@
 #include "item.h"
 #include "animation.h"
 #include "InputKeyBoard.h"
+#include "fade.h"
 #include "MyEffekseer.h"
 
 //===========================================================
@@ -421,7 +422,10 @@ void CEnemyBoss::Fly(void)
 //===========================================================
 void CEnemyBoss::HitDetection(D3DXVECTOR3 MyPos, float attackrange, float targetradius)
 {
-	if (GetMotion()->GetNowFrame() == GetMotion()->GetAttackOccurs())
+	int Now = GetMotion()->GetNowFrame();
+	int Occurs = GetMotion()->GetAttackOccurs();
+
+	if (Now == Occurs)
 	{
 		D3DXMATRIX mtx = *GetCharcter()[0]->GetMtxWorld();
 		CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_ATTACK, ::Effekseer::Vector3D(mtx._41, mtx._42, mtx._43), ::Effekseer::Vector3D(0.0f, 0.0f, 0.0f), ::Effekseer::Vector3D(25.0f, 25.0f, 25.0f));
@@ -593,8 +597,7 @@ void CEnemyBossStateAttackWait::Update(CEnemyBoss* pEnemyBoss)
 			break;
 		}
 	}
-
-	else
+	else if(m_nAtcCounter == 0 && m_bAttack == true)
 	{
 	switch (m_nAttackType)
 	{
@@ -627,7 +630,6 @@ void CEnemyBossStateAttackWait::Update(CEnemyBoss* pEnemyBoss)
 		m_bAttack = false;
 	}
 		
-
 	// 攻撃しているときは処理を抜ける
 	if (m_bAttack)
 		return;
@@ -761,7 +763,6 @@ void CEnemyBossStateStagger::Update(CEnemyBoss* pEnemyBoss)
 	if (m_nStaggerTime <= 0)
 	{
 		pEnemyBoss->ChangeState(new CEnemyBossStateStaggerReCover);
-
 	}
 }
 
@@ -906,6 +907,17 @@ CEnemyBossStateDeath::CEnemyBossStateDeath()
 void CEnemyBossStateDeath::Update(CEnemyBoss* pEnemyBoss)
 {// 更新処理
 
+	//フェードの情報を取得
+	CFade* pFade = CManager::GetInstance()->GetFade();
+
+	if (m_bDeath)
+	{
+		if (pFade->Get() != pFade->FADE_OUT)
+			pFade->Set(CScene::MODE_RESULT);
+
+		return;
+	}
+
 	// モーションの情報取得
 	CMotion* pMotion = pEnemyBoss->GetMotion();
 
@@ -922,14 +934,17 @@ void CEnemyBossStateDeath::Update(CEnemyBoss* pEnemyBoss)
 		// 敵の総数を減らす
 		int nNum = CEnemyManager::GetNum() - 1;
 		CEnemyManager::SetNum(nNum);
-		pEnemyBoss->Uninit();
+		//pEnemyBoss->Uninit();
 
 		if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_GAME)
 		{// ゲームの時
 
 			// 敵を倒した数を増やす
-			int nDefeat = CPlayer::GetInstance()->GetDefeat() + 1;
-			CPlayer::GetInstance()->SetDefeat(nDefeat);
+			int nDefeat = CManager::GetInstance()->GetDefeat();
+			nDefeat++;
+			CManager::GetInstance()->SetDefeat(nDefeat);
+			m_bDeath = true;
+			
 		}
 	}
 }

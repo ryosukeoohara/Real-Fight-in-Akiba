@@ -99,7 +99,8 @@ HRESULT CAppearanceUI::Init(void)
 			m_pBackObj2D->SetSize(0.0f, 0.0f);
 			m_pBackObj2D->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist(TEXTURENAME[m_type]));
 			m_pBackObj2D->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-			m_pBackObj2D->SetTex((float)CManager::GetInstance()->GetDefeat());
+			int n = CManager::GetInstance()->GetDefeat();
+			m_pBackObj2D->SetTex((float)n);
 			m_pBackObj2D->SetDraw(false);
 		}
 
@@ -109,7 +110,8 @@ HRESULT CAppearanceUI::Init(void)
 			m_pNumber->SetPosition(D3DXVECTOR3(750.0f, 225.0f, 0.0f));
 			m_pNumber->SetSize(200.0f, 200.0f);
 			m_pNumber->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist(TEXTURENAME[m_type]));
-			m_pNumber->SetTex((float)CManager::GetInstance()->GetDefeat());
+			int n = CManager::GetInstance()->GetDefeat();
+			m_pNumber->SetTex((float)n);
 			m_pNumber->SetDraw();
 		}
 	}

@@ -169,7 +169,6 @@
     <ClCompile Include="code\character.cpp" />
     <ClCompile Include="code\collision.cpp" />
     <ClCompile Include="code\debugproc.cpp" />
-    <ClCompile Include="code\easing.cpp" />
     <ClCompile Include="code\edit.cpp" />
     <ClCompile Include="code\effect.cpp" />
     <ClCompile Include="code\effect2D.cpp" />
@@ -178,6 +177,8 @@
     <ClCompile Include="code\enemymanager.cpp" />
     <ClCompile Include="code\enemy_boss.cpp" />
     <ClCompile Include="code\enemy_weak.cpp" />
+    <ClCompile Include="code\enemy_weak_far.cpp" />
+    <ClCompile Include="code\enemy_weak_near.cpp" />
     <ClCompile Include="code\fade.cpp" />
     <ClCompile Include="code\field.cpp" />
     <ClCompile Include="code\gage.cpp" />
@@ -244,7 +245,6 @@
     <ClInclude Include="code\character.h" />
     <ClInclude Include="code\collision.h" />
     <ClInclude Include="code\debugproc.h" />
-    <ClInclude Include="code\easing.h" />
     <ClInclude Include="code\edit.h" />
     <ClInclude Include="code\effect.h" />
     <ClInclude Include="code\effect2D.h" />
@@ -253,6 +253,8 @@
     <ClInclude Include="code\enemymanager.h" />
     <ClInclude Include="code\enemy_boss.h" />
     <ClInclude Include="code\enemy_weak.h" />
+    <ClInclude Include="code\enemy_weak_far.h" />
+    <ClInclude Include="code\enemy_weak_near.h" />
     <ClInclude Include="code\fade.h" />
     <ClInclude Include="code\field.h" />
     <ClInclude Include="code\gage.h" />

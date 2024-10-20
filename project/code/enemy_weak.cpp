@@ -590,8 +590,9 @@ void CEnemyWeakStateDeath::Update(CEnemyWeak* pEnemyWeak)
 		{// ƒQ[ƒ€‚Ì
 
 			// “G‚ğ“|‚µ‚½”‚ğ‘‚â‚·
-			int nDefeat = CPlayer::GetInstance()->GetDefeat() + 1;
-			CPlayer::GetInstance()->SetDefeat(nDefeat);
+			int nDefeat = CManager::GetInstance()->GetDefeat();
+			nDefeat++;
+			CManager::GetInstance()->SetDefeat(nDefeat);
 		}
 	}
 }

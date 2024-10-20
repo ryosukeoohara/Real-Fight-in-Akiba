@@ -15,6 +15,7 @@
 #include "collision.h"
 #include "player.h"
 #include "mapobject_can.h"
+#include "utility.h"
 
 //================================================================
 // 静的メンバ変数
@@ -193,7 +194,6 @@ void CAudience::Update(void)
 
 		int i = rand() % 3;
 		
-
 		if (i == 1)
 		{
 			float fjump = (rand() % 31 - 10) * 0.1f;
@@ -229,14 +229,15 @@ void CAudience::Update(void)
 	// 位置設定
 	SetPosition(m_pos);
 
-
 	if (pColl == nullptr)
 		return;
 
+	float fDistance = utility::Distance(m_pos, CPlayer::GetInstance()->GetPosition());
+
 	// プレイヤーが範囲内に入ったかつ、缶を投げていない
-	if (pColl->Circle(m_pos, CPlayer::GetInstance()->GetPosition(), 200.0f, 50.0f) && !m_bThrow)
+	if (fDistance <= 300.0f && !m_bThrow)
 	{
-		int i = rand() % 3;
+		int i = rand() % 7;
 
 		if (i == 1)
 		{

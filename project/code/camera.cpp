@@ -546,10 +546,8 @@ void FollowEnemyOverviewCamera::Update(CCamera* pCamera)
 		if (m_pEnemy != nullptr)
 		{
 			// “G‚ÌˆÊ’u‚ðŽæ“¾
-			D3DXVECTOR3 posEnemy = m_pEnemy->GetPosition();
-			pCameraInfo->rot.y = CAMERA_ROT[m_nLookCount];
-			
-			//pCameraInfo->posV = CAMERA_POS[m_nLookCount];
+			D3DXVECTOR3 rotEnemy = m_pEnemy->GetRotition();
+			pCameraInfo->rot.y *= rotEnemy.y * -0.7f;
 		}
 	}
 
@@ -633,6 +631,7 @@ void CameraTargetFocus::Update(CCamera* pCamera)
 
 	pCamera->AdjustToTarget(D3DXVECTOR3(posEnemy.x, posEnemy.y + 100.0f, posEnemy.z), TargetPosV, 0.05f);
 	n++;
+
 	if (n >= 120)
 		pCamera->ChangeState(new FollowEnemyOverviewCamera);
 

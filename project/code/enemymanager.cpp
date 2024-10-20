@@ -11,6 +11,7 @@
 #include "enemymanager.h"
 #include "enemy.h"
 #include "enemy_weak.h"
+#include "enemy_weak_far.h"
 #include "enemy_boss.h"
 #include "manager.h"
 #include "input.h"
@@ -192,6 +193,12 @@ void CEnemyManager::ReadText(const char *text)
 					{// ŽG‹›“G
 
 						CEnemyWeak::Create(m_Readpos, m_Readrot, nLife);
+
+					}
+					else if (nType == CEnemy::WEAK_FAR)
+					{// ŽG‹›“G
+
+						CEnemyWeakFar::Create(m_Readpos, m_Readrot, nLife);
 
 					}
 					else if (nType == CEnemy::BOSS)

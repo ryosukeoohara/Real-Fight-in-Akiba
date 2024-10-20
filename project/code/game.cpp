@@ -123,9 +123,7 @@ void CGame::WaveControll(void)
 				m_pPlayer->SetImmobile();
 				m_pPlayer->SetState(CPlayer::STATE_NEUTRAL);
 				m_pPlayer->SetUseMicroCount(0);
-				//m_pPlayer->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 500.0f));
-				//m_pPlayer->SetRotition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-
+				
 				if (m_pPlayer->GetMotion() != nullptr)
 					m_pPlayer->GetMotion()->Set(CPlayer::TYPE_NEUTRAL);
 
@@ -140,8 +138,7 @@ void CGame::WaveControll(void)
 
 	case CGame::WAVE_01:
 
-		/*if (pFade->Get() != pFade->FADE_OUT)
-			pFade->Set(CScene::MODE_RESULT);*/
+		
 	
 		break;
 
@@ -221,8 +218,8 @@ HRESULT CGame::Init(void)
 void CGame::Uninit(void)
 {
 	// “G‚ð“|‚µ‚½”Žæ“¾
-	int m = CPlayer::GetInstance()->GetDefeat();
-	CManager::GetInstance()->SetDefeat(CPlayer::GetInstance()->GetDefeat());
+	//int m = CPlayer::GetInstance()->GetDefeat();
+	//CManager::GetInstance()->SetDefeat(CPlayer::GetInstance()->GetDefeat());
 
 	CManager::GetInstance()->GetSound()->Stop();
 

@@ -163,19 +163,20 @@ void CResult::Update(void)
 	{
 		if (m_pUserRank == nullptr)
 		{
-			if (CManager::GetInstance()->GetDefeat() >= 4)
+			int nNum = CManager::GetInstance()->GetDefeat();
+			if (nNum >= 4)
 			{
 				m_pUserRank = CUserRankUI::Create(CUserRankUI::TYPE_TOP);
-			}	
-			else if (CManager::GetInstance()->GetDefeat() <= 3 && CManager::GetInstance()->GetDefeat() >= 2)
+			}
+			else if (nNum <= 3 && nNum >= 2)
 			{
 				m_pUserRank = CUserRankUI::Create(CUserRankUI::TYPE_MIDDLE);
-			} 
-			else if (CManager::GetInstance()->GetDefeat() <= 1)
+			}
+			else if (nNum <= 1)
 			{
 				m_pUserRank = CUserRankUI::Create(CUserRankUI::TYPE_UNDER);
 			}
-			else if (CManager::GetInstance()->GetDefeat() <= 0)
+			else if (nNum <= 0)
 			{
 				m_pUserRank = CUserRankUI::Create(CUserRankUI::TYPE_WEAKEST);
 			}

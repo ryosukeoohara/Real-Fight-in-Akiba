@@ -98,13 +98,9 @@ void CMapObject_Can::Update(void)
 		return;
 
 	// プレイヤーとの当たり判定：プレイヤーが範囲内に入った時
-	if (CCollision::GetInstance()->CheckPlayerMapObject(pPlayer, this, 20.0f) && !m_b)
-	{
+	if (CCollision::GetInstance()->CheckPlayerMapObject(pPlayer, this, 20.0f))
 		ChangeState(new CCanBlowAway);
-		m_b = true;
-	}
 		
-
 	// ステートの更新
 	if (m_pState != nullptr)
 		m_pState->Update(this);
@@ -233,6 +229,7 @@ void CCanBound::Update(CMapObject_Can* pCan)
 
 	if (m_fTime > 0.0f)
 		m_fTime -= 0.1f;
+
 }
 
 //===========================================================
@@ -240,7 +237,11 @@ void CCanBound::Update(CMapObject_Can* pCan)
 //===========================================================
 CCanThrow::CCanThrow()
 {
+	m_moveY = 2.0f;
 
+	float fjump = (rand() % 31 - 10) * 0.1f;
+	
+	m_moveY = 1.0f + fjump;
 }
 
 //===========================================================
@@ -248,11 +249,15 @@ CCanThrow::CCanThrow()
 //===========================================================
 void CCanThrow::Update(CMapObject_Can* pCan)
 {
+	// 情報
 	CObjectX::INFO* pInfo = pCan->GetInfo();
 
-	pInfo->move.x -= sinf(pInfo->rot.y);
-	pInfo->move.y -= 1.0f;
-	pInfo->move.z -= cosf(pInfo->rot.y);
+	float fmove = (rand() % 31 - 10) * 0.1f;
+	m_moveY -= 0.1f;
+
+	pInfo->move.x -= sinf(pInfo->rot.y) * fmove;
+	pInfo->move.y += m_moveY;
+	pInfo->move.z -= cosf(pInfo->rot.y) * fmove;
 
 	pInfo->pos += pInfo->move;
 

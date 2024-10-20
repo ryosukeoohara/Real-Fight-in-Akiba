@@ -115,11 +115,17 @@ public:		// 誰でもアクセスできる
 	CMyEffekseer* GetMyEffekseer(void);
 
 	void SetMode(CScene::MODE mode);
-	void SetDefeat(int nValue) { m_nDefeat = nValue; }
+	void SetDefeat(int nValue) 
+	{ 
+		m_nDefeat = nValue; 
+	}
 
 	void SetbPause(bool bpause) { m_bPause = bpause; }
 	bool GetbPause(void) { return m_bPause; }
-	int GetDefeat(void) { return m_nDefeat; }
+	int GetDefeat(void) 
+	{ 
+		return m_nDefeat; 
+	}
 
 private:	//自分だけがアクセスできる
 
