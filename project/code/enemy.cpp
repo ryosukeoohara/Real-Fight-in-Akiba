@@ -600,6 +600,6 @@ void CEnemy::HitDetection(D3DXVECTOR3 MyPos, float attackrange, float targetradi
 	{// 現在のフレームが攻撃判定発生フレーム以上かつ攻撃判定終了フレームない
 
 		if (CGame::GetCollision()->Circle(MyPos, CGame::GetPlayer()->GetPosition(), attackrange, targetradius) == true)
-			CPlayer::GetInstance()->Damage(GetMotion()->GetAttackDamege(), GetMotion()->GetKnockBack());
+			CPlayer::GetInstance()->Damage(GetMotion()->GetAttackDamege(), D3DXVECTOR3(sinf(GetRotition().y) * GetMotion()->GetKnockBack(), 0.0f, cosf(GetRotition().y) * GetMotion()->GetKnockBack()));
 	}
 }

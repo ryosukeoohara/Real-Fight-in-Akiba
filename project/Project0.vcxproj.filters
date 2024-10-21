@@ -279,6 +279,9 @@
     <ClCompile Include="code\enemy_weak_near.cpp">
       <Filter>ソース ファイル\character\enemy</Filter>
     </ClCompile>
+    <ClCompile Include="code\bullet.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\game.h">
@@ -487,6 +490,9 @@
     </ClInclude>
     <ClInclude Include="code\enemy_weak_near.h">
       <Filter>ソース ファイル\character\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="code\bullet.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

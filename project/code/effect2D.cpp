@@ -200,11 +200,3 @@ void CEffect2D::Smook(void)
 	SetColor(m_Info.col);
 	SetSize(m_Info.fRadius, m_Info.fRadius);
 }
-
-//===========================================================
-// 円形のエフェクト
-//===========================================================
-void CEffect2D::Circle(void)
-{
-	
-}

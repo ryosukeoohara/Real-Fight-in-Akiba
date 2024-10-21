@@ -42,8 +42,9 @@ namespace
 	const float CORRECT_TO_FACT = 0.05f;  // 補正する値
 	const int SHAKE_TIME = 60;  // 殴られてから揺れている時間
 	const int TIME_TO_CORRECT = 90;       // 補正する時間
-	const int FOCUS_ENEMY = 120;          // ゲームスタート時に敵を注視する時間
+	const int FOCUS_ENEMY_TIME = 120;          // ゲームスタート時に敵を注視する時間
 	const int FOCUS_COUNT = 3;            // ゲームスタート時にカメラの位置が変わる回数
+	const int ZOOM_OUT_TIME = 120;
 	const D3DXVECTOR3 CAMERA_POSV[3] =
 	{
 		{ -500.0f, 300.0f, 1000.0f},
@@ -465,7 +466,7 @@ void CameraEnemyOverview::Update(CCamera* pCamera)
 	m_nFocusCounter++;
 
 	// 規定の時間がすぎた
-	if (m_nFocusCounter >= FOCUS_ENEMY)
+	if (m_nFocusCounter >= FOCUS_ENEMY_TIME)
 	{
 		m_pEnemy = m_pEnemy->GetNext();
 
@@ -538,7 +539,7 @@ void FollowEnemyOverviewCamera::Update(CCamera* pCamera)
 	m_nFocusCounter++;
 
 	// 規定の時間がすぎた
-	if (m_nFocusCounter >= FOCUS_ENEMY)
+	if (m_nFocusCounter >= FOCUS_ENEMY_TIME)
 	{
 		m_nFocusCounter = 0;
 		m_nLookCount++;
@@ -547,7 +548,8 @@ void FollowEnemyOverviewCamera::Update(CCamera* pCamera)
 		{
 			// 敵の位置を取得
 			D3DXVECTOR3 rotEnemy = m_pEnemy->GetRotition();
-			pCameraInfo->rot.y *= rotEnemy.y * -0.7f;
+			pCameraInfo->rot.y += rotEnemy.y * -0.7f;
+			pCameraInfo->rot.y = utility::CorrectAngle(pCameraInfo->rot.y);
 		}
 	}
 
@@ -582,8 +584,8 @@ void CameraZoomOut::Update(CCamera* pCamera)
 	CCamera::Info* pCameraInfo = pCamera->GetInfo();
 
 	pCamera->AdjustToTarget(pCameraInfo->posR, TargetPosV, 0.005f);
-	n++;
-	if (n >= 120)
+	m_nFocusCount++;
+	if (m_nFocusCount >= ZOOM_OUT_TIME)
 	{
 		CEnemyManager::GetInstance()->SetBossEnemy();
 		pCamera->ChangeState(new CameraTargetFocus);
@@ -630,9 +632,9 @@ void CameraTargetFocus::Update(CCamera* pCamera)
 	D3DXVECTOR3 posEnemy = pEnemy->GetPosition();
 
 	pCamera->AdjustToTarget(D3DXVECTOR3(posEnemy.x, posEnemy.y + 100.0f, posEnemy.z), TargetPosV, 0.05f);
-	n++;
+	m_nFocusCount++;
 
-	if (n >= 120)
+	if (m_nFocusCount >= FOCUS_ENEMY_TIME)
 		pCamera->ChangeState(new FollowEnemyOverviewCamera);
 
 }
@@ -685,15 +687,19 @@ CutSceneCamera::CutSceneCamera()
 	CEnemy* pEnemy = CEnemy::GetTop();
 	CPlayer* pPlayer = CPlayer::GetInstance();
 
-	pCameraInfo->rot.y = pEnemy->GetRotition().y;
-	pCameraInfo->rot.y += D3DX_PI;
+	float EnemyrotY = pEnemy->GetRotition().y;
+	pCameraInfo->rot.y = EnemyrotY;
+	pCameraInfo->rot.y -= D3DX_PI;
 	pCameraInfo->rot.y = utility::CorrectAngle(pCameraInfo->rot.y);
-	pCameraInfo->posV.x = sinf(pCameraInfo->rot.y) * pCameraInfo->fLength;
-	pCameraInfo->posV.y = 100.0f;
-	pCameraInfo->posV.z = cosf(pCameraInfo->rot.y) * pCameraInfo->fLength;
-	TargetPosV.x = pCameraInfo->posV.x * 0.7f;
-	TargetPosV.y = 75.0f;
-	TargetPosV.z = pCameraInfo->posV.z * 0.7f;
+
+	pCameraInfo->posV.x = sinf(pCameraInfo->rot.y) * 400.0f;
+	//pCameraInfo->posV.y = 100.0f;
+	pCameraInfo->posV.z = cosf(pCameraInfo->rot.y) * 400.0f;
+
+	TargetPosV.x = sinf(pCameraInfo->rot.y) * 100.0f;
+	TargetPosV.y = 75.0f;										   
+	TargetPosV.z = cosf(pCameraInfo->rot.y) * 100.0f;
+
 	pCameraInfo->posR = D3DXVECTOR3(pEnemy->GetPosition().x, 75.0f, pEnemy->GetPosition().z);
 }
 
@@ -715,7 +721,7 @@ void CutSceneCamera::Update(CCamera* pCamera)
 
 	if (pCameraInfo->nCounter <= TIME_TO_CORRECT)
 	{
-		pCamera->AdjustToTarget(pCameraInfo->posR, TargetPosV, CORRECT_TO_FACT);
+ 		pCamera->AdjustToTarget(pCameraInfo->posR, TargetPosV, CORRECT_TO_FACT);
 
 		pCameraInfo->nCounter++;
 	}
@@ -839,14 +845,14 @@ void FinalBlowCamera::Update(CCamera* pCamera)
 
 	//pCamera->Follow(pCameraInfo->posV, m_pEnemy->GetPosition(), pCameraInfo->rot);
 
-	pCameraInfo->posV.x = pCameraInfo->posR.x + sinf(pCameraInfo->rot.y) * 100.0f;
-	pCameraInfo->posV.z = pCameraInfo->posR.z + cosf(pCameraInfo->rot.y) * 100.0f;
+	pCameraInfo->posV.x = pCameraInfo->posR.x + sinf(pCameraInfo->rot.y) * 200.0f;
+	pCameraInfo->posV.z = pCameraInfo->posR.z + cosf(pCameraInfo->rot.y) * 200.0f;
 
 	// カウントアップ
 	m_nFocusCounter++;
 
 	// 規定の時間がすぎた
-	if (m_nFocusCounter >= FOCUS_ENEMY)
+	if (m_nFocusCounter >= FOCUS_ENEMY_TIME)
 	{
 		m_nFocusCounter = 0;
 		m_nLookCount++;

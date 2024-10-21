@@ -19,6 +19,8 @@ const char *CEffect::m_apTexName[TYPE_MAX] =
 {
 	"data\\TEXTURE\\smoke_05.png",
 	"data\\TEXTURE\\smoke_05.png",
+	"data\\TEXTURE\\shadow000.jpg",
+	"data\\TEXTURE\\smoke_05.png",
 };
 
 //===========================================================
@@ -31,13 +33,14 @@ CEffect::CEffect()
 	m_Info.col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
 	m_Info.nLife = 0;
 	m_Info.fRadius = 0.0f;
+	m_Info.bAlphaBlend = false;
 	m_nIdxTexture = -1;
 }
 
 //===========================================================
 // コンストラクタ
 //===========================================================
-CEffect::CEffect(D3DXVECTOR3 pos, D3DXVECTOR3 move, D3DXCOLOR col, float fRadius, int nLife, TYPE type)
+CEffect::CEffect(D3DXVECTOR3 pos, D3DXVECTOR3 move, D3DXCOLOR col, float fRadius, int nLife, TYPE type, int nPriority) : CBillBoard(nPriority)
 {
 	m_Info.pos = pos;
 	m_Info.move = move;
@@ -59,7 +62,7 @@ CEffect::~CEffect()
 //===========================================================
 // 生成処理
 //===========================================================
-CEffect *CEffect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 move, D3DXCOLOR col, float fRadius, int nLife, TYPE type)
+CEffect *CEffect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 move, D3DXCOLOR col, float fRadius, int nLife, TYPE type, int nPriority)
 {
 	//オブジェクト2Dのポインタ
 	CEffect *pEffect = nullptr;
@@ -121,6 +124,15 @@ void CEffect::Update(void)
 		Smook();
 		break;
 
+	case TYPE_BLOOD:
+
+		Blood();
+		break;
+
+	case TYPE_BREAKDOWN:
+		BreakDown();
+		break;
+
 	case TYPE_MAX:
 		break;
 
@@ -153,7 +165,7 @@ void CEffect::Draw(void)
 	//pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 	//pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	//pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-
+	
 	pDevice->SetTexture(0, pTexture->GetAddress(m_nIdxTexture));
 
 	//描画処理
@@ -181,14 +193,6 @@ void CEffect::Ground(void)
 }
 
 //===========================================================
-// 血液のエフェクト
-//===========================================================
-void CEffect::Blood(void)
-{
-	
-}
-
-//===========================================================
 // 煙のエフェクト
 //===========================================================
 void CEffect::Smook(void)
@@ -208,9 +212,32 @@ void CEffect::Smook(void)
 }
 
 //===========================================================
-// 円形のエフェクト
+// 故障
 //===========================================================
-void CEffect::Circle(void)
+void CEffect::BreakDown(void)
 {
-	
+	if (m_Info.col.a >= 0.0f)
+	{
+		m_Info.col.a -= 0.005f;
+	}
+
+	m_Info.fRadius += 1.0f;
+
+	SetColor(m_Info.col);
+	SetSize(m_Info.fRadius, m_Info.fRadius);
+}
+
+//===========================================================
+// 血液
+//===========================================================
+void CEffect::Blood(void)
+{
+	D3DXVECTOR3 pos = GetPosition();  //位置取得
+
+	if(m_Info.fRadius < 0.0f)
+	   m_Info.fRadius -= 0.5f;
+
+	if (pos.y >= 60.0f)
+		m_Info.move.y *= -1;
+
 }

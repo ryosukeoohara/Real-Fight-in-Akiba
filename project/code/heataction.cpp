@@ -349,7 +349,7 @@ void MicroWave::Update(CHeatAction* pHeatAct)
 	{
 		if (m_nHeatActTime % 20 == 0)
 		{
-			CParticle::Create(CPlayer::GetInstance()->GetItem()->GetPosition(), CParticle::TYPE_SMOOK);
+			CParticle::Create(CPlayer::GetInstance()->GetItem()->GetPosition(), CParticle::TYPE_BREAKDOWN);
 		}
 	}
 }

@@ -23,11 +23,13 @@ public:
 	{
 		TYPE_GROUND = 0,   // 土煙
 		TYPE_SMOOK,        // 煙
+		TYPE_BLOOD,        // 血液
+		TYPE_BREAKDOWN,    // 故障
 		TYPE_MAX
 	};
 
 	CEffect();  //コンストラクタ
-	CEffect(D3DXVECTOR3 pos, D3DXVECTOR3 move, D3DXCOLOR col, float fRadius, int nLife, TYPE type);  //コンストラクタ
+	CEffect(D3DXVECTOR3 pos, D3DXVECTOR3 move, D3DXCOLOR col, float fRadius, int nLife, TYPE type, int nPriority = 4);  //コンストラクタ
 	~CEffect();  //デストラクタ
 
 	// 情報
@@ -38,6 +40,7 @@ public:
 		D3DXCOLOR col;          // 色
 		float fRadius;          // 半径(大きさ)
 		int nLife;              // 寿命(表示時間)
+		bool bAlphaBlend;       // アルファブレンドをするかどうか
 	};
 
 	HRESULT Init(void); // 初期化処理    
@@ -48,9 +51,9 @@ public:
 	void Ground(void);
 	void Blood(void);
 	void Smook(void);
-	void Circle(void);
+	void BreakDown(void);
 
-	static CEffect *Create(D3DXVECTOR3 pos, D3DXVECTOR3 move, D3DXCOLOR col, float fRadius, int nLife, TYPE type);  //生成
+	static CEffect *Create(D3DXVECTOR3 pos, D3DXVECTOR3 move, D3DXCOLOR col, float fRadius, int nLife, TYPE type, int nPriority = 4);  //生成
 	
 	INFO m_Info;
 

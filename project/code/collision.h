@@ -41,7 +41,7 @@ public:
 	bool HitElectricBox(D3DXVECTOR3 pMyPos, D3DXVECTOR3 pTargetPos, float fMyRadius, float fTargetRadius);
 	void MapObject(D3DXVECTOR3* pos, D3DXVECTOR3* posOld, float fRadius);
 	bool CheckPlayerMapObject(CPlayer* pPlayer, CMapObject* pMapObject, float fRadius);
-	bool HitOBJ(CPlayer* pPlayer, CMapObject* pMapObject, float fMyRadius, float fTargetRadius);
+	bool AttackHitCheck(CPlayer* pPlayer, CMapObject* pMapObject, float fMyRadius, float fTargetRadius);
 	void MapEnemy(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, CObjectX **pObjectX, CEnemy *enemy);            // ƒ}ƒbƒv‚É‚ ‚éŒš•¨‚Æ‚Ì“–‚½‚è”»’è
 	bool Item(D3DXVECTOR3 *pos);
 	void ItemAttack(CObjectX *pobj);

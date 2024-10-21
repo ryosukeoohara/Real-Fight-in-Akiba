@@ -76,6 +76,7 @@ public:
 	void SetbHitAttack(bool bValue) { m_bHitAttack = bValue; }
 	void SetbFall(bool bValue) { m_bFall = bValue; }
 	void SetbWaterLeak(bool bValue) { m_bWaterLeak = bValue; }
+	void SetModelFileName(const char* Fliename) { m_Info.Fliename = Fliename; }
 	
 	void SetNext(CObjectX* pNext) { m_pNext = pNext; }
 	void SetPrev(CObjectX* pPrev) { m_pPrev = pPrev; }

@@ -158,12 +158,7 @@ public:
 	CEnemy::INFO *GetInfo(void) { return &m_Info; }
 
 	virtual void Damege(void) = 0;
-	virtual void HardDamege(void) = 0;
-
 	virtual void Grabbed(void) = 0;
-
-	//virtual void ChangeState(CEnemyState *pEnemy) = 0;
-	virtual void RecoverFromDamage(void) = 0;
 
 	void HitDetection(D3DXVECTOR3 MyPos, float attackrange, float targetradius);
 

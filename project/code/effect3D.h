@@ -25,6 +25,7 @@ public:
 		TYPE_BIKE,       // é©ì]é‘
 		TYPE_GLASS,      // ÉKÉâÉXÇÃîjï–
 		TYPE_SMOKE,      // ÉXÉÇÅ[ÉN
+		
 		TYPE_MAX
 	};
 
@@ -50,6 +51,7 @@ public:
 	 
 	void Bike(void);              // é©ì]é‘
 	void Glass(void);             // ÉKÉâÉXÇÃîjï–
+	
 
 	static CEffect3D *Create(D3DXVECTOR3 pos, D3DXVECTOR3 move, D3DXVECTOR3 rot, int nLife, TYPE type, const char *modelfilename);  // ê∂ê¨
 	D3DXCOLOR m_col;          // êF

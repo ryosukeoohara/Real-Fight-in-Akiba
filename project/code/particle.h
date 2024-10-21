@@ -27,6 +27,8 @@ public:
 		TYPE_SMOOK,       // 煙
 		TYPE_CIRCLE,      // 円形
 		TYPE_GLASS,       // ガラスの破片
+		TYPE_BIKESCRAP,   // 自転車の残骸
+		TYPE_BREAKDOWN,   // 電子レンジ故障
 		TYPE_MAX
 	};
 
@@ -48,6 +50,8 @@ public:
 	void Smook(void);
 	void Circle(void);
 	void Glass(void);
+	void BikeScrap(void);
+	void BreakDown(void);
 
 	static CParticle *Create(D3DXVECTOR3 pos, TYPE type);  // 生成
 	D3DXCOLOR m_col;                                       // 色

@@ -217,7 +217,7 @@ public:
 private:
 
 	D3DXVECTOR3 TargetPosV = {};
-	int n = 0;
+	int m_nFocusCount = 0;
 };
 
 //===========================================================
@@ -233,7 +233,7 @@ public:
 
 private:
 
-	int n = 0;
+	int m_nFocusCount = 0;
 	D3DXVECTOR3 TargetPosV = {};
 };
 

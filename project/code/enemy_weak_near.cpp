@@ -223,13 +223,6 @@ void CEnemyWeakNear::ChangeState(CEnemyWeakNearState* pState)
 }
 
 //===========================================================
-// ダメージ状態からの復帰
-//===========================================================
-void CEnemyWeakNear::RecoverFromDamage(void)
-{
-}
-
-//===========================================================
 // ダメージ処理
 //===========================================================
 void CEnemyWeakNear::Damege(void)
@@ -276,10 +269,6 @@ void CEnemyWeakNear::Damege(void)
 		CCamera::GetInstance()->ChangeState(new FinalBlowCamera);
 		ChangeState(new CEnemyWeakNearStateDeath);
 	}
-}
-
-void CEnemyWeakNear::HardDamege(void)
-{
 }
 
 //===========================================================

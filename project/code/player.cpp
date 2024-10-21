@@ -275,7 +275,7 @@ CPlayer * CPlayer::Create(void)
 //===========================================================
 // ダメージ
 //===========================================================
-void CPlayer::Damage(int nDamage, float fKnockBack)
+void CPlayer::Damage(int nDamage, D3DXVECTOR3 KnockBack)
 {
 	if (m_Info.state != STATE_DAMEGE && m_Info.state != STATE_EVASION)
 	{
@@ -283,7 +283,9 @@ void CPlayer::Damage(int nDamage, float fKnockBack)
 		m_pMotion->Set(TYPE_DAMAGE);
 		CManager::GetInstance()->GetSound()->Play(CSound::SOUND_LABEL_SE_PUNCH);
 		m_Info.nLife -= nDamage;
-		m_Info.move = D3DXVECTOR3(sinf(CManager::GetInstance()->GetCamera()->GetRotation().y) * -fKnockBack, fKnockBack, cosf(CManager::GetInstance()->GetCamera()->GetRotation().y) * -fKnockBack);
+		m_Info.move.x = -KnockBack.x;
+		m_Info.move.y = -KnockBack.y;
+		m_Info.move.z = -KnockBack.z;
 
 		CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(m_Info.pos.x, m_Info.pos.y + 50.0f, m_Info.pos.z));
 	}
@@ -457,7 +459,7 @@ void CPlayer::Update(void)
 		m_nUseCounter--;
 
 		if (m_pItemMicro != nullptr && m_nUseCounter % 20 == 0)
-			CParticle::Create(m_pItemMicro->GetPosition(), CParticle::TYPE_SMOOK);
+			CParticle::Create(m_pItemMicro->GetPosition(), CParticle::TYPE_BREAKDOWN);
 		
 	}
 
@@ -1689,7 +1691,10 @@ void CPlayer::CreateRippleshEffect(void)
 	}
 }
 
+//================================================================
+// 水たまりに入った時のエフェクトを生成する処理
+//================================================================
 void CPlayer::CreateMoveStopEffect(void)
 {
-	CParticle::Create(m_Info.pos, CParticle::TYPE_SMOOK);
+	CParticle::Create(D3DXVECTOR3(m_Info.pos.x, m_Info.pos.y + 200.0f, m_Info.pos.z), CParticle::TYPE_SMOOK);
 }

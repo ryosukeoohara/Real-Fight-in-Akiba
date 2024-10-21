@@ -18,7 +18,7 @@ NUM_MODEL = 7
 MODEL_FILENAME = data/MODEL/map/saku.x          	# [0]工事現場の柵
 MODEL_FILENAME = data/MODEL/map/turshbox.x          # [1]ゴミ箱
 MODEL_FILENAME = data/MODEL/map/kan.x               # [2]空き缶
-MODEL_FILENAME = data/MODEL/map/electricbox.x       # [3]道端にあるよく落書きしてあるやつ
+MODEL_FILENAME = data/MODEL/map/electricbox.x       # [3]地中化した電信柱
 MODEL_FILENAME = data/MODEL/map/drumcan.x           # [4]ドラム缶
 MODEL_FILENAME = data/MODEL/small/single_light.x	# [5]外灯
 MODEL_FILENAME = data/MODEL/small/sign_02.x		    # [6]標識
@@ -155,10 +155,8 @@ END_MODELSET
 MODELSET
     TYPE = 3
     POS = 534.62 1.00 -323.62
-    ROT = 0.00 1.57 0.00
+    ROT = 0.00 -1.57 0.00
 END_MODELSET
-
-
 
 MODELSET
     TYPE = 4

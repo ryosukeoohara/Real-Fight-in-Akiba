@@ -111,7 +111,7 @@ void CMapObject_ElectricBox::Update(void)
 	if (pPlayer->GetState() == CPlayer::STATE_ATTACK && pPlayer->IsHitCollision() && !m_bFallDown)
 	{
 		// 攻撃が当たっていたら
-		if (CCollision::GetInstance()->HitOBJ(pPlayer, this, 30.0f, 30.0f))
+		if (CCollision::GetInstance()->AttackHitCheck(pPlayer, this, 30.0f, 30.0f))
 		{
 			// ステートの変更：殴られた状態
 			ChangeState(new CElectrictBeaten);
@@ -120,15 +120,8 @@ void CMapObject_ElectricBox::Update(void)
 		}
 	}
 
+	// プレイヤーとの当たり判定
 	CCollision::GetInstance()->CheckPlayerMapObject(pPlayer, this, 20.0f);
-
-	CObjectX::INFO* pInfo = GetInfo();
-
-	D3DXVECTOR3 posmax = pInfo->vtxMax + pInfo->pos;
-	D3DXVECTOR3 posmin = pInfo->vtxMini + pInfo->pos;
-
-	CEffect::Create(posmax, { 0.0f, 0.0f, 0.0f }, {1.0f, 0.0f, 0.0f, 1.0f}, 10.0f, 60, CEffect::TYPE_GROUND);
-	CEffect::Create(posmin, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }, 10.0f, 60, CEffect::TYPE_GROUND);
 	
 }
 

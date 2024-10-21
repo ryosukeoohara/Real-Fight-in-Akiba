@@ -73,7 +73,7 @@ HRESULT CGage2D::Init(D3DXVECTOR3 pos, float fHei, float fWid, CGAGE2DTYPE type)
 
 	if (m_pGage == nullptr)
 	{
-		m_pGage = CObject2D::Create();
+		m_pGage = CObject2D::Create(7);
 		m_pGage->SetPosition(D3DXVECTOR3(pos.x - 10.0f, pos.y - 6.0f, pos.z));
 		m_pGage->SetEdgeCenter(fWid + 18.0f, fHei + 14.0f);
 		m_pGage->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist("data\\TEXTURE\\lifegage.png"));
@@ -82,7 +82,7 @@ HRESULT CGage2D::Init(D3DXVECTOR3 pos, float fHei, float fWid, CGAGE2DTYPE type)
 
 	if (m_pLife == nullptr)
 	{
-		m_pLife = CObject2D::Create();
+		m_pLife = CObject2D::Create(7);
 		m_pLife->SetPosition(D3DXVECTOR3(pos.x, pos.y + 1.0f, pos.z));
 		m_pLife->SetEdgeCenter(fWid, fHei);
 		m_pLife->SetDraw(true);
@@ -154,7 +154,7 @@ void CGage2D::SetCol(void)
 //===========================================================
 // コンストラクタ
 //===========================================================
-CGage3D::CGage3D(int nPriority)
+CGage3D::CGage3D(int nPriority) : CBillBoard(nPriority)
 {
 	// 値をクリア
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -180,7 +180,7 @@ CGage3D::~CGage3D()
 CGage3D * CGage3D::Create(D3DXVECTOR3 pos, float fHei, float fWid, CGAGE3DTYPE type)
 {
 	CGage3D *pGage = nullptr;
-	pGage = new CGage3D(5);
+	pGage = new CGage3D();
 
 	if (pGage != nullptr)
 	{

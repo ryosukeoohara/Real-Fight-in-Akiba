@@ -25,6 +25,7 @@
 #include "particle.h"
 #include "item.h"
 #include "animation.h"
+#include "bullet.h"
 #include "MyEffekseer.h"
 
 //===========================================================
@@ -223,13 +224,6 @@ void CEnemyWeakFar::ChangeState(CEnemyWeakFarState* pState)
 }
 
 //===========================================================
-// ダメージ状態からの復帰
-//===========================================================
-void CEnemyWeakFar::RecoverFromDamage(void)
-{
-}
-
-//===========================================================
 // ダメージ処理
 //===========================================================
 void CEnemyWeakFar::Damege(void)
@@ -276,10 +270,6 @@ void CEnemyWeakFar::Damege(void)
 		CCamera::GetInstance()->ChangeState(new FinalBlowCamera);
 		ChangeState(new CEnemyWeakFarStateDeath);
 	}
-}
-
-void CEnemyWeakFar::HardDamege(void)
-{
 }
 
 void CEnemyWeakFar::Grabbed(void)
@@ -413,6 +403,15 @@ void CEnemyWeakFarStateAttack::Update(CEnemyWeakFar* pEnemyWeak)
 	// 敵の情報取得
 	CEnemy::INFO* Info = pEnemyWeak->GetInfo();
 
+	if (!m_bAttack)
+	{
+		D3DXMATRIX* mtx = pEnemyWeak->GetCharcter()[5]->GetMtxWorld();
+
+		CBullet::Create(D3DXVECTOR3(mtx->_41, mtx->_42, mtx->_43), Info->rot);
+
+		m_bAttack = true;
+	}
+	
 	//pEnemyWeak->HitDetection(Info->pos, ATTACKLENGHT, pPlayer->GetRadius());
 
 	// モーションが終了していたら
@@ -425,6 +424,7 @@ void CEnemyWeakFarStateAttack::Update(CEnemyWeakFar* pEnemyWeak)
 
 		Info->state = pEnemyWeak->STATE_NEUTRAL;
 		pMotion->Set(pEnemyWeak->MOTION_NEUTRAL);
+		m_bAttack = false;
 
 		// 状態の切り替え
 		pEnemyWeak->ChangeState(new CEnemyWeakFarStateMoveWait);

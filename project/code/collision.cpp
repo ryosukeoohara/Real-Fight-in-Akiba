@@ -131,22 +131,13 @@ void CCollision::AttackCircle(D3DXVECTOR3 * pMyPos, float fMyRadius, float fTarg
 
 		if (c <= fMyRadius + fTargetRadius && (pMyPos->y >= pEnemy->GetPosition().y && pMyPos->y <= pEnemy->GetPosition().y + fHeight) && pEnemy->GetState() != CEnemy::STATE_DAMEGE)
 		{
-			//pEnemy->Damege(CPlayer::GetInstance()->GetMotion()->GetAttackDamege(), CPlayer::GetInstance()->GetMotion()->GetKnockBack(), CPlayer::GetInstance()->GetActType());
-
 			pEnemy->Damege();
+			//CParticle::Create(pEnemy->GetPosition(), CParticle::TYPE_BLOOD);
 			CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(pMyPos->x, pMyPos->y, pMyPos->z));
 		}
 
 		pEnemy = pEnemyNext;
 	}
-}
-
-//=============================================================================
-//敵とオブジェクトの当たり判定処理
-//=============================================================================
-bool CCollision::Player(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, float fWidthX, float fWidthZ, CPlayer *pPlayer)
-{
-	return false;
 }
 
 //=============================================================================
@@ -221,251 +212,7 @@ void CCollision::Map(D3DXVECTOR3 *pos, D3DXVECTOR3 *posOld, float fRadius)
 }
 
 //=============================================================================
-// マップオブジェクト(外灯や標識)との当たり判定
-//=============================================================================
-bool CCollision::HitMapObject(D3DXVECTOR3 pMyPos, D3DXVECTOR3 pTargetPos, float fMyRadius, float fTargetRadius)
-{
-	int nNum = 0;
-	D3DXVECTOR3 Mappos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	D3DXVECTOR3 vtxMin = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	D3DXVECTOR3 vtxMax = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-
-	CMap* pMap = CMap::GetInstance();
-
-	// マップオブジェクトの先頭アドレスを取得
-	CObjectX* pObjectX = pMap->GetTopObjX();
-
-	while (pObjectX != nullptr)
-	{
-		CObjectX* pNext = pObjectX->GetNext();
-
-		int nIdx = pObjectX->GetIdxModel();
-
-		if (pObjectX->IsEnable() == false || nIdx < 43 && nIdx > 51)
-		{
-			pObjectX = pNext;
-
-			continue;
-		}
-
-		Mappos = pObjectX->GetPosition();
-
-		vtxMin = pObjectX->GetVtxMin();
-
-		vtxMax = pObjectX->GetVtxMax();
-
-		float circleX = pMyPos.x - Mappos.x;
-		float circleZ = pMyPos.z - Mappos.z;
-		float c = 0.0f;
-
-		c = sqrtf(circleX * circleX + circleZ * circleZ);
-
-		if (c <= fMyRadius + fTargetRadius)
-		{
-			pObjectX->SetbHitAttack(true);
-
-			if (nIdx == 46)
-			{
-				int n = pObjectX->GetHitCounter();
-				n++;
-				pObjectX->SetHitCounter(n);
-
-				if (n >= 3 && !pObjectX->GetDamage())
-				{
-					pObjectX->SetbDamage(true);
-
-					CObjectX *p = CObjectX::Create("data\\MODEL\\map\\light_rubble_L.x");
-					p->SetPosition(D3DXVECTOR3(Mappos.x, 400.0f, Mappos.z + 50.0f));
-					p->SetGravity(5.0f);
-					
-					CObjectX* pp = CObjectX::Create("data\\MODEL\\map\\light_rubble_R.x");
-					pp->SetPosition(D3DXVECTOR3(Mappos.x, 400.0f, Mappos.z - 50.0f));
-					pp->SetGravity(5.0f);
-				}
-			}
-		
-			return true;
-		}
-
-		pObjectX = pNext;
-	}
-
-	return false;
-}
-
-//=============================================================================
-// 電機ボックスとの判定
-//=============================================================================
-bool CCollision::HitElectricBox(D3DXVECTOR3 pMyPos, D3DXVECTOR3 pTargetPos, float fMyRadius, float fTargetRadius)
-{
-	int nNum = 0;
-	D3DXVECTOR3 Mappos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	D3DXVECTOR3 vtxMin = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	D3DXVECTOR3 vtxMax = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-
-	CMap* pMap = CMap::GetInstance();
-
-	// マップオブジェクトの先頭アドレスを取得
-	CMapObject* pMapObject = pMap->GetTop();
-
-	while (pMapObject != nullptr)
-	{
-		CMapObject* pNext = pMapObject->GetNext();
-
-		Mappos = pMapObject->GetPosition();
-
-		vtxMin = pMapObject->GetVtxMin();
-
-		vtxMax = pMapObject->GetVtxMax();
-
-		int nIdx = pMapObject->GetIdxModel();
-
-		if (pMapObject->IsEnable() == false || nIdx > 43 && nIdx < 51)
-		{
-			pMapObject = pNext;
-
-			continue;
-		}
-
-		float circleX = pMyPos.x - Mappos.x;
-		float circleZ = pMyPos.z - Mappos.z;
-		float c = 0.0f;
-
-		c = sqrtf(circleX * circleX + circleZ * circleZ);
-
-		if (c <= fMyRadius + fTargetRadius && nIdx == 3)
-		{
-			pMapObject->SetbFall(true);
-			int n = pMapObject->GetFallCounter();
-			n++;
-			//pMapObject->SetFallCounter(n);
-
-			return true;
-		}
-
-		if (c <= fMyRadius + fTargetRadius && nIdx == 4)
-		{
-			pMapObject->SetbShut(true);
-			pMapObject->SetbWaterLeak(true);
-
-			return true;
-		}
-
-		pMapObject = pNext;
-	}
-
-	return false;
-}
-
-//=============================================================================
-// マップにある建物との当たり判定
-//=============================================================================
-void CCollision::MapObject(D3DXVECTOR3* pos, D3DXVECTOR3* posOld, float fRadius)
-{
-	int nNum = 0;
-	D3DXVECTOR3 Mappos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	D3DXVECTOR3 vtxMin = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	D3DXVECTOR3 vtxMax = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-
-	CMap* pMap = CMap::GetInstance();
-
-	// マップオブジェクトの先頭アドレスを取得
-	CMapObject* pMapObject = pMap->GetTop();
-
-	while (pMapObject != nullptr)
-	{
-		CMapObject* pNext = pMapObject->GetNext();
-
-		Mappos = pMapObject->GetPosition();
-
-		vtxMin = pMapObject->GetVtxMin();
-
-		vtxMax = pMapObject->GetVtxMax();
-
-		if (pMapObject->IsEnable() == false)
-		{
-			pMapObject = pNext;
-
-			continue;
-		}
-
-		pMapObject->SetbDown(false);
-
-		int nIdx = pMapObject->GetIdxModel();
-
-		if (pos->z + fRadius > Mappos.z + vtxMin.z
-			&& pos->z + -fRadius < Mappos.z + vtxMax.z)
-		{
-			//ブロックの右側面==================================
-			if (pos->x + -fRadius <= Mappos.x + vtxMax.x
-				&& posOld->x + -fRadius >= Mappos.x + vtxMax.x)
-			{
-				if (nIdx != 0 && nIdx != 3 && nIdx != 4)
-					pMapObject->SetbShut(true);
-
-				else if (nIdx != 3 && nIdx != 4)
-					pMapObject->SetbDown(true);
-
-				else if (nIdx == 3 || nIdx == 4)
-					pos->x = (Mappos.x + vtxMax.x) + fRadius;
-
-			}
-			//ブロックの左側面==================================
-			if (pos->x + fRadius >= Mappos.x + vtxMin.x
-				&& posOld->x + fRadius <= Mappos.x + vtxMin.x)
-			{
-				if (nIdx != 0 && nIdx != 3 && nIdx != 4)
-					pMapObject->SetbShut(true);
-
-				else if (nIdx != 3 && nIdx != 4)
-					pMapObject->SetbDown(true);
-
-				else if (nIdx == 3 || nIdx == 4)
-					pos->x = (Mappos.x + vtxMin.x) - fRadius;
-
-			}
-		}
-
-		if (pos->x + fRadius > Mappos.x + vtxMin.x
-			&& pos->x + -fRadius < Mappos.x + vtxMax.x)
-		{
-			//ブロックの上======================================
-			if (pos->z + -fRadius <= Mappos.z + vtxMax.z
-				&& posOld->z + -fRadius >= Mappos.z + vtxMax.z)
-			{
-				if (nIdx != 0 && nIdx != 3 && nIdx != 4)
-					pMapObject->SetbShut(true);
-
-				else if (nIdx != 3 && nIdx != 4)
-					pMapObject->SetbDown(true);
-
-				else if (nIdx == 3 || nIdx == 4)
-					pos->z = (Mappos.z + vtxMax.z) + fRadius * 1.1f;
-
-			}
-
-			//ブロックの下======================================
-			if (pos->z + fRadius >= Mappos.z + vtxMin.z
-				&& posOld->z + fRadius <= Mappos.z + vtxMin.z)
-			{
-				if (nIdx != 0 && nIdx != 3 && nIdx != 4)
-					pMapObject->SetbShut(true);
-
-				else if (nIdx != 3 && nIdx != 4)
-					pMapObject->SetbDown(true);
-
-				else if (nIdx == 3 || nIdx == 4)
-					pos->z = (Mappos.z + vtxMin.z) - fRadius;
-
-			}
-		}
-
-		pMapObject = pNext;
-	}
-}
-
-//=============================================================================
-// マップに
+// マップオブジェクトとプレイヤーの当たり判定
 //=============================================================================
 bool CCollision::CheckPlayerMapObject(CPlayer* pPlayer, CMapObject* pMapObject, float fRadius)
 {
@@ -534,7 +281,10 @@ bool CCollision::CheckPlayerMapObject(CPlayer* pPlayer, CMapObject* pMapObject, 
 	return false;
 }
 
-bool CCollision::HitOBJ(CPlayer* pPlayer, CMapObject* pMapObject, float fMyRadius, float fTargetRadius)
+//=============================================================================
+// プレイヤーの攻撃とマップオブジェクトの当たり判定
+//=============================================================================
+bool CCollision::AttackHitCheck(CPlayer* pPlayer, CMapObject* pMapObject, float fMyRadius, float fTargetRadius)
 {
 	int nNum = 0;
 	D3DXVECTOR3 Mappos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -679,7 +429,7 @@ bool CCollision::ItemEnemy(CItem *pItem, CEnemy *pEnemy, float fMyRadius, float 
 		{
 			//pEnemy->Damege(CPlayer::GetInstance()->GetMotion()->GetAttackDamege(), CPlayer::GetInstance()->GetMotion()->GetKnockBack(), CPlayer::GetInstance()->GetActType());
 
-			CParticle::Create(pEnemy->GetPosition(), CParticle::TYPE_BLOOD);
+			//CParticle::Create(pEnemy->GetPosition(), CParticle::TYPE_BLOOD);
 
 			return true;
 		}

@@ -156,7 +156,7 @@ public:
 
 	static CPlayer *Create(D3DXVECTOR3 pos, int nPriority = 2);  // 生成
 	static CPlayer *Create(void);
-	void Damage(int nDamage, float fKnockBack);			              // 攻撃をくらった時の処理
+	void Damage(int nDamage, D3DXVECTOR3 KnockBack);			 // 攻撃をくらった時の処理
 	void TitleWalk(void);                     // タイトル
 	void CreateRippleshEffect(void);  // 水たまりに入った時のエフェクトを生成
 	void CreateMoveStopEffect(void);  // 移動停止した際に出るエフェクトを生成
@@ -174,6 +174,7 @@ public:
 	void SetDefeat(int nValue) { m_nDefeat = nValue; }
 	void SetUseMicroCount(int nValue) { m_nUseCounter = nValue; }
 	void SetbHeatActFlag(bool bValue) { m_bHeatActFlag = bValue; }
+	void SetDiff(float diff) { m_fDest = diff; }
 
 	// 取得系
 	D3DXVECTOR3 GetPosition(void) { return m_Info.pos; }       // 位置取得

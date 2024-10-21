@@ -165,6 +165,7 @@
     <ClCompile Include="code\audience.cpp" />
     <ClCompile Include="code\audiencemanager.cpp" />
     <ClCompile Include="code\billboard.cpp" />
+    <ClCompile Include="code\bullet.cpp" />
     <ClCompile Include="code\camera.cpp" />
     <ClCompile Include="code\character.cpp" />
     <ClCompile Include="code\collision.cpp" />
@@ -241,6 +242,7 @@
     <ClInclude Include="code\audience.h" />
     <ClInclude Include="code\audiencemanager.h" />
     <ClInclude Include="code\billboard.h" />
+    <ClInclude Include="code\bullet.h" />
     <ClInclude Include="code\camera.h" />
     <ClInclude Include="code\character.h" />
     <ClInclude Include="code\collision.h" />

@@ -91,7 +91,7 @@ public:
 
 	static CEnemyBoss *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nPriority = 5);    //生成
 	void ChangeState(CEnemyBossState* pState);  // ステイトの切り替え
-	void RecoverFromDamage(void) override;
+	void Damege(void) override;
 
 	// 設定系
 	void SetChase(CHASE cha) { m_Chase = cha; }
@@ -107,8 +107,7 @@ private:
 	// 敵の動き制御
 	//void Controll(void) override;
 	
-	void Damege(void) override;
-	void HardDamege(void) override;
+	
 	
 	void HitDetection(D3DXVECTOR3 MyPos, float attackrange, float targetradius);
 	//void MicroWave(void) override;

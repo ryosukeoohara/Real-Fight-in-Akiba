@@ -229,7 +229,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\AEì•i\\Real-Fight-in-Akiba\\project\\data\\TEXTURE\\dramcan.png";
+    "data\\TEXTURE\\dramcan.png";
    }
   }
   Material {
@@ -238,7 +238,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\AEì•i\\Real-Fight-in-Akiba\\project\\data\\TEXTURE\\dramcan.png";
+    "data\\TEXTURE\\dramcan.png";
    }
   }
  }

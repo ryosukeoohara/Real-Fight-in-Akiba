@@ -214,41 +214,9 @@ void CEnemyBoss::ChangeState(CEnemyBossState* pState)
 	m_pState = pState;
 }
 
-void CEnemyBoss::RecoverFromDamage(void)
-{
-	//// 敵の情報取得
-	//CEnemy::INFO* Info = GetInfo();
-
-	//if (Info == nullptr)
-	//	return;
-
-	//CMotion* pMotion = GetMotion();
-
-	//if (pMotion == nullptr)
-	//	return;
-
-	//CPlayer* pPlayer = CPlayer::GetInstance();
-
-	//if (pPlayer == nullptr)
-	//	return;
-
-	//// モーションが終了していたら
-	//if (pMotion->IsFinish())
-	//{
-	//	Info->state = pEnemyWeak->STATE_NEUTRAL;
-	//	pMotion->Set(pEnemyWeak->MOTION_NEUTRAL);
-	//	pEnemyWeak->ChangeState(new CEnemyWeakStateMoveWait);
-	//}
-
-	//// モーションが終了していたら
-	//if (pMotion->IsFinish())
-	//{
-	//	Info->state = CEnemy::STATE_NEUTRAL;
-	//	pMotion->Set(MOTION_NEUTRAL);
-	//	ChangeState(new CEnemyBossStateMove);
-	//}
-}
-
+//===========================================================
+// 捕まれた時の処理
+//===========================================================
 void CEnemyBoss::Grabbed(void)
 {
 	CPlayer* pPlayer = CPlayer::GetInstance();
@@ -313,11 +281,6 @@ void CEnemyBoss::Damege(void)
 		CCamera::GetInstance()->ChangeState(new FinalBlowCamera);
 		ChangeState(new CEnemyBossStateDeath);
 	}
-}
-
-void CEnemyBoss::HardDamege(void)
-{
-
 }
 
 //===========================================================
@@ -435,7 +398,7 @@ void CEnemyBoss::HitDetection(D3DXVECTOR3 MyPos, float attackrange, float target
 	{// 現在のフレームが攻撃判定発生フレーム以上かつ攻撃判定終了フレームない
 
 		if (CGame::GetCollision()->Circle(MyPos, CGame::GetPlayer()->GetPosition(), attackrange, targetradius) == true)
-			CGame::GetPlayer()->Damage(GetMotion()->GetAttackDamege(), GetMotion()->GetKnockBack());
+			CGame::GetPlayer()->Damage(GetMotion()->GetAttackDamege(), D3DXVECTOR3(sinf(GetRotition().y) * GetMotion()->GetKnockBack(), 0.0f, cosf(GetRotition().y) * GetMotion()->GetKnockBack()));
 	}
 }
 

@@ -20,7 +20,7 @@
 //===========================================================
 namespace
 {
-	const int BLOOD = 1;        // 血液のパーティクル
+	const int BLOOD = 20;        // 血液のパーティクル
 	const int GROUND = 20;      // 土煙のパーティクル
 	const int CIRCLE = 314;     // 円形のパーティクル
 	const float SPEED = 10.0f;  // 移動量
@@ -106,6 +106,16 @@ HRESULT CParticle::Init(void)
 	case TYPE_GLASS:
 		Glass();
 		break;
+
+	case TYPE_BREAKDOWN:
+		BreakDown();
+		break;
+
+	case TYPE_MAX:
+		break;
+
+	default:
+		break;
 	}
 
 	return S_OK;
@@ -164,25 +174,24 @@ void CParticle::Move(void)
 //===========================================================
 void CParticle::Blood(void)
 {
-	//乱数の種を設定
-	srand((unsigned int)time(0));
-
 	for (int nCnt = 0; nCnt < BLOOD; nCnt++)
 	{
-		float fMove, fRot;
+		float fMove, fRange;
 
 		fMove = (float)(rand() % 50) / 100.0f * 8.0f;
-		fRot = (float)(rand() % 629 - 314) / 100.0f;
+		
+		fRange = (float)(rand() % 10) - D3DX_PI * 2;
 
-		m_move.x = sinf(fRot) * fMove;
-		m_move.y = cosf(fRot) * fMove;
-		m_move.z = cosf(fRot) * fMove;
+		m_move.x = sinf(fRange) * fMove;
+		m_move.y = cosf(fRange) * fMove;
+		m_move.z = cosf(fRange) * fMove;
 
- 		CEffect3D::Create(D3DXVECTOR3(m_pos.x, m_pos.y + 20.0f, m_pos.z), D3DXVECTOR3(m_move.x, m_move.y + 10.0f, m_move.z), D3DXVECTOR3(fRot, fRot, fRot), 60, CEffect3D::TYPE_BIKE, "data\\MODEL\\bike\\tier.x");
-		CEffect3D::Create(D3DXVECTOR3(m_pos.x, m_pos.y + 20.0f, m_pos.z), D3DXVECTOR3(m_move.x, m_move.y + 10.0f, m_move.z), D3DXVECTOR3(fRot, fRot, fRot), 60, CEffect3D::TYPE_BIKE, "data\\MODEL\\bike\\basket.x");
-		CEffect3D::Create(D3DXVECTOR3(m_pos.x, m_pos.y + 20.0f, m_pos.z), D3DXVECTOR3(m_move.x, m_move.y + 10.0f, m_move.z), D3DXVECTOR3(fRot, fRot, fRot), 60, CEffect3D::TYPE_BIKE, "data\\MODEL\\bike\\handle.x");
-		CEffect3D::Create(D3DXVECTOR3(m_pos.x, m_pos.y + 20.0f, m_pos.z), D3DXVECTOR3(m_move.x, m_move.y + 10.0f, m_move.z), D3DXVECTOR3(fRot, fRot, fRot), 60, CEffect3D::TYPE_BIKE, "data\\MODEL\\bike\\pedal.x");
-		CEffect3D::Create(D3DXVECTOR3(m_pos.x, m_pos.y + 20.0f, m_pos.z), D3DXVECTOR3(m_move.x, m_move.y + 10.0f, m_move.z), D3DXVECTOR3(fRot, fRot, fRot), 60, CEffect3D::TYPE_BIKE, "data\\MODEL\\bike\\tier.x");
+		if (m_move.z > 0.0f)
+		{
+			m_move.z *= -1;
+		}
+
+		CEffect::Create(m_pos, { m_move.x, m_move.y, m_move.z }, { 1.0f, 0.0f, 0.0f, 1.0f }, 10.0f, 30, CEffect::TYPE_BLOOD);
 	}
 }
 
@@ -263,9 +272,6 @@ void CParticle::Circle(void)
 //===========================================================
 void CParticle::Glass(void)
 {
-	//乱数の種を設定
-	srand((unsigned int)time(0));
-
 	for (int nCnt = 0; nCnt < 30; nCnt++)
 	{
 		int nLife = 0;
@@ -287,5 +293,57 @@ void CParticle::Glass(void)
 		nLife = 25;
 
 		CEffect3D::Create(D3DXVECTOR3(m_pos.x + 30.0f, m_pos.y, m_pos.z), move, rot, nLife, CEffect3D::TYPE_GLASS, "data\\MODEL\\glass.x");
+	}
+}
+
+//===========================================================
+// 自転車の残骸
+//===========================================================
+void CParticle::BikeScrap(void)
+{
+	float fMove, fRot;
+
+	fMove = (float)(rand() % 50) / 100.0f * 8.0f;
+	fRot = (float)(rand() % 629 - 314) / 100.0f;
+
+	m_move.x = sinf(fRot) * fMove;
+	m_move.y = cosf(fRot) * fMove;
+	m_move.z = cosf(fRot) * fMove;
+
+	CEffect3D::Create(D3DXVECTOR3(m_pos.x, m_pos.y + 20.0f, m_pos.z), D3DXVECTOR3(m_move.x, m_move.y + 10.0f, m_move.z), D3DXVECTOR3(fRot, fRot, fRot), 60, CEffect3D::TYPE_BIKE, "data\\MODEL\\bike\\tier.x");
+	CEffect3D::Create(D3DXVECTOR3(m_pos.x, m_pos.y + 20.0f, m_pos.z), D3DXVECTOR3(m_move.x, m_move.y + 10.0f, m_move.z), D3DXVECTOR3(fRot, fRot, fRot), 60, CEffect3D::TYPE_BIKE, "data\\MODEL\\bike\\basket.x");
+	CEffect3D::Create(D3DXVECTOR3(m_pos.x, m_pos.y + 20.0f, m_pos.z), D3DXVECTOR3(m_move.x, m_move.y + 10.0f, m_move.z), D3DXVECTOR3(fRot, fRot, fRot), 60, CEffect3D::TYPE_BIKE, "data\\MODEL\\bike\\handle.x");
+	CEffect3D::Create(D3DXVECTOR3(m_pos.x, m_pos.y + 20.0f, m_pos.z), D3DXVECTOR3(m_move.x, m_move.y + 10.0f, m_move.z), D3DXVECTOR3(fRot, fRot, fRot), 60, CEffect3D::TYPE_BIKE, "data\\MODEL\\bike\\pedal.x");
+	CEffect3D::Create(D3DXVECTOR3(m_pos.x, m_pos.y + 20.0f, m_pos.z), D3DXVECTOR3(m_move.x, m_move.y + 10.0f, m_move.z), D3DXVECTOR3(fRot, fRot, fRot), 60, CEffect3D::TYPE_BIKE, "data\\MODEL\\bike\\tier.x");
+	
+}
+
+//===========================================================
+// 電子レンジ故障
+//===========================================================
+void CParticle::BreakDown(void)
+{
+	for (int nCnt = 0; nCnt < 3; nCnt++)
+	{
+		int nLife = 0;
+		float fRadius = 0;
+		D3DXVECTOR3 move = {};
+		D3DXCOLOR col = {};
+
+		//移動量の設定
+		move.x = sinf((float)(rand() % 629 - 314) * 0.01f) * 0.09f;
+		move.y = 20.0f * 0.05f;
+		move.z = cosf((float)(rand() % 629 - 314) * 0.01f) * 0.09f;
+
+		//色の設定
+		col = D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.0f);
+
+		//半径の設定
+		fRadius = 10.0f;
+
+		//寿命の設定
+		nLife = 500;
+
+		CEffect::Create(m_pos, move, col, fRadius, nLife, CEffect::TYPE_SMOOK);
 	}
 }

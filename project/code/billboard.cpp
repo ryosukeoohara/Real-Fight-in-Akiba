@@ -203,10 +203,10 @@ void CBillBoard::SetColor(D3DXCOLOR col)
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点カラーの設定
-	pVtx[0].col = D3DXCOLOR(col.r, col.g, col.b, col.a);
-	pVtx[1].col = D3DXCOLOR(col.r, col.g, col.b, col.a);
-	pVtx[2].col = D3DXCOLOR(col.r, col.g, col.b, col.a);
-	pVtx[3].col = D3DXCOLOR(col.r, col.g, col.b, col.a);
+	pVtx[0].col = col;
+	pVtx[1].col = col;
+	pVtx[2].col = col;
+	pVtx[3].col = col;
 
 	//頂点バッファをアンロックする
 	m_pVtxBuff->Unlock();
@@ -310,9 +310,9 @@ void CBillBoard::Draw(void)
 		CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();
 		LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 
-		//zテストを無効にする
-		pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
-		pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+		////zテストを無効にする
+		//pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+		//pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 
 		//αテストを有効にする
 		pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
@@ -355,9 +355,9 @@ void CBillBoard::Draw(void)
 		//ワールドマトリックスの設定
 		pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 
-		//zテストを無効にする
-		pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
-		pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+		////zテストを無効にする
+		//pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+		//pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 
 		//頂点バッファをデータストリームに設定
 		pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));

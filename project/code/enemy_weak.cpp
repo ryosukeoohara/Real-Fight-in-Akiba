@@ -110,8 +110,6 @@ CEnemyWeak * CEnemyWeak::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int
 	return pEnemy;
 }
 
-
-
 //===========================================================
 // 初期化処理
 //===========================================================
@@ -129,7 +127,7 @@ HRESULT CEnemyWeak::Init(void)
 	{
 		m_pLife3D = CGage3D::Create(D3DXVECTOR3(Info->pos.x, Info->pos.y, Info->pos.z), 5.0f, (float)((Info->nLife * 0.01f) * 20), CGage3D::TYPE_LIFE);
 		m_pLife3D->SetPos(&Info->pos);
-		m_pLife3D->SetUpHeight(80.0f);
+		m_pLife3D->SetUpHeight(90.0f);
 		m_pLife3D->GetBill()->SetEdgeCenter((float)((Info->nLife * 0.01f) * 20), 5.0f);
 	}
 	
@@ -192,13 +190,6 @@ void CEnemyWeak::Update(void)
 		m_pLife3D->GetBill()->SetEdgeCenter((float)((Info->nLife * 0.01f) * 20), 5.0f);
 	}
 
-	if (Info->nLife <= 0 && Info->state != STATE_DEATH)
-	{
-		Info->state = CEnemy::STATE_DEATH;
-		pMotion->Set(CEnemy::MOTION_DEATH);
-		ChangeState(new CEnemyWeakStateDeath);
-	}
-
 	CManager::GetInstance()->GetDebugProc()->Print("敵の位置：[%f, %f, %f]\n", Info->pos.x, Info->pos.y, Info->pos.z);
 }
 
@@ -222,13 +213,6 @@ void CEnemyWeak::ChangeState(CEnemyWeakState* pState)
 	}
 
 	m_pState = pState;
-}
-
-//===========================================================
-// ダメージ状態からの復帰
-//===========================================================
-void CEnemyWeak::RecoverFromDamage(void)
-{
 }
 
 //===========================================================
@@ -280,10 +264,9 @@ void CEnemyWeak::Damege(void)
 	}
 }
 
-void CEnemyWeak::HardDamege(void)
-{
-}
-
+//===========================================================
+// 捕まれたときの処理
+//===========================================================
 void CEnemyWeak::Grabbed(void)
 {
 	CPlayer* pPlayer = CPlayer::GetInstance();

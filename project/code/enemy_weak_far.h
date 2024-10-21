@@ -62,10 +62,8 @@ public:
 
 	static CEnemyWeakFar* Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nPriority = 5);    //生成
 	void ChangeState(CEnemyWeakFarState* pState);  // ステイトの切り替え
-	void RecoverFromDamage(void) override;  // ダメージ状態からの復帰
-
+	
 	void Damege(void) override;
-	void HardDamege(void) override;
 	void Grabbed(void) override;
 
 	// 設定系
@@ -156,6 +154,8 @@ public:
 	void Update(CEnemyWeakFar* pEnemyWeak) override;
 
 private:
+
+	bool m_bAttack = false;
 
 };
 
