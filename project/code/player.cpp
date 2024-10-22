@@ -37,6 +37,7 @@
 #include "particle.h"
 #include "MyEffekseer.h"
 #include "ripples.h"
+#include "mapobject_dramcan.h"
 
 //===========================================================
 // Ã“Iƒƒ“ƒo•Ï”
@@ -80,7 +81,8 @@ namespace
 	const D3DXVECTOR3 ENEMY_GRAP_POS[CEnemy::MAX] =
 	{
 		D3DXVECTOR3(-10.0f, -10.0f, 60.0f),  // ŽG‹›“G
-		D3DXVECTOR3(-15.0f, -10.0f, 80.0f),  // ƒ{ƒX“G
+		D3DXVECTOR3(-10.0f, -10.0f, 60.0f),  // ‰“‹——£ŽG‹›“G
+		D3DXVECTOR3(-15.0f, -15.0f, 80.0f),  // ƒ{ƒX“G
 	};
 
 	const D3DXVECTOR3 MAP_LIMIT_MAX = D3DXVECTOR3(800.0f, 0.0f, 1000.0f);   // ƒ}ƒbƒv‚Ì§ŒÀ
@@ -719,6 +721,10 @@ void CPlayer::Move(void)
 		// Šp“x‚Ì’l‚ðC³‚·‚é
 		//m_fDest = utility::CorrectAngle(m_fDest);
 
+		
+
+		//D3DXVECTOR3 f = utility::CalculateDirection(Info->pos, PlayerPos);
+
 		m_fDiff = m_fDest - m_Info.rot.y;
 
 		// Šp“x‚Ì’l‚ðC³‚·‚é
@@ -731,10 +737,18 @@ void CPlayer::Move(void)
 		m_Info.rot.y = utility::CorrectAngle(m_Info.rot.y);
 	}
 
+	D3DXVECTOR3 forward;
+	forward.x = sinf(m_fDest);
+	forward.y = 0.0f;
+	forward.z = cosf(m_fDest);
+
+	// ƒxƒNƒgƒ‹‚ð³‹K‰»‚µ‚Ä’PˆÊƒxƒNƒgƒ‹‚É‚·‚é
+	D3DXVec3Normalize(&forward, &forward);
+
 	// ‘–‚Á‚Ä‚¢‚é‚Æ‚«
 	if (m_bDesh)
 		DashEffect();
-	
+
 	// ˆÊ’u‚ÉˆÚ“®—Ê‰ÁŽZ
 	m_Info.pos.x += m_Info.move.x;
 	m_Info.pos.z += m_Info.move.z;
@@ -745,6 +759,10 @@ void CPlayer::Move(void)
 
 	if (CCollision::GetInstance() != nullptr)
 		CCollision::GetInstance()->Map(&m_Info.pos, &m_Info.posOld, 40.0f);
+
+	CMapObject_Dramcan* pDramcan = CMapObject_Dramcan::GetTop();
+
+	//utility::CheckCirclePushOut(&m_Info.pos, &pDramcan->GetPosition(), 30.0f, forward);
 
 }
 

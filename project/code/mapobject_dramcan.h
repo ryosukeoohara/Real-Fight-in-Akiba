@@ -37,7 +37,7 @@ public:
 
 	// 取得
 	//static CMapObject_Dramcan* GetInstance(void) { return m_pDramcan; }
-	CMapObject_Dramcan* GetTop(void) { return m_pTop; }  // リストの先頭
+	static CMapObject_Dramcan* GetTop(void) { return m_pTop; }  // リストの先頭
 
 private:
 

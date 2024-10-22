@@ -21,6 +21,8 @@ namespace utility
 
 		fDest = MyPos - TargetPos;
 
+		D3DXVec3Normalize(&fDest, &fDest);
+
 		fDestmove = atan2f(fDest.x, fDest.z);
 		fDiffmove = fDestmove - fMyRotY;
 
@@ -167,4 +169,43 @@ namespace utility
 			int n = 0;
 		}
 	}
+
+	//===========================================================
+	// 90度回転回転した際のvtxの変更
+	//===========================================================
+	bool CheckCirclePushOut(D3DXVECTOR3* pMyPos, D3DXVECTOR3* pTargetPos, float fMyRadius, D3DXVECTOR3 forwardvector)
+	{
+		float circleX = pMyPos->x - pTargetPos->x;
+		float circleZ = pMyPos->z - pTargetPos->z;
+		float c = 0.0f;
+		
+		c = sqrtf(circleX * circleX + circleZ * circleZ);
+
+		float b = fMyRadius + fMyRadius;
+
+		if (c <= b)
+		{ 
+			forwardvector *= -1;
+
+			*pMyPos += forwardvector * (b - c);
+
+			return true;
+		}
+
+		return false;
+	}
+
+	//===========================================================
+	// 2点間の方向ベクトルを計算する関数
+	//===========================================================
+	D3DXVECTOR3 CalculateDirection(D3DXVECTOR3 start,D3DXVECTOR3 end)
+	{
+		D3DXVECTOR3 direction = end - start;
+
+		// 単位ベクトルに正規化する
+		D3DXVec3Normalize(&direction, &direction);
+
+		return direction;
+	}
+
 }

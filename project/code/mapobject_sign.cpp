@@ -7,6 +7,8 @@
 #include "mapobject_sign.h"
 #include "player.h"
 #include "collision.h"
+#include "manager.h"
+#include "sound.h"
 
 //===========================================================
 // 静的メンバ変数
@@ -19,8 +21,9 @@ CMapObject_Sign* CMapObject_Sign::m_pCur = nullptr;      // 最後尾のポインタ
 //===========================================================
 namespace
 {
-	int FALL_DOWN = 3;  // ３回殴られたら倒れる
-	int SHAKE_TIME = 60;  // 殴られてから揺れている時間
+	const int FALL_DOWN = 3;  // ３回殴られたら倒れる
+	const int SHAKE_TIME = 60;  // 殴られてから揺れている時間
+	const float KNOCK_BACK = 5.0f;  // 殴った時のプレイヤーの後ろの移動量
 }
 
 //===========================================================
@@ -116,6 +119,15 @@ void CMapObject_Sign::Update(void)
 		{
 			// ステートの変更：殴られた状態
 			ChangeState(new CSignBeaten);
+
+			// ノックバック
+			pPlayer->SetMove(D3DXVECTOR3(sinf(pPlayer->GetRotition().y) * KNOCK_BACK, 0.0f, cosf(pPlayer->GetRotition().y) * KNOCK_BACK));
+
+			CSound* pSound = CManager::GetInstance()->GetSound();
+
+			if (pSound != nullptr)
+				pSound->Play(CSound::SOUND_LABEL_SE_IRON_ROT_HIT);
+
 		}
 	}
 }

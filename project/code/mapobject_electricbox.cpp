@@ -9,6 +9,8 @@
 #include "collision.h"
 #include "utility.h"
 #include "effect.h"
+#include "manager.h"
+#include "sound.h"
 
 //===========================================================
 // 静的メンバ変数
@@ -21,8 +23,9 @@ CMapObject_ElectricBox* CMapObject_ElectricBox::m_pCur = nullptr;      // 最後尾
 //===========================================================
 namespace
 {
-	int FALL_DOWN = 3;  // ３回殴られたら倒れる
-	int SHAKE_TIME = 60;  // 殴られてから揺れている時間
+	const int FALL_DOWN = 3;  // ３回殴られたら倒れる
+	const int SHAKE_TIME = 60;  // 殴られてから揺れている時間
+	const float KNOCK_BACK = 5.0f;  // 殴った時のプレイヤーの後ろの移動量
 }
 
 //===========================================================
@@ -116,6 +119,14 @@ void CMapObject_ElectricBox::Update(void)
 			// ステートの変更：殴られた状態
 			ChangeState(new CElectrictBeaten);
 
+			// ノックバック
+			pPlayer->SetMove(D3DXVECTOR3(sinf(pPlayer->GetRotition().y) * KNOCK_BACK, 0.0f, cosf(pPlayer->GetRotition().y) * KNOCK_BACK));
+
+			CSound* pSound = CManager::GetInstance()->GetSound();
+
+			if (pSound != nullptr)
+				pSound->Play(CSound::SOUND_LABEL_SE_IRON_ROT_HIT);
+
 			m_nFallDownCount++;
 		}
 	}
@@ -187,6 +198,12 @@ void CElectricNeutral::Update(CMapObject_ElectricBox* pElectricBox)
 CElectricFallDown::CElectricFallDown()
 {
 	PlayerPos = CPlayer::GetInstance()->GetPosition();
+
+	CSound* pSound = CManager::GetInstance()->GetSound();
+
+	if (pSound != nullptr)
+		pSound->Play(CSound::SOUND_LABEL_SE_ELECTRICBOX_DOWN); 
+
 }
 
 //===========================================================
@@ -224,8 +241,6 @@ void CElectricFallDown::Update(CMapObject_ElectricBox* pElectricBox)
 	{
 		pInfo->rot.x += 0.1f;
 	}
-
-
 }
 
 //===========================================================
@@ -235,6 +250,7 @@ CElectrictBeaten::CElectrictBeaten()
 {
 	m_nShakeTimeCounter = 0;
 	m_fShakeAngle = 0.0f;
+
 }
 
 //===========================================================

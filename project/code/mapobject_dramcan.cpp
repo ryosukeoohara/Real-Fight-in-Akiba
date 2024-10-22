@@ -12,6 +12,9 @@
 #include "manager.h"
 #include "texture.h"
 #include "ripples.h"
+#include "manager.h"
+#include "sound.h"
+#include "utility.h"
 
 //===========================================================
 // 静的メンバ変数
@@ -124,10 +127,15 @@ void CMapObject_Dramcan::Update(void)
 		{
 			// ステートの変更：殴られた状態
 			ChangeState(new CDramcanBlowAway);
+
+			CSound* pSound = CManager::GetInstance()->GetSound();
+
+			if (pSound != nullptr)
+				pSound->Play(CSound::SOUND_LABEL_SE_IRON_ROT_HIT);
 		}
 	}
-	
-	CCollision::GetInstance()->CheckPlayerMapObject(pPlayer, this, 20.0f);
+
+	//CCollision::GetInstance()->CheckPlayerMapObject(pPlayer, this, 20.0f);
 
 	// ステートの変更
 	if (m_pState != nullptr)

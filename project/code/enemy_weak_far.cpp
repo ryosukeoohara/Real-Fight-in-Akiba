@@ -33,11 +33,12 @@
 //===========================================================
 namespace
 {
-	const int DAMEGE = 10;             // ダメージ状態
-	const int ATTACKAGAINCOUNT = 60;   // 再攻撃できるまでの時間
+	const int DAMEGE = 20;             // ダメージ状態
+	const int ATTACKAGAINCOUNT = 120;   // 再攻撃できるまでの時間
 	const float SPEED = 2.0f;          // 走る速さ
 	const float ATTACKLENGHT = 200.0f;  // 攻撃可能範囲
 	const float SEARCHRANGE = 400.0f;  // 探索範囲
+	const int RECOVER_DAMAGE_TIME = 15;  // ダメージ状態でいる時間
 	const char* TEXT_NAME = "data\\TEXT\\enemyfar.txt";  // テキストファイルの名前
 }
 
@@ -53,11 +54,7 @@ CEnemyWeakFar::CEnemyWeakFar()
 
 	m_Mobility = Immobile;
 	m_nDamegeCounter = 0;
-	/*m_pCurrent = nullptr;
-	m_pNext = nullptr;
-	m_pLife2D = nullptr;*/
 	m_pLife3D = nullptr;
-	//m_bDeath = false;
 	m_bDamage = false;
 	ChangeState(new CEnemyWeakFarStateMoveWait);
 }
@@ -68,7 +65,6 @@ CEnemyWeakFar::CEnemyWeakFar()
 CEnemyWeakFar::CEnemyWeakFar(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nPriority) : CEnemy(pos, rot, nlife, nPriority)
 {
 	// 値をクリア
-	//SetState(CEnemy::STATE_NONE);
 	m_pLife3D = nullptr;
 	m_nBiriBiriCount = 0;
 	m_Chase = CHASE_ON;
@@ -198,6 +194,8 @@ void CEnemyWeakFar::Update(void)
 		ChangeState(new CEnemyWeakFarStateDeath);
 	}
 
+	
+
 	CManager::GetInstance()->GetDebugProc()->Print("敵の位置：[%f, %f, %f]\n", Info->pos.x, Info->pos.y, Info->pos.z);
 }
 
@@ -249,6 +247,7 @@ void CEnemyWeakFar::Damege(void)
 
 	Info->nLife -= CPlayer::GetInstance()->GetMotion()->GetAttackDamege();
 	m_bDamage = true;
+	CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(Info->pos.x, Info->pos.y + 50.0f, Info->pos.z));
 
 	if (Info->nLife > 0 && CPlayer::GetInstance()->GetHeatAct() == CPlayer::HEAT_NONE)
 	{// 体力が５０以上のとき
@@ -266,12 +265,13 @@ void CEnemyWeakFar::Damege(void)
 	{// 体力が０以下のとき
 
 		// 死亡状態に切り替える
-		CGame::GetInstance()->SetbFinish(true);
-		CCamera::GetInstance()->ChangeState(new FinalBlowCamera);
 		ChangeState(new CEnemyWeakFarStateDeath);
 	}
 }
 
+//===========================================================
+// 捕まれた時の処理
+//===========================================================
 void CEnemyWeakFar::Grabbed(void)
 {
 	CPlayer* pPlayer = CPlayer::GetInstance();
@@ -332,6 +332,8 @@ void CEnemyWeakFarStateMoveWait::Update(CEnemyWeakFar* pEnemyWeak)
 
 		Info->move.x = 0.0f;
 		Info->move.z = 0.0f;
+
+		//Info->pos.y = -80.0f;
 
 		// 待機状態にする
 		if (pMotion->GetType() != pEnemyWeak->MOTION_NEUTRAL)
@@ -412,8 +414,6 @@ void CEnemyWeakFarStateAttack::Update(CEnemyWeakFar* pEnemyWeak)
 		m_bAttack = true;
 	}
 	
-	//pEnemyWeak->HitDetection(Info->pos, ATTACKLENGHT, pPlayer->GetRadius());
-
 	// モーションが終了していたら
 	if (pMotion->IsFinish())
 	{
@@ -462,20 +462,32 @@ void CEnemyWeakFarStateMove::Update(CEnemyWeakFar* pEnemyWeak)
 
 	float fDiffmove = 0.0f;
 
-	// 追尾
-	fDiffmove = utility::MoveToPosition(Info->pos, PlayerPos, Info->rot.y);
+	//// 追尾
+	//fDiffmove = utility::MoveToPosition(Info->pos, PlayerPos, Info->rot.y);
 
-	// 角度補正
-	fDiffmove = utility::CorrectAngle(fDiffmove);
+	//// 角度補正
+	//fDiffmove = utility::CorrectAngle(fDiffmove);
 
-	Info->rot.y += fDiffmove * 0.05f;
+	//Info->rot.y += fDiffmove * 0.05f;
 
-	// 角度補正
-	Info->rot.y = utility::CorrectAngle(Info->rot.y);
+	//// 角度補正
+	//Info->rot.y = utility::CorrectAngle(Info->rot.y);
 
-	//移動量を更新(減衰させる)
-	Info->move.x = sinf(Info->rot.y + D3DX_PI) * SPEED;
-	Info->move.z = cosf(Info->rot.y + D3DX_PI) * SPEED;
+	////移動量を更新(減衰させる)
+	//Info->move.x = sinf(Info->rot.y + D3DX_PI) * SPEED;
+	//Info->move.z = cosf(Info->rot.y + D3DX_PI) * SPEED;
+
+	D3DXVECTOR3 ForwardVector = utility::CalculateDirection(Info->pos, PlayerPos);
+
+	float angle = atan2f(ForwardVector.x, ForwardVector.z);
+
+	angle -= D3DX_PI;
+
+	angle = utility::CorrectAngle(angle);
+
+	Info->rot.y = angle;
+
+	Info->move = ForwardVector * SPEED;
 
 	Info->pos += Info->move;
 
@@ -488,6 +500,24 @@ void CEnemyWeakFarStateMove::Update(CEnemyWeakFar* pEnemyWeak)
 		// 状態の切り替え
 		pEnemyWeak->ChangeState(new CEnemyWeakFarStateAttackWait);
 	}
+
+	// 敵との当たり判定
+	CEnemy* pEnemy = CEnemy::GetTop();
+
+	// 当たり判定取得
+	CCollision* pCollision = CGame::GetCollision();
+
+	while (pEnemy != nullptr)
+	{
+		CEnemy* pEnemyNext = pEnemy->GetNext();
+
+		if (Info->nIdxID != pEnemy->GetIdxID() && utility::CheckCirclePushOut(&Info->pos, &pEnemy->GetPosition(), 20.0f, ForwardVector))
+		{
+			pEnemyWeak->ChangeState(new CEnemyWeakFarStateAttackWait);
+		}
+		
+		pEnemy = pEnemyNext;
+	}
 }
 
 //===========================================================
@@ -495,7 +525,7 @@ void CEnemyWeakFarStateMove::Update(CEnemyWeakFar* pEnemyWeak)
 //===========================================================
 CEnemyWeakFarStateDamege::CEnemyWeakFarStateDamege()
 {
-
+	m_nRecoverDamageTime = RECOVER_DAMAGE_TIME;
 }
 
 void CEnemyWeakFarStateDamege::Update(CEnemyWeakFar* pEnemyWeak)
@@ -515,6 +545,11 @@ void CEnemyWeakFarStateDamege::Update(CEnemyWeakFar* pEnemyWeak)
 
 	if (pPlayer == nullptr)
 		return;
+
+	m_nRecoverDamageTime--;
+
+	if(m_nRecoverDamageTime <= 0)
+	   pEnemyWeak->SetbDamage();
 
 	// モーションが終了していたら
 	if (pMotion->IsFinish())
@@ -569,6 +604,10 @@ void CEnemyWeakFarStateDeath::Update(CEnemyWeakFar* pEnemyWeak)
 
 	if (pMotion == nullptr)
 		return;
+
+	// モーションが死亡以外のとき
+	if (pMotion->GetType() != pEnemyWeak->MOTION_DEATH)
+		pMotion->Set(pEnemyWeak->MOTION_DEATH);
 
 	// モーションが終了していたら
 	if (pMotion->IsFinish())

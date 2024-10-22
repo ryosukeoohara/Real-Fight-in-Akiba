@@ -1,7 +1,7 @@
 //===========================================================
 //
-//ポリゴンを出すやつ[bullet.cpp]
-//Author 大原怜将
+// 敵が投げてくる缶[bullet.cpp]
+// Author 大原怜将
 //
 //===========================================================
 #include "manager.h"
@@ -20,8 +20,8 @@ namespace
 {
 	const float WIDTH = 10.0f;       // 幅
 	const float HEIGHT = 10.0f;      // 高さ
-	const float SPEED = 10.0f;       // 移動スピード
-	const float KNOCK_BACK = 5.0f;  // プレイヤーがノックバックする値
+	const float SPEED = 7.0f;        // 移動スピード
+	const float KNOCK_BACK = 5.0f;   // プレイヤーがノックバックする値
 	const int LIFE = 120;            // 体力
 	const int DAMAGE = 10;           // 攻撃力
 	const char* MODEL_PATH = "data\\MODEL\\01_can.x";  // モデルのパス

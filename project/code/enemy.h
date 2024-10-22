@@ -199,21 +199,4 @@ private:
 
 };
 
-////===========================================================
-//// ステイト
-////===========================================================
-//class CEnemyState
-//{
-//public:
-//	CEnemyState() {};
-//	~CEnemyState() {};
-//
-//	virtual void Update(CEnemy* pEnemy) = 0;
-//
-//private:
-//
-//};
-
-
-
 #endif // !_ENEMY_H_

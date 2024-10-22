@@ -9,6 +9,8 @@
 #include "player.h"
 #include "collision.h"
 #include "particle.h"
+#include "manager.h"
+#include "sound.h"
 
 //===========================================================
 // 静的メンバ変数
@@ -21,8 +23,9 @@ CMapObject_Light* CMapObject_Light::m_pCur = nullptr;      // 最後尾のポインタ
 //===========================================================
 namespace
 {
-	int FALL_DOWN = 3;  // ３回殴られたら倒れる
-	int SHAKE_TIME = 60;  // 殴られてから揺れている時間
+	const int FALL_DOWN = 3;  // ３回殴られたら倒れる
+	const int SHAKE_TIME = 60;  // 殴られてから揺れている時間
+	const float KNOCK_BACK = 5.0f;  // 殴った時のプレイヤーの後ろの移動量
 }
 
 
@@ -116,6 +119,14 @@ void CMapObject_Light::Update(void)
 		{
 			// ステートの変更：殴られた状態
 			ChangeState(new CLightBeaten);
+
+			// ノックバック
+			pPlayer->SetMove(D3DXVECTOR3(sinf(pPlayer->GetRotition().y) * KNOCK_BACK, 0.0f, cosf(pPlayer->GetRotition().y) * KNOCK_BACK));
+
+			CSound* pSound = CManager::GetInstance()->GetSound();
+
+			if (pSound != nullptr)
+				pSound->Play(CSound::SOUND_LABEL_SE_IRON_ROT_HIT);
 		}
 	}
 
@@ -235,65 +246,6 @@ void CLightFall::Update(CMapObject_Light* pLighth)
 {
 	CObjectX::INFO* pInfo = pLighth->GetInfo();
 
-	//if (m_pLightR == nullptr)
-	//{
-	//	m_pLightR = CObjectX::Create("data\\MODEL\\map\\light_rubble_L.x");
-	//	m_pLightR->SetPosition(D3DXVECTOR3(pInfo->pos.x, 400.0f, pInfo->pos.z + 50.0f));
-	//	m_pLightR->SetGravity(5.0f);
-	//}
-
-	//if (m_pLightL == nullptr)
-	//{
-	//	m_pLightL = CObjectX::Create("data\\MODEL\\map\\light_rubble_R.x");
-	//	m_pLightL->SetPosition(D3DXVECTOR3(pInfo->pos.x, 400.0f, pInfo->pos.z - 50.0f));
-	//	m_pLightL->SetGravity(5.0f);
-	//}
-
-	//if (m_pLightR != nullptr)
-	//{
-	//	CObjectX::INFO* pInfo = m_pLightR->GetInfo();
-	//	
-	//	if (pInfo->pos.y > 0.0f)
-	//	{
-	//		pInfo->pos.y -= 9.0f;
-	//	}
-	//	else
-	//	{
-	//		// ガラス片のパーティクルを生成
-	//		CParticle::Create(pInfo->pos, CParticle::TYPE_GLASS);
-	//	}
-	//		
-	//	pInfo->pos += pInfo->move;
-
-	//	// 移動量を更新(減衰させる)
-	//	pInfo->move.x += (0.0f - pInfo->move.x) * 0.1f;
-	//	pInfo->move.y += (0.0f - pInfo->move.y) * 0.1f;
-	//	pInfo->move.z += (0.0f - pInfo->move.z) * 0.1f;
-	//}
-
-	//if (m_pLightL != nullptr)
-	//{
-	//	CObjectX::INFO* pInfo = m_pLightL->GetInfo();
-
-	//	if (pInfo->pos.y > 0.0f)
-	//	{
-	//		pInfo->pos.y -= 9.0f;
-	//	}
-	//	else
-	//	{
-	//		// ガラス片のパーティクルを生成
-	//		CParticle::Create(pInfo->pos, CParticle::TYPE_GLASS);
-
-	//		pLighth->ChangeState(new CLightNeutral);
-	//	}
-
-	//	pInfo->pos += pInfo->move;
-
-	//	// 移動量を更新(減衰させる)
-	//	pInfo->move.x += (0.0f - pInfo->move.x) * 0.1f;
-	//	pInfo->move.y += (0.0f - pInfo->move.y) * 0.1f;
-	//	pInfo->move.z += (0.0f - pInfo->move.z) * 0.1f;
-	//}
 	CMapObject_BrokenLight *pLightL = CMapObject_BrokenLight::Create("data\\MODEL\\map\\light_rubble_L.x");
 	pLightL->SetPosition(D3DXVECTOR3(pInfo->pos.x + 50.0f, 400.0f, pInfo->pos.z));
 	pLightL->SetRotition(D3DXVECTOR3(0.0f, D3DX_PI * 0.5f, 0.0f));

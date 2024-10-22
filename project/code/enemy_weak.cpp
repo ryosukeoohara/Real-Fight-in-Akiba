@@ -32,11 +32,12 @@
 //===========================================================
 namespace
 {
-	const int DAMEGE = 10;             // ダメージ状態
+	const int DAMAGECOUNT = 20;             // ダメージ状態
 	const int ATTACKAGAINCOUNT = 60;   // 再攻撃できるまでの時間
 	const float SPEED = 2.0f;          // 走る速さ
 	const float ATTACKLENGHT = 50.0f;  // 攻撃可能範囲
 	const float SEARCHRANGE = 400.0f;  // 探索範囲
+	const int RECOVER_DAMAGE_TIME = 15;  // ダメージ状態でいる時間
 	const char* TEXT_NAME = "data\\TEXT\\motion_enemy.txt";  // テキストファイルの名前
 }
 
@@ -241,6 +242,7 @@ void CEnemyWeak::Damege(void)
 
 	Info->nLife -= CPlayer::GetInstance()->GetMotion()->GetAttackDamege();
 	m_bDamage = true;
+	CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(Info->pos.x, Info->pos.y + 50.0f, Info->pos.z));
 
 	if (Info->nLife > 0 && CPlayer::GetInstance()->GetHeatAct() == CPlayer::HEAT_NONE)
 	{// 体力が５０以上のとき
@@ -258,8 +260,6 @@ void CEnemyWeak::Damege(void)
 	{// 体力が０以下のとき
 
 		// 死亡状態に切り替える
-		CGame::GetInstance()->SetbFinish(true);
-		CCamera::GetInstance()->ChangeState(new FinalBlowCamera);
 		ChangeState(new CEnemyWeakStateDeath);
 	}
 }
@@ -388,20 +388,6 @@ void CEnemyWeakStateAttack::Update(CEnemyWeak* pEnemyWeak)
 
 	pEnemyWeak->HitDetection(Info->pos, ATTACKLENGHT, pPlayer->GetRadius());
 
-	//if (pMotion->GetNowFrame() == pMotion->GetAttackOccurs())
-	//{
-	//	D3DXMATRIX mtx = *pEnemy->GetCharcter()[0]->GetMtxWorld();
-	//	CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_ATTACK, ::Effekseer::Vector3D(mtx._41, mtx._42, mtx._43), ::Effekseer::Vector3D(0.0f, 0.0f, 0.0f), ::Effekseer::Vector3D(25.0f, 25.0f, 25.0f));
-	//}
-
-	//if (pMotion->GetAttackOccurs() <= pMotion->GetNowFrame() && pMotion->GetAttackEnd() >= pMotion->GetNowFrame())
-	//{// 現在のフレームが攻撃判定発生フレーム以上かつ攻撃判定終了フレームない
-
-	//	if (CCollision::GetInstance()->Circle(Info->pos, pPlayer->GetPosition(), ATTACKLENGHT, pPlayer->GetRadius()) == true)
-	//		pPlayer->Damage(pMotion->GetAttackDamege(), pMotion->GetKnockBack());
-
-	//}
-
 	// モーションが終了していたら
 	if (pMotion->IsFinish())
 	{
@@ -412,11 +398,7 @@ void CEnemyWeakStateAttack::Update(CEnemyWeak* pEnemyWeak)
 
 		Info->state = pEnemyWeak->STATE_NEUTRAL;
 		pMotion->Set(pEnemyWeak->MOTION_NEUTRAL);
-
-		/*if (fLenght <= ATTACKLENGHT)
-			pEnemyWeak->ChangeState(new CEnemyStateAttackWait);
-			
-		else*/
+		
 		pEnemyWeak->ChangeState(new CEnemyWeakStateMoveWait);
 	}
 }
@@ -452,20 +434,17 @@ void CEnemyWeakStateMove::Update(CEnemyWeak* pEnemyWeak)
 
 	float fDiffmove = 0.0f;
 
-	// 追尾
-	fDiffmove = utility::MoveToPosition(Info->pos, PlayerPos, Info->rot.y);
+	D3DXVECTOR3 ForwardVector = utility::CalculateDirection(Info->pos, PlayerPos);
 
-	// 角度補正
-	fDiffmove = utility::CorrectAngle(fDiffmove);
+	float angle = atan2f(ForwardVector.x, ForwardVector.z);
 
-	Info->rot.y += fDiffmove * 0.05f;
+	angle -= D3DX_PI;
 
-	// 角度補正
-	Info->rot.y = utility::CorrectAngle(Info->rot.y);
+	angle = utility::CorrectAngle(angle);
 
-	//移動量を更新(減衰させる)
-	Info->move.x = sinf(Info->rot.y + D3DX_PI) * SPEED;
-	Info->move.z = cosf(Info->rot.y + D3DX_PI) * SPEED;
+	Info->rot.y = angle;
+
+	Info->move = ForwardVector * SPEED;
 
 	Info->pos += Info->move;
 
@@ -479,6 +458,24 @@ void CEnemyWeakStateMove::Update(CEnemyWeak* pEnemyWeak)
 		pMotion->Set(pEnemyWeak->MOTION_NEUTRAL);
 		pEnemyWeak->ChangeState(new CEnemyWeakStateAttackWait);
 	}
+
+	// 敵との当たり判定
+	CEnemy* pEnemy = CEnemy::GetTop();
+
+	// 当たり判定取得
+	CCollision* pCollision = CGame::GetCollision();
+
+	while (pEnemy != nullptr)
+	{
+		CEnemy* pEnemyNext = pEnemy->GetNext();
+
+		if (Info->nIdxID != pEnemy->GetIdxID() && utility::CheckCirclePushOut(&Info->pos, &pEnemy->GetPosition(), 20.0f, ForwardVector))
+		{
+			pEnemyWeak->ChangeState(new CEnemyWeakStateAttackWait);
+		}
+			
+		pEnemy = pEnemyNext;
+	}
 }
 
 //===========================================================
@@ -486,7 +483,7 @@ void CEnemyWeakStateMove::Update(CEnemyWeak* pEnemyWeak)
 //===========================================================
 CEnemyWeakStateDamege::CEnemyWeakStateDamege()
 {
-
+	m_nRecoverDamageTime = DAMAGECOUNT;
 }
 
 void CEnemyWeakStateDamege::Update(CEnemyWeak* pEnemyWeak)
@@ -506,6 +503,11 @@ void CEnemyWeakStateDamege::Update(CEnemyWeak* pEnemyWeak)
 
 	if (pPlayer == nullptr)
 		return;
+
+	m_nRecoverDamageTime--;
+
+	if (m_nRecoverDamageTime <= 0)
+		pEnemyWeak->SetbDamage();
 
 	// モーションが終了していたら
 	if (pMotion->IsFinish())
@@ -560,6 +562,10 @@ void CEnemyWeakStateDeath::Update(CEnemyWeak* pEnemyWeak)
 
 	if (pMotion == nullptr)
 		return;
+
+	// モーションがノックダウン以外のとき
+	if (pMotion->GetType() != pEnemyWeak->MOTION_DEATH)
+		pMotion->Set(pEnemyWeak->MOTION_DEATH);
 
 	// モーションが終了していたら
 	if (pMotion->IsFinish())

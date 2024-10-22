@@ -8,6 +8,8 @@
 #include "player.h"
 #include "collision.h"
 #include "particle.h"
+#include "manager.h"
+#include "sound.h"
 
 //===========================================================
 // Ã“Iƒƒ“ƒo•Ï”
@@ -193,6 +195,12 @@ void CBrokenLightFall::Update(CMapObject_BrokenLight* pLighth)
 		CParticle::Create(pInfo->pos, CParticle::TYPE_GLASS);
 
 		pLighth->ChangeState(new CBrokenLightNeutral);
+
+		CSound* pSound = CManager::GetInstance()->GetSound();
+
+		if (pSound != nullptr)
+			pSound->Play(CSound::SOUND_LABEL_SE_GRASS);
+
 	}
 
 	pInfo->pos += pInfo->move;

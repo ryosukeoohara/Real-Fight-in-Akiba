@@ -7,6 +7,8 @@
 #include "mapobject_fance.h"
 #include "player.h"
 #include "collision.h"
+#include "manager.h"
+#include "sound.h"
 
 //===========================================================
 // Ã“Iƒƒ“ƒo•Ï”
@@ -159,6 +161,12 @@ void CFanceBlowAway::Update(CMapObject_Fance* pFance)
 		pFance->ChangeState(new CFanceNeutral);
 
 		m_fFallDownSpeed = 0.0f;
+
+		CSound* pSound = CManager::GetInstance()->GetSound();
+
+		if (pSound != nullptr)
+			pSound->Play(CSound::SOUND_LABEL_SE_FANCE_DOWN);
+
 	}
 
 	D3DXVECTOR3 move = {};

@@ -48,15 +48,9 @@ CEnemyWeakNear::CEnemyWeakNear()
 	m_pLife3D = nullptr;
 	m_nBiriBiriCount = 0;
 	m_Chase = CHASE_ON;
-
-
 	m_Mobility = Immobile;
 	m_nDamegeCounter = 0;
-	/*m_pCurrent = nullptr;
-	m_pNext = nullptr;
-	m_pLife2D = nullptr;*/
 	m_pLife3D = nullptr;
-	//m_bDeath = false;
 	m_bDamage = false;
 	ChangeState(new CEnemyWeakNearStateMoveWait);
 }
@@ -67,7 +61,6 @@ CEnemyWeakNear::CEnemyWeakNear()
 CEnemyWeakNear::CEnemyWeakNear(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nPriority) : CEnemy(pos, rot, nlife, nPriority)
 {
 	// ’l‚ðƒNƒŠƒA
-	//SetState(CEnemy::STATE_NONE);
 	m_pLife3D = nullptr;
 	m_nBiriBiriCount = 0;
 	m_Chase = CHASE_ON;
@@ -265,8 +258,6 @@ void CEnemyWeakNear::Damege(void)
 	{// ‘Ì—Í‚ª‚OˆÈ‰º‚Ì‚Æ‚«
 
 		// Ž€–Só‘Ô‚ÉØ‚è‘Ö‚¦‚é
-		CGame::GetInstance()->SetbFinish(true);
-		CCamera::GetInstance()->ChangeState(new FinalBlowCamera);
 		ChangeState(new CEnemyWeakNearStateDeath);
 	}
 }
@@ -404,8 +395,6 @@ void CEnemyWeakNearStateAttack::Update(CEnemyWeakNear* pEnemyWeak)
 
 	// “G‚Ìî•ñŽæ“¾
 	CEnemy::INFO* Info = pEnemyWeak->GetInfo();
-
-	//pEnemyWeak->HitDetection(Info->pos, ATTACKLENGHT, pPlayer->GetRadius());
 
 	// ƒ‚[ƒVƒ‡ƒ“‚ªI—¹‚µ‚Ä‚¢‚½‚ç
 	if (pMotion->IsFinish())

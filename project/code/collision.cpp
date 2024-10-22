@@ -132,8 +132,12 @@ void CCollision::AttackCircle(D3DXVECTOR3 * pMyPos, float fMyRadius, float fTarg
 		if (c <= fMyRadius + fTargetRadius && (pMyPos->y >= pEnemy->GetPosition().y && pMyPos->y <= pEnemy->GetPosition().y + fHeight) && pEnemy->GetState() != CEnemy::STATE_DAMEGE)
 		{
 			pEnemy->Damege();
-			//CParticle::Create(pEnemy->GetPosition(), CParticle::TYPE_BLOOD);
-			CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(pMyPos->x, pMyPos->y, pMyPos->z));
+
+			CSound* pSound = CManager::GetInstance()->GetSound();
+
+			if (pSound != nullptr)
+				pSound->Play(CSound::SOUND_LABEL_SE_ATTACK);
+
 		}
 
 		pEnemy = pEnemyNext;
@@ -439,7 +443,7 @@ bool CCollision::ItemEnemy(CItem *pItem, CEnemy *pEnemy, float fMyRadius, float 
 }
 
 //=============================================================================
-//Œ•‚Ì“–‚½‚è”»’è
+// “G“¯Žm‚Ì“–‚½‚è”»’è
 //=============================================================================
 D3DXVECTOR3 *CCollision::CheckEnemy(D3DXVECTOR3 * pMyPos, D3DXVECTOR3 * pMyOldPos, D3DXVECTOR3 * pTargetPos, float fMyRadius)
 {

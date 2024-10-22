@@ -24,6 +24,9 @@ namespace utility
 	void Shrink(CObject2D* pObj, float fHei, float fWid);                           // ポリゴンを小さく
 	void Color_A2D(CObject2D* pObj, float fValue);                                  // ポリゴンの色
 	void ChangeVtx(D3DXVECTOR3* pVtxMax, D3DXVECTOR3* pVtxMin, D3DXVECTOR3 rot);          // 90度回転回転した際のvtxの変更
+	bool CheckCirclePushOut(D3DXVECTOR3 *pMyPos, D3DXVECTOR3 *pTargetPos, float fMyRadius, D3DXVECTOR3 forwardvector);
+
+	D3DXVECTOR3 CalculateDirection(D3DXVECTOR3 MyPos, D3DXVECTOR3 TargetPos);
 }
 
 //======================================

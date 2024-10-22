@@ -34,7 +34,6 @@ public:
 		MOTION_NEUTRAL = 0,          // 待機
 		MOTION_DASH,                 // 移動
 		MOTION_ATTACK,               // 攻撃
-		MOTION_BATTLE_NEUTRAL,       // 先頭ニュートラル
 		MOTION_DAMEGE,               // 攻撃受けた
 		MOTION_GRAP,                 // 投げられ待ち
 		MOTION_FALLDOWN,             // 転ぶ
@@ -45,6 +44,7 @@ public:
 
 		MOTION_GETUP,                // 起き上がり
 		MOTION_DEATH,                // 死亡
+		MOTION_BATTLE_NEUTRAL,       // 先頭ニュートラル
 
 		MOTION_PAINFULDAMAGE,        // 痛い攻撃を受けた
 		MOTION_HEATDAMEGE,           // 攻撃受けた
@@ -171,6 +171,8 @@ public:
 	void Update(CEnemyWeakFar* pEnemyWeak) override;
 
 private:
+
+	int m_nRecoverDamageTime = 0;  // ダメージ状態から復帰する時間
 
 };
 

@@ -42,6 +42,13 @@ public:
 		SOUND_LABEL_SE_IMPACT,
 		SOUND_LABEL_SE_GRASS,
 		SOUND_LABEL_SE_FIRE,
+		SOUND_LABEL_SE_ATTACK,
+		SOUND_LABEL_SE_CAN_SHOOT,
+		SOUND_LABEL_SE_KO,
+		SOUND_LABEL_SE_ULT_HIT,
+		SOUND_LABEL_SE_IRON_ROT_HIT,
+		SOUND_LABEL_SE_FANCE_DOWN,
+		SOUND_LABEL_SE_ELECTRICBOX_DOWN,
 		SOUND_LABEL_MAX
 	} SOUND_LABEL;
 
@@ -67,6 +74,13 @@ private:
 		{ "data/SOUND/SE/impact.wav", 0 },
 		{ "data/SOUND/SE/grass.wav", 0 },
 		{ "data/SOUND/SE/fire1.wav", 0 },
+		{ "data/SOUND/SE/attack.wav", 0 },
+		{ "data/SOUND/SE/can_Shoot.wav", 0 },
+		{ "data/SOUND/SE/K.O.wav", 0 },
+		{ "data/SOUND/SE/ultHit.wav", 0 },
+		{ "data/SOUND/SE/ironrot_hit.wav", 0 },
+		{ "data/SOUND/SE/fance_down.wav", 0 },
+		{ "data/SOUND/SE/electricbox_down.wav", 0 },
 	}; 
 
 	IXAudio2 *m_pXAudio2 = NULL;								// XAudio2オブジェクトへのインターフェイス

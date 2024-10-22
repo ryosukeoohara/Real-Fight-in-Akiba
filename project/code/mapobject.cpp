@@ -1,6 +1,6 @@
 //===========================================================
 //
-// マップのモデル[map.cpp]
+// マップのモデル[mapobject.cpp]
 // Author 大原怜将
 //
 //===========================================================
@@ -18,7 +18,6 @@
 // 静的メンバ変数
 //===========================================================
 CMapObject* CMapObject::m_pMap = nullptr;
-
 
 //===========================================================
 // 定数定義
@@ -76,8 +75,20 @@ HRESULT CMapObject::Init(void)
 //===========================================================
 void CMapObject::Uninit(void)
 {
-	// 自身をリストから消す
-	//ListOut();
+	if (m_appObjectX != nullptr)
+	{
+		for (int i = 0; i < m_nNumItem; i++)
+		{
+			if (m_appObjectX[i] != nullptr)
+			{
+				m_appObjectX[i]->Uninit();
+				m_appObjectX[i] = nullptr;
+			}
+		}
+
+		delete m_appObjectX;
+		m_appObjectX = nullptr;
+	}
 
 	CObjectX::Uninit();
 }

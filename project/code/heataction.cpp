@@ -193,6 +193,13 @@ void BikeCrash::Update(CHeatAction* pHeatAct)
 
 			pPlayer->SetbHeatActFlag(false);
 
+			pPlayer->SetHeatActType(pPlayer->HEAT_NONE);
+
+			CSound* pSound = CManager::GetInstance()->GetSound();
+
+			if (pSound != nullptr)
+				pSound->Play(CSound::SOUND_LABEL_SE_ULT_HIT);
+
 			// エフェクトの再生
 			CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_IMPACT, ::Effekseer::Vector3D(Enempos.x, Enempos.y, Enempos.z));
 		}
@@ -334,6 +341,7 @@ void MicroWave::Update(CHeatAction* pHeatAct)
 			pEnemy->GetInfo()->nLife -= 100;
 			CManager::GetInstance()->GetCamera()->ChangeState(new ReturnPlayerBehindCamera);
 			pPlayer->SetState(CPlayer::STATE_NEUTRAL);
+			pPlayer->SetHeatActType(pPlayer->HEAT_NONE);
 			pPlayer->SetUseMicroCount(3600);
 			CGame::GetEnemyManager()->SetTrue(CPlayer::GetInstance()->GetGrapEnemy()->GetIdxID());
 			CPlayer::GetInstance()->SetGrapEnemy(nullptr);

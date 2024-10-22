@@ -21,6 +21,7 @@
 #include "enemy.h"
 #include "motion.h"
 #include "enemy_boss.h"
+#include "sound.h"
 #include "utility.h"
 
 //===========================================================
@@ -482,6 +483,10 @@ void CameraEnemyOverview::Update(CCamera* pCamera)
 			pCameraInfo->posR = D3DXVECTOR3(posEnemy.x, posEnemy.y + 50.0f, posEnemy.z);
 			pCameraInfo->posV = CAMERA_POS[m_nLookCount];
 		}
+		else
+		{
+			pCamera->ChangeState(new CutSceneCamera);
+		}
 	}
 
 	// 3回敵を注視したら、カメラのステートを変更する
@@ -829,6 +834,11 @@ FinalBlowCamera::FinalBlowCamera()
 	pCameraInfo->posR = D3DXVECTOR3(pos.x, pos.y + 75.0f, pos.z);
 	pCameraInfo->rot.y = CAMERA_ROT[m_nLookCount];
 	m_fShankeX = m_fShankeZ = sinf(m_fShakeAngle) * (1.0f - ((float)m_nShakeTimeCounter / SHAKE_TIME)) * 0.5f;
+
+	CSound* pSound = CManager::GetInstance()->GetSound();
+
+	if (pSound != nullptr)
+		pSound->Play(CSound::SOUND_LABEL_SE_KO);
 }
 
 //================================================================
@@ -856,14 +866,25 @@ void FinalBlowCamera::Update(CCamera* pCamera)
 	{
 		m_nFocusCounter = 0;
 		m_nLookCount++;
+		
+		if (m_nLookCount >= 3)
+		{
+			pCamera->ChangeState(new FollowPlayerCamera);
+			CGame::GetInstance()->SetbFinish(false);
+
+			return;
+		}
+
 		pCameraInfo->rot.y = CAMERA_ROT[m_nLookCount];
+
+		CSound* pSound = CManager::GetInstance()->GetSound();
+
+		if (pSound != nullptr)
+			pSound->Play(CSound::SOUND_LABEL_SE_KO);
+
 	}
 
-	if (m_nLookCount >= 3)
-	{
-		pCamera->ChangeState(new FollowPlayerCamera);
-		CGame::GetInstance()->SetbFinish(false);
-	}
+	
 }
 
 //=============================================================================

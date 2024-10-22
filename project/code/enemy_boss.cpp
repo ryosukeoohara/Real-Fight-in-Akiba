@@ -35,11 +35,12 @@
 //===========================================================
 namespace
 {
-	const int DAMEGECOUNT = 10;         // ダメージ状態
+	const int DAMEGECOUNT = 20;         // ダメージ状態
 	const float ATTACKLENGTH = 120.0f;  // 攻撃可能な距離
 	const float SPEED = 2.0f;           // 走る速さ
 	const float ATTACKLENGHT = 100.0f;   // 攻撃可能範囲
 	const int STAGGER_TIME = 600;       // よろめき状態でいる時間
+	const int RECOVER_DAMAGE_TIME = 15;  // ダメージ状態でいる時間
 
 	const D3DXVECTOR3 CAMERA_ROT[CPlayer::HEAT_MAX] =
 	{
@@ -176,20 +177,7 @@ void CEnemyBoss::Update(void)
 	if (m_pLife2D != nullptr)
 		m_pLife2D->GetObj2D()->SetEdgeCenterTex((float)((Info->nLife * 0.1f) * 20.0f));
 
-	/*if (Info->nLife <= 0 && Info->state != STATE_DEATH)
-	{
-		Info->state = CEnemy::STATE_DEATH;
-		pMotion->Set(CEnemy::MOTION_DEATH);
-		ChangeState(new CEnemyBossStateDeath);
-	}*/
-
-	//キーボードを取得
-	CInputKeyboard* InputKeyboard = CManager::GetInstance()->GetKeyBoard();
-
-	if (InputKeyboard->GetTrigger(DIK_8))
-	{
-		Info->nLife = 51;
-	}
+	
 }
 
 //===========================================================
@@ -254,6 +242,7 @@ void CEnemyBoss::Damege(void)
 	
 	Info->nLife -= CPlayer::GetInstance()->GetMotion()->GetAttackDamege();
 	m_bDamage = true;
+	CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(Info->pos.x, Info->pos.y + 50.0f, Info->pos.z));
 
 	if (Info->nLife >= 30 && CPlayer::GetInstance()->GetHeatAct() == CPlayer::HEAT_NONE)
 	{// 体力が５０以上のとき
@@ -627,6 +616,7 @@ void CEnemyBossStateAttackWait::Update(CEnemyBoss* pEnemyBoss)
 //===========================================================
 CEnemyBossStateDamege::CEnemyBossStateDamege()
 {
+	m_nRecoverDamageTime = DAMEGECOUNT;
 }
 
 //===========================================================
@@ -645,6 +635,11 @@ void CEnemyBossStateDamege::Update(CEnemyBoss* pEnemyBoss)
 
 	if (pMotion == nullptr)
 		return;
+
+	m_nRecoverDamageTime--;
+
+	if (m_nRecoverDamageTime <= 0)
+		pEnemyBoss->SetbDamage();
 
 	// モーションが終了していたら
 	if (pMotion->IsFinish())

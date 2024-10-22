@@ -175,6 +175,7 @@ public:
 	void SetUseMicroCount(int nValue) { m_nUseCounter = nValue; }
 	void SetbHeatActFlag(bool bValue) { m_bHeatActFlag = bValue; }
 	void SetDiff(float diff) { m_fDest = diff; }
+	void SetHeatActType(HEAT heat) { m_HeatAct = heat; }
 
 	// Žæ“¾Œn
 	D3DXVECTOR3 GetPosition(void) { return m_Info.pos; }       // ˆÊ’uŽæ“¾

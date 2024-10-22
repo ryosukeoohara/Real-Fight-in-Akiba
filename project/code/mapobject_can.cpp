@@ -8,6 +8,8 @@
 #include "player.h"
 #include "collision.h"
 #include "utility.h"
+#include "manager.h"
+#include "sound.h"
 
 //===========================================================
 // 静的メンバ変数
@@ -99,7 +101,16 @@ void CMapObject_Can::Update(void)
 
 	// プレイヤーとの当たり判定：プレイヤーが範囲内に入った時
 	if (CCollision::GetInstance()->CheckPlayerMapObject(pPlayer, this, 20.0f))
+	{
 		ChangeState(new CCanBlowAway);
+
+		CSound* pSound = CManager::GetInstance()->GetSound();
+
+		if (pSound != nullptr)
+			pSound->Play(CSound::SOUND_LABEL_SE_CAN_SHOOT);
+
+	}
+		
 		
 	// ステートの更新
 	if (m_pState != nullptr)

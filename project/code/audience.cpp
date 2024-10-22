@@ -241,7 +241,7 @@ void CAudience::Update(void)
 
 		if (i == 1)
 		{
-			CMapObject_Can* pCan = CMapObject_Can::Create("data\\MODEL\\map\\kan.x");
+			CMapObject_Can* pCan = CMapObject_Can::Create("data\\MODEL\\map\\00_can.x");
 			pCan->SetPosition(D3DXVECTOR3(m_pos.x, m_pos.y + 50.0f, m_pos.z));
 			D3DXVECTOR3 rot = GetRotition();
 			pCan->SetRotition(rot);
