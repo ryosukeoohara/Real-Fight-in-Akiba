@@ -145,6 +145,8 @@ BikeCrash::BikeCrash()
 
 	CEnemyManager* pEnemyManager = CEnemyManager::GetInstance();
 
+
+	
 }
 
 //===========================================================
@@ -161,6 +163,14 @@ void BikeCrash::Update(CHeatAction* pHeatAct)
 	// どちらかが使用されていない場合
 	if (pEnemy == nullptr || pPlayer == nullptr)
 		return;
+
+	// 敵をプレイヤーの方向に向かせる
+	CEnemy::INFO* Info = pEnemy->GetInfo();
+	D3DXVECTOR3 ForwardVector = utility::CalculateDirection(Info->pos, pPlayer->GetPosition());
+	float angle = atan2f(ForwardVector.x, ForwardVector.z);
+	angle -= D3DX_PI;
+	angle = utility::CorrectAngle(angle);
+	Info->rot.y = angle;
 	
 	// プレイヤーの向き取得
 	D3DXVECTOR3 PlayerRot = pPlayer->GetRotition();

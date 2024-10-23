@@ -757,7 +757,6 @@ void CEnemyBossStateDamage::Update(CEnemyBoss* pEnemyBoss)
 	{
 		pMotion->Set(pEnemyBoss->MOTION_NEUTRAL);
 		pEnemyBoss->ChangeState(new CEnemyBossStateMove);
-		
 	}
 }
 

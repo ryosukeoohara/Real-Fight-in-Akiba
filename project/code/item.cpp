@@ -234,7 +234,8 @@ void CItem::Update(void)
 	if (CGame::GetCollision()->Circle(GetPosition(), CPlayer::GetInstance()->GetPosition(), 40.0f, 40.0f) == true)
 	{// 範囲内
 
-		if (m_Type != TYPE_MICROWAVE && m_Type != TYPE_TABLE && m_Type != TYPE_POSTER && CPlayer::GetInstance()->GetGrapItem() == nullptr && m_pBill == nullptr)
+		if (m_Type != TYPE_MICROWAVE && m_Type != TYPE_TABLE && m_Type != TYPE_POSTER && CPlayer::GetInstance()->GetGrapItem() == nullptr 
+		 && CPlayer::GetInstance()->GetMobility() != CPlayer::Immobile && m_pBill == nullptr)
 		{// 種類が電子レンジかつテーブル以外
 
 			// 生成して位置、サイズ、描画するかどうか、使用するテクスチャ設定
