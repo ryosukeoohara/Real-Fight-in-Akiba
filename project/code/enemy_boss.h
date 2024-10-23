@@ -102,6 +102,7 @@ public:
 	void SetbHeatDamage(bool bDamage) { m_bHeatDamage = bDamage; }
 	void SetbAttack(bool battack) { m_bAttack = battack; }
 	void SetbAttackReady(bool battack) { m_IsAttackReady = battack; }
+	void SetbStagger(bool bstagger) { m_bStagger = bstagger; }
 
 	// Žæ“¾Œn
 	bool GetbAttack(void) { return m_bAttack; }
@@ -111,7 +112,7 @@ public:
 	void Denial(void) override;
 	bool GetbDeathFlag(void) override { return m_bDeath; }
 	bool GetbHeatDamageFlag(void) override { return m_bHeatDamage; }
-
+	bool GetbStaggerFlag(void) override { return m_bStagger; }
 
 	void RestHeatDamageFrag(void) { m_bHeatDamage = false; }
 	void RollingPunch(void);

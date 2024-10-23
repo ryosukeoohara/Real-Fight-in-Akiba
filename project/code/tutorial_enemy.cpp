@@ -53,12 +53,9 @@ CTutorial_Enemy::CTutorial_Enemy()
 
 	m_Mobility = Immobile;
 	m_nDamageCounter = 0;
-	/*m_pCurrent = nullptr;
-	m_pNext = nullptr;
-	m_pLife2D = nullptr;*/
 	m_pLife3D = nullptr;
-	//m_bDeath = false;
 	m_bDamage = false;
+	m_bStagger = false;
 	ChangeState(new CTutorialEnemyNeutral);
 }
 
@@ -68,7 +65,6 @@ CTutorial_Enemy::CTutorial_Enemy()
 CTutorial_Enemy::CTutorial_Enemy(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nPriority) : CEnemy(pos, rot, nlife, nPriority)
 {
 	// 値をクリア
-	//SetState(CEnemy::STATE_NONE);
 	m_pLife3D = nullptr;
 	m_nBiriBiriCount = 0;
 	m_Chase = CHASE_ON;
@@ -76,6 +72,7 @@ CTutorial_Enemy::CTutorial_Enemy(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, in
 	m_nDamageCounter = 0;
 	m_pLife3D = nullptr;
 	m_bDamage = false;
+	m_bStagger = false;
 	ChangeState(new CTutorialEnemyNeutral);
 }
 
@@ -264,6 +261,8 @@ void CTutorial_Enemy::Damage(void)
 
 		// 死亡状態に切り替える
 		ChangeState(new CTutorialEnemyStateDeath);
+
+		m_bDeath = true;
 	}
 }
 
@@ -302,11 +301,6 @@ void CTutorial_Enemy::Denial(void)
 {
 	// ステートの切り替え
 	ChangeState(new CTutorialEnemyStateDenial);
-}
-
-bool CTutorial_Enemy::GetbDeathFlag(void)
-{
-	return false;
 }
 
 //======================================================================

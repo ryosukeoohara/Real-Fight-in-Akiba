@@ -23,7 +23,8 @@ public:
 	enum CGAGE2DTYPE
 	{
 		TYPE_NONE = 0, // なんもない
-		TYPE_LIFE,     // 体力
+		TYPE_PLAYER_LIFE,     // プレイヤーのライフ
+		TYPE_BOSS_LIFE,       // ボスのライフ
 		TYPE_STAMINA,  // スタミナ
 		TYPE_MAX
 	};

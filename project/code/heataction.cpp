@@ -373,6 +373,8 @@ void MicroWave::Update(CHeatAction* pHeatAct)
 				pPlayer->SetGrapEnemy(nullptr);
 				pPlayer->SetbHeatActFlag(false);
 				pEnemy->Damage();
+
+				pPlayer->SetHeatActType(pPlayer->HEAT_NONE);
 			}
 		}
 

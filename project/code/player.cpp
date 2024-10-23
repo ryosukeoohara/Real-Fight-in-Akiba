@@ -334,12 +334,12 @@ HRESULT CPlayer::Init(void)
 
 	if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_GAME || CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_TUTORIAL)
 	{
-		m_pLife = CGage2D::Create(D3DXVECTOR3(50.0f, 50.0f, 0.0f), 40.0f, (float)m_Info.nLife * 2.0f, CGage2D::TYPE_LIFE);
+		m_pLife = CGage2D::Create(D3DXVECTOR3(50.0f, 50.0f, 0.0f), 40.0f, (float)m_Info.nLife * 2.0f, CGage2D::TYPE_PLAYER_LIFE);
 		m_pLife->GetObj2D()->SetEdgeCenterTex((float)(m_Info.nLife * 0.1f));
 		m_pStamina = CGage2D::Create(D3DXVECTOR3(50.0f, 110.0f, 0.0f), 20.0f, (float)(m_fStamina * 10.0f), CGage2D::TYPE_STAMINA);
 		m_pStamina->GetObj2D()->SetEdgeCenterTex(m_fStamina * 10.0f);
 	}
-	
+
 	return S_OK;
 }
 
@@ -918,7 +918,8 @@ void CPlayer::Evasion(void)
 	if (InputKeyboard == nullptr || pInputJoyPad == nullptr)
 		return;
 
-	if (m_Mobility == Immobile)
+	// “®‚¯‚È‚¢‚©‚Â“G‚ğ’Í‚ñ‚Å‚¢‚é
+	if (m_Mobility == Immobile || m_bGrap)
 		return;
 
 	if (InputKeyboard->GetTrigger(DIK_LSHIFT) == true || pInputJoyPad->GetTrigger(CInputJoyPad::BUTTON_A, 0) == true)
@@ -993,7 +994,7 @@ void CPlayer::State(void)
 	}
 
 	// ‰ñ”ğ
-	if (m_Info.state == STATE_EVASION && m_Grap.pEnemy == nullptr)
+	if (m_Info.state == STATE_EVASION)
 	{
 		m_bDesh = false;
 		m_Info.move.x += sinf(m_Info.rot.y + D3DX_PI) * 0.5f;
@@ -1268,10 +1269,7 @@ bool CPlayer::IsHeatAct(D3DXVECTOR3 TargetPos)
 	if (pInputJoyPad == nullptr)
 		return false;
 
-	bool b = m_pEnemy->GetbHeatDamageFlag();
-	bool a = m_pEnemy->GetbDeathFlag();
-
-	if (CGame::GetCollision()->Circle(m_Info.pos, TargetPos, 40.0f, 40.0f) && !m_pEnemy->GetbHeatDamageFlag() && !m_pEnemy->GetbDeathFlag())
+	if (CGame::GetCollision()->Circle(m_Info.pos, TargetPos, 40.0f, 40.0f) && !m_pEnemy->GetbHeatDamageFlag() && !m_pEnemy->GetbDeathFlag() && !m_pEnemy->GetbStaggerFlag())
 	{// ”ÍˆÍ“à
 
 		// Xƒ{ƒ^ƒ“‚ªo‚Ä‚­‚é

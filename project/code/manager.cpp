@@ -388,13 +388,13 @@ void CManager::Update(void)
 
 	m_Enemy = GetEnemy();
 
-	if (m_Camera != NULL)
+	if (m_Camera != nullptr && !CGame::GetbPause())
 	{
 		//カメラの更新処理
 		m_Camera->Update();
 	}
 
-	if (m_pScene != NULL)
+	if (m_pScene != nullptr)
 	{
 		//シーンの更新
 		m_pScene->Update();

@@ -866,8 +866,6 @@ void FinalBlowCamera::Update(CCamera* pCamera)
 	// カメラの情報取得
 	CCamera::Info* pCameraInfo = pCamera->GetInfo();
 
-	//pCamera->Follow(pCameraInfo->posV, m_pEnemy->GetPosition(), pCameraInfo->rot);
-
 	pCameraInfo->posV.x = pCameraInfo->posR.x + sinf(pCameraInfo->rot.y) * 200.0f;
 	pCameraInfo->posV.z = pCameraInfo->posR.z + cosf(pCameraInfo->rot.y) * 200.0f;
 
@@ -892,7 +890,8 @@ void FinalBlowCamera::Update(CCamera* pCamera)
 			
 			CPlayer* pPlayer = CPlayer::GetInstance();
 
-			if (pPlayer->GetHeatAct() == pPlayer->HEAT_FIRE)
+			// 死亡フラグが立っていたら
+			if (m_pEnemy->GetbDeathFlag() && m_pEnemy->GetMotion()->IsFinish())
 			{
 				//フェードの情報を取得
 				CFade* pFade = CManager::GetInstance()->GetFade();
@@ -904,7 +903,6 @@ void FinalBlowCamera::Update(CCamera* pCamera)
 				
 			}
 
-			pCamera->ChangeState(new FollowPlayerCamera);
 			return;
 		}
 
@@ -916,8 +914,6 @@ void FinalBlowCamera::Update(CCamera* pCamera)
 			pSound->Play(CSound::SOUND_LABEL_SE_KO);
 
 	}
-
-	
 }
 
 //=============================================================================

@@ -19,6 +19,7 @@ namespace
 	{
 		D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f),
 		D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f),
+		D3DXCOLOR(1.0f, 0.0f, 0.2f, 1.0f),
 		D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f),
 	};
 }
@@ -134,8 +135,12 @@ void CGage2D::SetCol(void)
 		m_pLife->SetColor(GAGECOL[TYPE_NONE]);
 		break;
 
-	case CGage2D::TYPE_LIFE:
-		m_pLife->SetColor(GAGECOL[TYPE_LIFE]);
+	case CGage2D::TYPE_PLAYER_LIFE:
+		m_pLife->SetColor(GAGECOL[TYPE_PLAYER_LIFE]);
+		break;
+
+	case CGage2D::TYPE_BOSS_LIFE:
+		m_pLife->SetColor(GAGECOL[TYPE_BOSS_LIFE]);
 		break;
 
 	case CGage2D::TYPE_STAMINA:

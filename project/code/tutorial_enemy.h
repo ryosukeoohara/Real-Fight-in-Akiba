@@ -66,14 +66,16 @@ public:
 	void Damage(void) override;
 	void Grabbed(void) override;
 	void Denial(void) override;
-	bool GetbDeathFlag(void) override;
 	bool GetbHeatDamageFlag(void) override { return m_bHeatDamage; }
+	bool GetbStaggerFlag(void) override { return m_bStagger; }
+	bool GetbDeathFlag(void) override { return m_bDeath; }
+	void RestHeatDamageFrag(void) { m_bHeatDamage = false; }
 
 	// 設定系
 	void SetChase(CHASE cha) { m_Chase = cha; }
 	void SetbDamage(void) { m_bDamage = false; }
 
-	void RestHeatDamageFrag(void) { m_bHeatDamage = false; }
+	
 
 private:
 
@@ -84,7 +86,9 @@ private:
 	int m_nAtcCounter;             // 攻撃のインターバル
 	int m_nIdx;
 	bool m_bDamage;               // 攻撃を受けたかどうか
+	bool m_bDeath;                // 死亡フラグ
 	bool m_bHeatDamage;           // ヒートアクションをくらったかどうか
+	bool m_bStagger;              // よろけフラグ
 };
 
 //=================================================================

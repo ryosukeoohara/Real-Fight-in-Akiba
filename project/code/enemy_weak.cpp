@@ -59,6 +59,7 @@ CEnemyWeak::CEnemyWeak()
 	m_pLife3D = nullptr;
 	//m_bDeath = false;
 	m_bDamage = false;
+	m_bStagger = false;
 	ChangeState(new CEnemyWeakStateMoveWait);
 }
 
@@ -76,6 +77,7 @@ CEnemyWeak::CEnemyWeak(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nPriorit
 	m_nDamageCounter = 0;
 	m_pLife3D = nullptr;
 	m_bDamage = false;
+	m_bStagger = false;
 	ChangeState(new CEnemyWeakStateMoveWait);
 }
 
@@ -333,14 +335,6 @@ void CEnemyWeak::Denial(void)
 {
 	// ステートの切り替え
 	ChangeState(new CEnemyWeakStateDenial);
-}
-
-//===========================================================
-// 死亡フラグ取得
-//===========================================================
-bool CEnemyWeak::GetbDeathFlag(void)
-{
-	return m_bDeath;
 }
 
 //======================================================================

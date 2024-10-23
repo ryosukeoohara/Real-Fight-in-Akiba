@@ -28,7 +28,8 @@ CItem *CItem::m_pCur = nullptr;
 //===========================================================
 namespace
 {
-	const D3DXVECTOR2 TEX_SIZE = { 15.0f, 15.0f };           // サイズ
+	const D3DXVECTOR2 TEX_SIZE = { 15.0f, 15.0f };           // UIのサイズ
+	const float RADIUS = 40.0f;                                    // 半径
 	const char *ITEM_TEXT = "data\\TEXT\\item.txt";          // アイテムの配置
 	const char* GRAP_BOTTON = "data\\TEXTURE\\Ybutton.png";  // アイテムを掴めるときに出すUIのテクスチャパス
 }
@@ -231,7 +232,7 @@ void CItem::Update(void)
 	if (CPlayer::GetInstance() == nullptr)
 		return;
 
-	if (CGame::GetCollision()->Circle(GetPosition(), CPlayer::GetInstance()->GetPosition(), 40.0f, 40.0f) == true)
+	if (CGame::GetCollision()->Circle(GetPosition(), CPlayer::GetInstance()->GetPosition(), RADIUS, 40.0f) == true)
 	{// 範囲内
 
 		if (m_Type != TYPE_MICROWAVE && m_Type != TYPE_TABLE && m_Type != TYPE_POSTER && CPlayer::GetInstance()->GetGrapItem() == nullptr 

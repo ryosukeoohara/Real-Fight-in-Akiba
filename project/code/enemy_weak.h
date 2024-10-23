@@ -67,14 +67,17 @@ public:
 	void Damage(void) override;
 	void Grabbed(void) override;
 	void Denial(void) override;
-	bool GetbDeathFlag(void) override;
+	bool GetbDeathFlag(void) override { return m_bDeath; }
 	bool GetbHeatDamageFlag(void) override { return m_bHeatDamage; }
+	bool GetbStaggerFlag(void) override { return m_bStagger; }
+
 
 	 // 設定系
 	void SetChase(CHASE cha) { m_Chase = cha; }
 	void SetbDamage(void) { m_bDamage = false; }
 	void RestHeatDamageFrag(void) { m_bHeatDamage = false; }
 	
+
 private:
 
 	CGage3D *m_pLife3D;            // ゲージのポインタ
@@ -86,6 +89,7 @@ private:
 	bool m_bDamage;               // 攻撃を受けたかどうか
 	bool m_bHeatDamage;           // ヒートアクションをくらったかどうか
 	bool m_bDeath;                // 死亡フラグ
+	bool m_bStagger;              // よろけフラグ
 };
 
 //=================================================================

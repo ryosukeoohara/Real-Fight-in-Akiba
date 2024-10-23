@@ -140,9 +140,7 @@ public:
 	void SetDraw(bool value) { m_Info.bDraw = value; }
 	void SetMobile(void) { m_Mobility = Mobile; }                    // 動けるようにする
 	void SetImmobile(void) { m_Mobility = Immobile; }                // 動けないようにする
-	virtual bool GetbDeathFlag(void) = 0;
-	virtual bool GetbHeatDamageFlag(void) = 0;
-
+	
 	// 取得系
 	D3DXVECTOR3 GetPosition(void) { return m_Info.pos; }       // 位置
 	D3DXVECTOR3 GetRotition(void) { return m_Info.rot; }       // 向き
@@ -162,6 +160,9 @@ public:
 	virtual void Damage(void) = 0;
 	virtual void Grabbed(void) = 0;
 	virtual void Denial(void) = 0;
+	virtual bool GetbDeathFlag(void) = 0;
+	virtual bool GetbHeatDamageFlag(void) = 0;
+	virtual bool GetbStaggerFlag(void) = 0;
 
 	void HitDetection(D3DXVECTOR3 MyPos, float attackrange, float targetradius);
 
@@ -189,6 +190,7 @@ private:
 	CEnemy *m_pNext;
 	CEnemy *m_pPrev;               //前のオブジェクトへのポインタ
 	bool m_bDeath;                 //死亡フラグ
+	bool m_bStagger;               // よろけフラグ
 	
 	//*=============================================================================
 	// 外部ファイル読み込み用

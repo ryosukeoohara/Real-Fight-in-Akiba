@@ -143,7 +143,7 @@ HRESULT CEnemyBoss::Init(void)
 
 	if (m_pLife2D == nullptr)
 	{
-		m_pLife2D = CGage2D::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.25f) + 4.0f, 650.0f, 0.0f), 40.0f, (float)Info->nLife * 2.0f, CGage2D::TYPE_LIFE);
+		m_pLife2D = CGage2D::Create(D3DXVECTOR3((SCREEN_WIDTH * 0.25f) + 4.0f, 650.0f, 0.0f), 40.0f, (float)Info->nLife * 2.0f, CGage2D::TYPE_BOSS_LIFE);
 		m_pLife2D->GetObj2D()->SetEdgeCenterTex((float)(Info->nLife * 0.1f));
 	}
 
@@ -272,7 +272,6 @@ void CEnemyBoss::Grabbed(void)
 		m_bAttack = false;
 		m_bDamage = false;
 	}
-		
 }
 
 //===========================================================
@@ -827,7 +826,11 @@ void CEnemyBossStateStagger::Update(CEnemyBoss* pEnemyBoss)
 
 	// ƒ‚[ƒVƒ‡ƒ“‚ª‚æ‚ë‚ß‚«ˆÈŠO‚Ì‚Æ‚«
 	if (pMotion->GetType() != pEnemyBoss->MOTION_SUTAN)
+	{
 		pMotion->Set(pEnemyBoss->MOTION_SUTAN);
+		pEnemyBoss->SetbStagger(false);
+	}
+		
 
 	m_nStaggerTime--;
 
