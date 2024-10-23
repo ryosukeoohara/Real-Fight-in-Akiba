@@ -39,9 +39,9 @@ public:
 		STATE_WALK,                 // 移動
 		STATE_ATTACK,               // 攻撃
 		STATE_GRAP,                 // 投げられ待ち
-		STATE_DAMEGE,               // 攻撃受けた
+		STATE_DAMAGE,               // 攻撃受けた
 		STATE_PAINFULDAMAGE,        // 痛い攻撃を受けた
-		STATE_HEATDAMEGE,           // 攻撃受けた
+		STATE_HEATDAMAGE,           // 攻撃受けた
 		STATE_GETUP,                // 起き上がり
 		STATE_HEATACTELECTROWAIT,   // ヒートアクション:電子レンジ待機
 		STATE_HEATACTELECTRO,       // ヒートアクション:電子レンジびりびり
@@ -58,9 +58,9 @@ public:
 		MOTION_NEUTRAL = 0,          // 待機
 		MOTION_WALK,                 // 移動
 		MOTION_ATTACK,               // 攻撃
-		MOTION_DAMEGE,               // 攻撃受けた
+		MOTION_DAMAGE,               // 攻撃受けた
 		MOTION_GRAP,                 // 投げられ待ち
-		MOTION_HEATDAMEGE,           // 攻撃受けた
+		MOTION_HEATDAMAGE,           // 攻撃受けた
 		MOTION_HEATACTELECTROWAIT,   // ヒートアクション:電子レンジ待機
 		MOTION_HEATACTELECTRO,       // ヒートアクション:電子レンジびりびり
 		MOTION_HEATACTFAINTING,      // ヒートアクション:電子レンジ気絶MOTIONE_PAINFULDAMAGE,        // 痛い攻撃を受けた
@@ -71,8 +71,9 @@ public:
 		MOTION_PUNCH,                 // パンチ
 		MOTION_SUTAN,                 // スタン
 		MOTION_SUTANRECOVER,          // スタンからの復帰
-		MOTION_ONSTEGE,
-		MOTION_KUGIKIRI,
+		MOTION_ONSTEGE,               // 登場時歩行
+		MOTION_KUGIKIRI,              // 首をきる真似
+		MOTION_DENIAL,                // ヒートアクション：自転車受け待ち
 		MOTION_MAX
 	};
 
@@ -91,13 +92,28 @@ public:
 
 	static CEnemyBoss *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nPriority = 5);    //生成
 	void ChangeState(CEnemyBossState* pState);  // ステイトの切り替え
-	void Damege(void) override;
+	void DashEffect(void);         // 走っているときに出すエフェクト
+	void Damage(void) override;
+	
 
 	// 設定系
 	void SetChase(CHASE cha) { m_Chase = cha; }
 	void SetbDamage(void) { m_bDamage = false; }
+	void SetbHeatDamage(bool bDamage) { m_bHeatDamage = bDamage; }
+	void SetbAttack(bool battack) { m_bAttack = battack; }
+	void SetbAttackReady(bool battack) { m_IsAttackReady = battack; }
+
+	// 取得系
+	bool GetbAttack(void) { return m_bAttack; }
+	bool GetbAttackReady(void) { return m_IsAttackReady; }
 
 	void Grabbed(void) override;
+	void Denial(void) override;
+	bool GetbDeathFlag(void) override { return m_bDeath; }
+	bool GetbHeatDamageFlag(void) override { return m_bHeatDamage; }
+
+
+	void RestHeatDamageFrag(void) { m_bHeatDamage = false; }
 	void RollingPunch(void);
 	void NormalPunch(void);
 	void Fly(void);
@@ -107,21 +123,23 @@ private:
 	// 敵の動き制御
 	//void Controll(void) override;
 	
-	
-	
 	void HitDetection(D3DXVECTOR3 MyPos, float attackrange, float targetradius);
 	//void MicroWave(void) override;
 
 	CGage2D *m_pLife2D;           // ゲージのポインタ
 	CEnemyBossState* m_pState;         // ステイト
-	int m_nDamegeCounter;         // ダメージ状態でいるカウント
+	int m_nDamageCounter;         // ダメージ状態でいるカウント
 	int m_nBiriBiriCount;         // 電子レンジびりびりカウント
 	int m_nAtcCounter;            // 攻撃のインターバル
 	int m_nReceivedAttack;        // 攻撃を受けた回数
-	
+	int m_nIdleTime;              // 攻撃していない時間
 	int m_nIdx;
 	bool m_bDamage;               // 攻撃を受けたかどうか
-	
+	bool m_bAttack;               // 攻撃しているかどうか
+	bool m_bHeatDamage;           // ヒートアクションをくらったかどうか
+	bool m_IsAttackReady;         // 即攻撃できるかどうか
+	bool m_bDeath;                // 死亡フラグ
+	bool m_bStagger;              // よろけフラグ
 
 };
 
@@ -262,11 +280,11 @@ private:
 //===========================================================
 // 攻撃をくらった状態
 //===========================================================
-class CEnemyBossStateDamege : public CEnemyBossState
+class CEnemyBossStateDamage : public CEnemyBossState
 {
 public:
-	CEnemyBossStateDamege();
-	~CEnemyBossStateDamege() {};
+	CEnemyBossStateDamage();
+	~CEnemyBossStateDamage() {};
 
 	void Update(CEnemyBoss* pEnemyBoss) override;
 
@@ -279,11 +297,11 @@ private:
 //===========================================================
 // つよい攻撃をくらった状態
 //===========================================================
-class CEnemyBossStateHeavyDamege : public CEnemyBossState
+class CEnemyBossStateHeavyDamage : public CEnemyBossState
 {
 public:
-	CEnemyBossStateHeavyDamege();
-	~CEnemyBossStateHeavyDamege() {};
+	CEnemyBossStateHeavyDamage();
+	~CEnemyBossStateHeavyDamage() {};
 
 	void Update(CEnemyBoss* pEnemyBoss) override;
 
@@ -307,6 +325,21 @@ private:
 };
 
 //===========================================================
+// 拒否状態
+//===========================================================
+class CEnemyBossStateDenial : public CEnemyBossState
+{
+public:
+	CEnemyBossStateDenial();
+	~CEnemyBossStateDenial() {}
+
+	void Update(CEnemyBoss* pEnemyBoss) override;
+
+private:
+
+};
+
+//===========================================================
 // 死亡状態
 //===========================================================
 class CEnemyBossStateDeath : public CEnemyBossState
@@ -321,6 +354,22 @@ private:
 
 	bool m_bDeath = false;
 
+};
+
+//===========================================================
+// 電子レンジで死亡状態
+//===========================================================
+class CEnemyBossStateDeathByMicrowave : public CEnemyBossState
+{
+public:
+	CEnemyBossStateDeathByMicrowave();
+	~CEnemyBossStateDeathByMicrowave() {};
+
+	void Update(CEnemyBoss* pEnemyBoss) override;
+
+private:
+
+	bool m_bDeath = false;
 };
 
 //===========================================================
@@ -380,57 +429,6 @@ public:
 	~CEnemyBossStateGetUp() {}
 
 	void Update(CEnemyBoss* pEnemyBoss) override;
-
-private:
-
-};
-
-//===========================================================
-// ボスの行動ステイト
-//===========================================================
-class CAttackType
-{
-public:
-	CAttackType();
-	~CAttackType() {};
-
-	virtual void Update(CEnemy* pEnemy) = 0;
-
-private:
-
-};
-
-class CAttackTypeNormalPunch : public CAttackType
-{
-public:
-	CAttackTypeNormalPunch();
-	~CAttackTypeNormalPunch() {};
-
-	void Update(CEnemy* pEnemy) override;
-
-private:
-
-};
-
-class CAttackTypeRollingPunch : public CAttackType
-{
-public:
-	CAttackTypeRollingPunch();
-	~CAttackTypeRollingPunch() {};
-
-	void Update(CEnemy* pEnemy) override;
-
-private:
-
-};
-
-class CAttackTypeBodyPress : public CAttackType
-{
-public:
-	CAttackTypeBodyPress();
-	~CAttackTypeBodyPress() {};
-
-	void Update(CEnemy* pEnemy) override;
 
 private:
 

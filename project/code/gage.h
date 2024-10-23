@@ -82,8 +82,8 @@ public:
 	void Draw(void);             // 描画処理
 
 	static CGage3D *Create(D3DXVECTOR3 pos, float fHei, float fWid, CGAGE3DTYPE type);      // 生成
-	void SetCurrent(D3DXMATRIX Current) { m_pCurrent = Current; }        // 親のマトリックス
-	void SetPos(D3DXVECTOR3 *pPos) { m_pPos = pPos; }
+	void SetMatrix(D3DXMATRIX *Current) { m_pMatrix = Current; }        // 親のマトリックス
+	void SetPos(D3DXVECTOR3 pos) { m_pos = pos; }
 	void SetUpHeight(float fUpHei) { m_UpHeight = fUpHei; }
 
 	CBillBoard *GetBill(void) { return m_pLifeGage; }
@@ -93,11 +93,11 @@ private:
 	void SetCol(void);
 	void SetMixPos(void);
 
-	D3DXVECTOR3 *m_pPos;      // 位置
+	D3DXVECTOR3 m_pos;      // 位置
 	D3DXVECTOR3 m_rot;        // 向き
 	D3DXCOLOR m_col;          // 色
 	D3DXMATRIX m_mtxWorld;
-	D3DXMATRIX m_pCurrent;
+	D3DXMATRIX *m_pMatrix;
 	float m_fHeight;          // 高さ
 	float m_fWidth;           // 幅
 	float m_UpHeight;

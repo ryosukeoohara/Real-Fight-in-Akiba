@@ -35,7 +35,7 @@ public:
 	void ChangeState(CFanceState* pState);  // ステートの変更
 
 	// 取得
-	CMapObject_Fance* GetTop(void) { return m_pTop; }  // リストの先頭
+	static CMapObject_Fance* GetTop(void) { return m_pTop; }  // リストの先頭
 
 private:
 
@@ -45,6 +45,8 @@ private:
 	static CMapObject_Fance* m_pCur;  // 最後尾のオブジェクトへのポインタ
 	CMapObject_Fance* m_pNext;        // 次のオブジェクトへのポインタ
 	CMapObject_Fance* m_pPrev;        // 前のオブジェクトへのポインタ
+
+	bool m_bHit;  // 当たったかどうか
 };
 
 //===========================================================

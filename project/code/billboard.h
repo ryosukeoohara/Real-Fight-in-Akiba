@@ -38,7 +38,10 @@ public:
 	static CBillBoard *Create(int nPriority = 3);  //生成
 
 	// 設定系
-	void SetCurrent(D3DXMATRIX *Current) { m_pCurrent = Current; }        // 親のマトリックス
+	void SetCurrent(D3DXMATRIX *Current) 
+	{ 
+		m_pCurrent = Current; 
+	}        // 親のマトリックス
 	void SetSize(float fHeight, float fWidth);                            // サイズ(中心が真ん中)
 	void SetEdgeCenter(float fWidth, float fHeight);                      // サイズ(角が真ん中)
 	void SetTex(float fTex);

@@ -231,9 +231,6 @@
     <ClCompile Include="code\InputMouse.cpp">
       <Filter>ソース ファイル\input</Filter>
     </ClCompile>
-    <ClCompile Include="code\shadow.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="code\gage.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
@@ -276,10 +273,13 @@
     <ClCompile Include="code\enemy_weak_far.cpp">
       <Filter>ソース ファイル\character\enemy</Filter>
     </ClCompile>
-    <ClCompile Include="code\enemy_weak_near.cpp">
+    <ClCompile Include="code\bullet.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="code\tutorial_enemy.cpp">
       <Filter>ソース ファイル\character\enemy</Filter>
     </ClCompile>
-    <ClCompile Include="code\bullet.cpp">
+    <ClCompile Include="code\speedlines.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -449,9 +449,6 @@
     <ClInclude Include="code\InputMouse.h">
       <Filter>ソース ファイル\input</Filter>
     </ClInclude>
-    <ClInclude Include="code\shadow.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="code\edit.h">
       <Filter>ソース ファイル\character\edit</Filter>
     </ClInclude>
@@ -488,10 +485,13 @@
     <ClInclude Include="code\enemy_weak_far.h">
       <Filter>ソース ファイル\character\enemy</Filter>
     </ClInclude>
-    <ClInclude Include="code\enemy_weak_near.h">
+    <ClInclude Include="code\bullet.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="code\tutorial_enemy.h">
       <Filter>ソース ファイル\character\enemy</Filter>
     </ClInclude>
-    <ClInclude Include="code\bullet.h">
+    <ClInclude Include="code\speedlines.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

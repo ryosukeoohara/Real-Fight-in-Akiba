@@ -138,8 +138,6 @@ void CGame::WaveControll(void)
 
 	case CGame::WAVE_01:
 
-		
-	
 		break;
 
 	case CGame::MAVE_CLEAR:
@@ -217,10 +215,6 @@ HRESULT CGame::Init(void)
 //===========================================================
 void CGame::Uninit(void)
 {
-	// “G‚ð“|‚µ‚½”Žæ“¾
-	//int m = CPlayer::GetInstance()->GetDefeat();
-	//CManager::GetInstance()->SetDefeat(CPlayer::GetInstance()->GetDefeat());
-
 	CManager::GetInstance()->GetSound()->Stop();
 
 	// ƒ|[ƒY‚Ì”jŠü
@@ -336,11 +330,6 @@ void CGame::Update(void)
 	{
 		CManager::GetInstance()->GetCamera()->ChangeState(new CameraEnemyOverview);
 		m_bOnStage = true;
-	}
-
-	if (InputKeyboard->GetTrigger(DIK_9) == true)
-	{
-		m_bFinish = m_bFinish ? false : true;
 	}
 
 	if (m_bFinish)

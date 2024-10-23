@@ -28,7 +28,7 @@ CObject2D::CObject2D(int nPriority) : CObject(nPriority)
 //===========================================================
 // コンストラクタ(オーバーロード)
 //===========================================================
-CObject2D::CObject2D(D3DXVECTOR3 pos, int nPriority)
+CObject2D::CObject2D(D3DXVECTOR3 pos, int nPriority) : CObject(nPriority)
 {
 	// 値をクリア
 	m_pos = pos;
@@ -355,6 +355,38 @@ void CObject2D::SetColorA(float fCola)
 	pVtx[1].col = D3DXCOLOR(m_col.r, m_col.g, m_col.b, m_col.a);
 	pVtx[2].col = D3DXCOLOR(m_col.r, m_col.g, m_col.b, m_col.a);
 	pVtx[3].col = D3DXCOLOR(m_col.r, m_col.g, m_col.b, m_col.a);
+
+	//頂点バッファをアンロックする
+	m_pVtxBuff->Unlock();
+}
+
+//===========================================================
+// テクスチャアニメーション
+//===========================================================
+void CObject2D::SetAnimation(void)
+{
+	VERTEX_2D* pVtx;
+
+	//頂点バッファをロックし、頂点情報へポインタを取得
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	m_nNowPattern++;
+
+	if (m_nNowPattern % 5 == 0)
+	{
+		m_nCounterAnim = (m_nCounterAnim + 1) % 10;
+
+		float fx = m_nCounterAnim % m_nDivisionX * (1.0f / m_nDivisionX);
+		float fy = m_nCounterAnim / m_nDivisionY * (1.0f / m_nDivisionY);
+
+		//テクスチャ座標の設定
+		pVtx[0].tex = D3DXVECTOR2(0.0f + fx, 0.0f + fy);
+		pVtx[1].tex = D3DXVECTOR2((1.0f / m_nDivisionX) + fx, 0.0f + fy);
+		pVtx[2].tex = D3DXVECTOR2(0.0f + fx, (1.0f / m_nDivisionY) + fy);
+		pVtx[3].tex = D3DXVECTOR2((1.0f / m_nDivisionX) + fx, (1.0f / m_nDivisionY) + fy);
+
+		m_nNowPattern = 0;
+	}
 
 	//頂点バッファをアンロックする
 	m_pVtxBuff->Unlock();

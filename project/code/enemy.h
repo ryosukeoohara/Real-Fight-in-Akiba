@@ -63,7 +63,7 @@ public:
 		MOTION_NEUTRAL = 0,          // 待機
 		MOTION_DASH,                 // 移動
 		MOTION_ATTACK,               // 攻撃
-		MOTION_DAMEGE,               // 攻撃受けた
+		MOTION_DAMAGE,               // 攻撃受けた
 		MOTION_GRAP,                 // 投げられ待ち
 		MOTION_FALLDOWN,             // 転ぶ
 		
@@ -75,7 +75,7 @@ public:
 		MOTION_DEATH,                // 死亡
 
 		MOTION_PAINFULDAMAGE,        // 痛い攻撃を受けた
-		MOTION_HEATDAMEGE,           // 攻撃受けた
+		MOTION_HEATDAMAGE,           // 攻撃受けた
 		//MOTION_ONSTEGE,
 		MOTION_MAX
 	};
@@ -87,10 +87,10 @@ public:
 		STATE_NEUTRAL,              // 待機
 		STATE_DASH,                 // 移動
 		STATE_ATTACK,               // 攻撃
-		STATE_DAMEGE,               // 攻撃受けた
+		STATE_DAMAGE,               // 攻撃受けた
 		STATE_GRAP,                 // 投げられ待ち
 		STATE_PAINFULDAMAGE,        // 痛い攻撃を受けた
-		STATE_HEATDAMEGE,           // 攻撃受けた
+		STATE_HEATDAMAGE,           // 攻撃受けた
 		STATE_GETUP,                // 起き上がり
 		STATE_HEATACTELECTROWAIT,   // ヒートアクション:電子レンジ待機
 		STATE_HEATACTELECTRO,       // ヒートアクション:電子レンジびりびり
@@ -140,6 +140,8 @@ public:
 	void SetDraw(bool value) { m_Info.bDraw = value; }
 	void SetMobile(void) { m_Mobility = Mobile; }                    // 動けるようにする
 	void SetImmobile(void) { m_Mobility = Immobile; }                // 動けないようにする
+	virtual bool GetbDeathFlag(void) = 0;
+	virtual bool GetbHeatDamageFlag(void) = 0;
 
 	// 取得系
 	D3DXVECTOR3 GetPosition(void) { return m_Info.pos; }       // 位置
@@ -157,8 +159,9 @@ public:
 	CEnemy *GetNext(void) { return m_pNext; }
 	CEnemy::INFO *GetInfo(void) { return &m_Info; }
 
-	virtual void Damege(void) = 0;
+	virtual void Damage(void) = 0;
 	virtual void Grabbed(void) = 0;
+	virtual void Denial(void) = 0;
 
 	void HitDetection(D3DXVECTOR3 MyPos, float attackrange, float targetradius);
 
@@ -178,7 +181,7 @@ private:
 	CGage3D *m_pLife3D;            // ゲージのポインタ
 	CGage2D *m_pLife2D;            // ゲージのポインタ
 	static int m_nNumAll;          // 敵の総数
-	int m_nDamegeCounter;          // ダメージ状態でいるカウント
+	int m_nDamageCounter;          // ダメージ状態でいるカウント
 	static int m_nIdx;             
 	D3DXMATRIX *m_pCurrent;        // 親のマトリックス
 	static CEnemy *m_pTop;         //先頭のオブジェクトへのポインタ

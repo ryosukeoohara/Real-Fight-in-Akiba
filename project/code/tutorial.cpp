@@ -77,7 +77,7 @@ HRESULT CTutorial::Init(void)
 	if (m_pField == nullptr)
 	{
 		m_pField = CField::Create();
-		m_pField->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist("data\\TEXTURE\\FIELD\\concreat.png"));
+		m_pField->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist("data\\TEXTURE\\Field002.jpg"));
 		m_pField->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 		m_pField->SetSize(5000.0f, 5000.0f);
 		m_pField->SetDraw(true);
@@ -87,15 +87,6 @@ HRESULT CTutorial::Init(void)
 	if (m_Collision == nullptr)
 	{
 		m_Collision = CCollision::Create();
-	}
-
-	if (m_pStart == nullptr)
-	{
-		m_pStart = CObject2D::Create();
-		m_pStart->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist("data\\TEXTURE\\start.png"));
-		m_pStart->SetPosition(D3DXVECTOR3(SCREEN_WIDTH * 0.8f, SCREEN_HEIGHT * 0.9f, 0.0f));
-		m_pStart->SetSize(200.0f, 50.0f);
-		m_pStart->SetDraw(true);
 	}
 
 	// ƒ}ƒbƒv‚Ì¶¬
@@ -126,6 +117,15 @@ HRESULT CTutorial::Init(void)
 		m_pPlayer = CPlayer::Create();
 		m_pPlayer->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 500.0f));
 		m_pPlayer->SetMobile();
+	}
+
+	if (m_pStart == nullptr)
+	{
+		m_pStart = CObject2D::Create(7);
+		m_pStart->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist("data\\TEXTURE\\start.png"));
+		m_pStart->SetPosition(D3DXVECTOR3(SCREEN_WIDTH * 0.8f, SCREEN_HEIGHT * 0.9f, 0.0f));
+		m_pStart->SetSize(200.0f, 50.0f);
+		m_pStart->SetDraw(true);
 	}
 
 	CManager::GetInstance()->GetSound()->Play(CSound::SOUND_LABEL_BGM_TUTORIAL);

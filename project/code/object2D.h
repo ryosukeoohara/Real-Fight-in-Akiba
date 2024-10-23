@@ -42,6 +42,9 @@ public:		//誰でもアクセスできる
 	void SetTex(float fTex);                                        // テクスチャ座標変更:中心が左端
 	void SetDraw(bool bverdict = true) { m_bDraw = bverdict; }      // 描画するかどうか
 	void SetColorA(float fCola);
+	void SetTexPosX(int X) { m_nDivisionX = X; }
+	void SetTexPosY(int Y) { m_nDivisionY = Y; }
+	void SetAnimation(void);
 	
 	// 取得系
 	D3DXVECTOR3 GetPosition(void) { return m_pos; }     // 位置
@@ -57,10 +60,15 @@ private:	//自分だけがアクセスできる
 	D3DXVECTOR3 m_pos;                    // 位置
 	D3DXVECTOR3 m_rot;                    // 向き
 	D3DXCOLOR m_col;                      // 色
+	D3DXVECTOR2 m_texpos;
 	int m_nIdxTexture;                    // テクスチャのインデックス番号
+	int m_nNowPattern = 0;
+	int m_nCounterAnim = 0;
 	int m_nCounterAnimPlayer = 0;         // カウンターを初期化する
 	int m_nPatternAnimPlayer = 0;         // パターンNo.を初期化する
 	int m_Number;
+	int m_nDivisionX;
+	int m_nDivisionY;
 	float m_fHeight;                      // 高さ
 	float m_fWidth;                       // 幅
 	bool m_bDraw;                         // 描画するかどうか

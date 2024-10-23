@@ -34,7 +34,7 @@ public:
 		MOTION_NEUTRAL = 0,          // 待機
 		MOTION_DASH,                 // 移動
 		MOTION_ATTACK,               // 攻撃
-		MOTION_DAMEGE,               // 攻撃受けた
+		MOTION_DAMAGE,               // 攻撃受けた
 		MOTION_GRAP,                 // 投げられ待ち
 		MOTION_FALLDOWN,             // 転ぶ
 
@@ -45,9 +45,10 @@ public:
 		MOTION_GETUP,                // 起き上がり
 		MOTION_DEATH,                // 死亡
 		MOTION_BATTLE_NEUTRAL,       // 先頭ニュートラル
+		MOTION_DENIAL,               // ヒートアクション：自転車受け待ち
 
 		MOTION_PAINFULDAMAGE,        // 痛い攻撃を受けた
-		MOTION_HEATDAMEGE,           // 攻撃受けた
+		MOTION_HEATDAMAGE,           // 攻撃受けた
 		MOTION_MAX
 	};
 
@@ -62,23 +63,30 @@ public:
 
 	static CEnemyWeakFar* Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nPriority = 5);    //生成
 	void ChangeState(CEnemyWeakFarState* pState);  // ステイトの切り替え
-	
-	void Damege(void) override;
+	void DashEffect(void);         // 走っているときに出すエフェクト
+
+	void Damage(void) override;
 	void Grabbed(void) override;
+	void Denial(void) override;
+	bool GetbDeathFlag(void) override;
+	bool GetbHeatDamageFlag(void) override { return m_bHeatDamage; }
 
 	// 設定系
 	void SetChase(CHASE cha) { m_Chase = cha; }
 	void SetbDamage(void) { m_bDamage = false; }
 
+	void RestHeatDamageFrag(void) { m_bHeatDamage = false; }
+
 private:
 
 	CGage3D* m_pLife3D;            // ゲージのポインタ
 	CEnemyWeakFarState* m_pState;         // ステイト
-	int m_nDamegeCounter;          // ダメージ状態でいるカウント
+	int m_nDamageCounter;          // ダメージ状態でいるカウント
 	int m_nBiriBiriCount;
 	int m_nAtcCounter;             // 攻撃のインターバル
 	int m_nIdx;
 	bool m_bDamage;               // 攻撃を受けたかどうか
+	bool m_bHeatDamage;           // ヒートアクションをくらったかどうか
 };
 
 //=================================================================
@@ -162,11 +170,11 @@ private:
 //===========================================================
 // 攻撃をくらった状態
 //===========================================================
-class CEnemyWeakFarStateDamege : public CEnemyWeakFarState
+class CEnemyWeakFarStateDamage : public CEnemyWeakFarState
 {
 public:
-	CEnemyWeakFarStateDamege();
-	~CEnemyWeakFarStateDamege() {};
+	CEnemyWeakFarStateDamage();
+	~CEnemyWeakFarStateDamage() {};
 
 	void Update(CEnemyWeakFar* pEnemyWeak) override;
 
@@ -179,11 +187,11 @@ private:
 //===========================================================
 // つよい攻撃をくらった状態
 //===========================================================
-class CEnemyWeakFarStateHeavyDamege : public CEnemyWeakFarState
+class CEnemyWeakFarStateHeavyDamage : public CEnemyWeakFarState
 {
 public:
-	CEnemyWeakFarStateHeavyDamege();
-	~CEnemyWeakFarStateHeavyDamege() {};
+	CEnemyWeakFarStateHeavyDamage();
+	~CEnemyWeakFarStateHeavyDamage() {};
 
 	void Update(CEnemyWeakFar* pEnemyWeak) override;
 
@@ -214,6 +222,21 @@ class CEnemyWeakFarStateGrabbed : public CEnemyWeakFarState
 public:
 	CEnemyWeakFarStateGrabbed();
 	~CEnemyWeakFarStateGrabbed() {}
+
+	void Update(CEnemyWeakFar* pEnemyWeak) override;
+
+private:
+
+};
+
+//===========================================================
+// 拒否状態
+//===========================================================
+class CEnemyWeakFarStateDenial : public CEnemyWeakFarState
+{
+public:
+	CEnemyWeakFarStateDenial();
+	~CEnemyWeakFarStateDenial() {}
 
 	void Update(CEnemyWeakFar* pEnemyWeak) override;
 

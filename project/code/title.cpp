@@ -18,6 +18,7 @@
 #include "player.h"
 #include "InputKeyBoard.h"
 #include "InputJoyPad.h"
+#include "speedlines.h"
 
 //===========================================================
 // ’è”’è‹`
@@ -92,7 +93,7 @@ HRESULT CTitle::Init(void)
 	if (pField != nullptr)
 	{
 		pField->Init();
-		pField->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist("data\\TEXTURE\\FIELD\\concreat.png"));
+		pField->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist("data\\TEXTURE\\Field002.jpg"));
 		pField->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 		pField->SetSize(5000.0f, 5000.0f);
 		pField->SetDraw(true);

@@ -21,6 +21,8 @@ CMapObject_Fance* CMapObject_Fance::m_pCur = nullptr;      // 最後尾のポインタ
 //===========================================================
 CMapObject_Fance::CMapObject_Fance()
 {
+	m_bHit = false;
+
 	if (m_pTop != nullptr)
 	{// 先頭が存在している場合
 
@@ -41,6 +43,8 @@ CMapObject_Fance::CMapObject_Fance()
 //===========================================================
 CMapObject_Fance::CMapObject_Fance(const char* aModelFliename, int nPriority) : CMapObject(aModelFliename, nPriority)
 {
+	m_bHit = false;
+
 	if (m_pTop != nullptr)
 	{// 先頭が存在している場合
 
@@ -94,9 +98,14 @@ void CMapObject_Fance::Update(void)
 	if (pPlayer == nullptr)
 		return;
 
-	// プレイヤーとの当たり判定：プレイヤーが範囲内に入った時
-	if (CCollision::GetInstance()->CheckPlayerMapObject(pPlayer, this, 20.0f))
-		ChangeState(new CFanceBlowAway);  // ステートの変更：吹き飛び
+	// プレイヤーとの当たり判定：プレイヤーが範囲内に入った時かつ、一度も当たっていない
+	if (CCollision::GetInstance()->CheckPlayerMapObject(pPlayer, this, 20.0f) && !m_bHit)
+	{
+		// ステートの変更：吹き飛び
+		ChangeState(new CFanceBlowAway);  
+		m_bHit = true;
+	}
+		
 
 	// ステートの更新
 	if (m_pState != nullptr)
@@ -182,6 +191,11 @@ void CFanceBlowAway::Update(CMapObject_Fance* pFance)
 		pInfo->move.x += move.x;
 		pInfo->move.z += move.z;
 	}
+
+	pInfo->pos += pInfo->move;
+
+	pInfo->move.x += (0.0f - pInfo->move.x) * 0.1f;
+	pInfo->move.z += (0.0f - pInfo->move.z) * 0.1f;
 
 	pInfo->rot.x -= (m_fFallDownSpeed * 0.01f);
 }

@@ -179,14 +179,7 @@ void BikeCrash::Update(CHeatAction* pHeatAct)
 
 		if (CGame::GetCollision()->ItemEnemy(pPlayer->GetGrapItem(), pEnemy, 50.0f, 50.0f, 100.0f) == true)
 		{
-			// 持っていたアイテムを消す
-			if (CItemManager::GetInstance() != nullptr)
-				CItemManager::GetInstance()->Release(pPlayer->GetGrapItem()->GetID());
-
-			pEnemy->Damege();
-
-			// 持っていたアイテムを消す
-			pPlayer->SetGrapItem(nullptr);
+			pEnemy->Damage();
 
 			// 敵の位置取得
 			D3DXVECTOR3 Enempos = pEnemy->GetPosition();
@@ -203,9 +196,16 @@ void BikeCrash::Update(CHeatAction* pHeatAct)
 			// エフェクトの再生
 			CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_IMPACT, ::Effekseer::Vector3D(Enempos.x, Enempos.y, Enempos.z));
 		}
-
 	}
-	
+	else if (pPlayer->GetMotion()->GetAttackEnd() <= pPlayer->GetMotion()->GetNowFrame())
+	{
+		// 持っていたアイテムを消す
+		if (CItemManager::GetInstance() != nullptr)
+			CItemManager::GetInstance()->Release(pPlayer->GetGrapItem()->GetID());
+
+		// 持っていたアイテムを消す
+		pPlayer->SetGrapItem(nullptr);
+	}
 }
 
 //===========================================================
@@ -256,6 +256,8 @@ void MicroWave::Update(CHeatAction* pHeatAct)
 
 		// プレイヤーとの関係を切る
 		{
+			pPlayer->SetImmobile();
+
 			pEnemy->SetCurrent(nullptr);
 			pEnemy->SetRotition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
@@ -337,17 +339,31 @@ void MicroWave::Update(CHeatAction* pHeatAct)
 		{
 			pEnemy->SetState(CEnemy::STATE_HEATACTFAINTING);
 			pEnemy->GetMotion()->Set(CEnemy::MOTION_HEATACTFAINTING);
-			pEnemy->Damege();
 			pEnemy->GetInfo()->nLife -= 100;
 			CManager::GetInstance()->GetCamera()->ChangeState(new ReturnPlayerBehindCamera);
-			pPlayer->SetState(CPlayer::STATE_NEUTRAL);
-			pPlayer->SetHeatActType(pPlayer->HEAT_NONE);
-			pPlayer->SetUseMicroCount(3600);
-			CGame::GetEnemyManager()->SetTrue(CPlayer::GetInstance()->GetGrapEnemy()->GetIdxID());
-			CPlayer::GetInstance()->SetGrapEnemy(nullptr);
-			pEnemy->SetPosition(D3DXVECTOR3(CPlayer::GetInstance()->GetItem()->GetPosition().x, 0.0f, CPlayer::GetInstance()->GetItem()->GetPosition().z));
-			pEnemy->SetCurrent(nullptr);
-			pPlayer->SetbHeatActFlag(false);
+
+			if (pEnemy->GetInfo()->nLife > 0)
+			{
+				pPlayer->SetState(CPlayer::STATE_NEUTRAL);
+				pPlayer->SetUseMicroCount(3600);
+				CGame::GetEnemyManager()->SetTrue(CPlayer::GetInstance()->GetGrapEnemy()->GetIdxID());
+				pPlayer->SetGrapEnemy(nullptr);
+				pEnemy->SetPosition(D3DXVECTOR3(CPlayer::GetInstance()->GetItem()->GetPosition().x, 0.0f, CPlayer::GetInstance()->GetItem()->GetPosition().z));
+				pEnemy->SetCurrent(nullptr);
+				pPlayer->SetbHeatActFlag(false);
+				pEnemy->Damage();
+
+				pPlayer->SetHeatActType(pPlayer->HEAT_NONE);
+			}
+			else if (pEnemy->GetInfo()->nLife <= 0)
+			{
+				pPlayer->SetState(CPlayer::STATE_NEUTRAL);
+				pPlayer->SetUseMicroCount(3600);
+				CGame::GetEnemyManager()->SetTrue(CPlayer::GetInstance()->GetGrapEnemy()->GetIdxID());
+				pPlayer->SetGrapEnemy(nullptr);
+				pPlayer->SetbHeatActFlag(false);
+				pEnemy->Damage();
+			}
 		}
 
 		m_nHeatActTime = 0;

@@ -35,12 +35,13 @@
 //===========================================================
 namespace
 {
-	const int DAMEGECOUNT = 20;         // ダメージ状態
+	const int DAMAGECOUNT = 20;         // ダメージ状態
 	const float ATTACKLENGTH = 120.0f;  // 攻撃可能な距離
 	const float SPEED = 2.0f;           // 走る速さ
 	const float ATTACKLENGHT = 100.0f;   // 攻撃可能範囲
 	const int STAGGER_TIME = 600;       // よろめき状態でいる時間
 	const int RECOVER_DAMAGE_TIME = 15;  // ダメージ状態でいる時間
+	const int NUM_DAMAGE_TIME = 60;      // ダメージ状態だった合計時間
 
 	const D3DXVECTOR3 CAMERA_ROT[CPlayer::HEAT_MAX] =
 	{
@@ -62,7 +63,13 @@ CEnemyBoss::CEnemyBoss()
 	m_pLife2D = nullptr;
 	m_nBiriBiriCount = 0;
 	m_nReceivedAttack = 0;
+	m_nIdleTime = 0;
 	m_bDamage = false;
+	m_bHeatDamage = false;
+	m_bAttack = false;
+	m_IsAttackReady = false;
+	m_bDeath = false;
+	m_bStagger = false;
 }
 
 //===========================================================
@@ -80,7 +87,13 @@ CEnemyBoss::CEnemyBoss(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nPriorit
 	m_pLife2D = nullptr;
 	m_nBiriBiriCount = 0;
 	m_nReceivedAttack = 0;
+	m_nIdleTime = 0;
 	m_bDamage = false;
+	m_bHeatDamage = false;
+	m_bAttack = false;
+	m_IsAttackReady = false;
+	m_bDeath = false;
+	m_bStagger = false;
 }
 
 //===========================================================
@@ -177,7 +190,36 @@ void CEnemyBoss::Update(void)
 	if (m_pLife2D != nullptr)
 		m_pLife2D->GetObj2D()->SetEdgeCenterTex((float)((Info->nLife * 0.1f) * 20.0f));
 
-	
+	// ダメージ状態ではないとき処理を抜ける
+	if (!m_bDamage || m_bHeatDamage || m_bStagger || Info->nLife < 0)
+		return;
+
+	m_nIdleTime++;
+
+	if (m_nIdleTime >= NUM_DAMAGE_TIME)
+	{
+		m_nIdleTime = 0;
+
+		// プレイヤーの情報取得
+		CPlayer* pPlayer = CPlayer::GetInstance();
+
+		if (pPlayer == nullptr)
+			return;
+
+		D3DXVECTOR3 PlayerPos = pPlayer->GetPosition();
+
+		// プレイヤーとの距離
+		float fLenght = utility::Distance(Info->pos, PlayerPos);
+
+		if (fLenght <= ATTACKLENGHT)
+		{// 攻撃可能範囲内に入った
+
+			m_IsAttackReady = true;
+			m_bDamage = false;
+
+			ChangeState(new CEnemyBossStateAttackWait);
+		}
+	}
 }
 
 //===========================================================
@@ -209,20 +251,48 @@ void CEnemyBoss::Grabbed(void)
 {
 	CPlayer* pPlayer = CPlayer::GetInstance();
 
-	if(pPlayer->GetbGrap() == true)
-	   ChangeState(new CEnemyBossStateGrabbed);
-
-	else if(pPlayer->GetbGrap() == false)
+	if (pPlayer->GetbGrap() == true)
+	{
+		ChangeState(new CEnemyBossStateGrabbed);
+		m_bAttack = false;
+	}
+	else if (pPlayer->GetbGrap() == false)
+	{
 		ChangeState(new CEnemyBossStateMove);
+		D3DXMATRIX* mtx = GetCharcter()[0]->GetMtxWorld();
+		GetInfo()->pos = D3DXVECTOR3(mtx->_41, 0.0f, mtx->_43);
+
+		// 敵の情報取得
+		CEnemy::INFO* Info = GetInfo();
+		D3DXVECTOR3 ForwardVector = utility::CalculateDirection(Info->pos, pPlayer->GetPosition());
+		float angle = atan2f(ForwardVector.x, ForwardVector.z);
+		angle -= D3DX_PI;
+		angle = utility::CorrectAngle(angle);
+		Info->rot.y = angle;
+		m_bAttack = false;
+		m_bDamage = false;
+	}
+		
+}
+
+//===========================================================
+// ヒートアクション：自転車受け待ち
+//===========================================================
+void CEnemyBoss::Denial(void)
+{
+	// ステートの切り替え
+	ChangeState(new CEnemyBossStateDenial);
+
+	m_bAttack = false;
 }
 
 //===========================================================
 // ダメージ処理
 //===========================================================
-void CEnemyBoss::Damege(void)
+void CEnemyBoss::Damage(void)
 {
 	// すでにダメージ状態
-	if (m_bDamage)
+	if (m_bDamage || m_bAttack || m_IsAttackReady || m_bDeath)
 		return;
 
 	// 敵の情報取得
@@ -233,42 +303,59 @@ void CEnemyBoss::Damege(void)
 
 	if (CPlayer::GetInstance()->GetHeatAct() == CPlayer::HEAT_NONE)
 	{
-		GetMotion()->Set(MOTION_DAMEGE);
+		GetMotion()->Set(MOTION_DAMAGE);
+		m_bDamage = true;
 	}
-	else if (CPlayer::GetInstance()->GetHeatAct() == CPlayer::HEAT_FIRE || CPlayer::GetInstance()->GetHeatAct() == CPlayer::HEAT_SMASH)
+	else if (CPlayer::GetInstance()->GetHeatAct() == CPlayer::HEAT_SMASH)
 	{
-		GetMotion()->Set(MOTION_DAMEGE);
+		GetMotion()->Set(MOTION_FALLDOWN);
+		m_bHeatDamage = true;
+	}
+	else if (CPlayer::GetInstance()->GetHeatAct() == CPlayer::HEAT_FIRE)
+	{
+		GetMotion()->Set(MOTION_HEATACTFAINTING); 
+		m_bHeatDamage = true;
 	}
 	
-	Info->nLife -= CPlayer::GetInstance()->GetMotion()->GetAttackDamege();
-	m_bDamage = true;
+	Info->nLife -= CPlayer::GetInstance()->GetMotion()->GetAttackDamage();
+	m_bStagger = false;
 	CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(Info->pos.x, Info->pos.y + 50.0f, Info->pos.z));
 
 	if (Info->nLife >= 30 && CPlayer::GetInstance()->GetHeatAct() == CPlayer::HEAT_NONE)
 	{// 体力が５０以上のとき
 
 		// ダメージ状態に切り替える
-		ChangeState(new CEnemyBossStateDamege);
+		ChangeState(new CEnemyBossStateDamage);
 	}
-	if (Info->nLife >= 30 && (CPlayer::GetInstance()->GetHeatAct() == CPlayer::HEAT_FIRE || CPlayer::GetInstance()->GetHeatAct() == CPlayer::HEAT_SMASH))
+	else if (Info->nLife >= 30 && (CPlayer::GetInstance()->GetHeatAct() == CPlayer::HEAT_FIRE || CPlayer::GetInstance()->GetHeatAct() == CPlayer::HEAT_SMASH))
 	{// 体力が５０以上のとき
 
 		// ダメージ状態に切り替える
-		ChangeState(new CEnemyBossStateHeavyDamege);
+		ChangeState(new CEnemyBossStateHeavyDamage);
 	}
 	else if (Info->nLife < 30 && Info->nLife > 0)
 	{// 体力が５０未満かつ0より高いとき
 		
 		// よろめき状態に切り替える
 		ChangeState(new CEnemyBossStateKnockDown);
+		m_bStagger = true;
 	}
-	else if (Info->nLife <= 0)
+	else if (Info->nLife <= 0 && CPlayer::GetInstance()->GetHeatAct() == CPlayer::HEAT_FIRE)
 	{// 体力が０以下のとき
 
 		// 死亡状態に切り替える
 		CGame::GetInstance()->SetbFinish(true);
 		CCamera::GetInstance()->ChangeState(new FinalBlowCamera);
+		ChangeState(new CEnemyBossStateDeathByMicrowave);
+		m_bDeath = true;
+	}
+	else if (Info->nLife <= 0)
+	{
+		CGame::GetInstance()->SetbFinish(true);
+		CCamera::GetInstance()->ChangeState(new FinalBlowCamera);
 		ChangeState(new CEnemyBossStateDeath);
+
+		m_bDeath = true;
 	}
 }
 
@@ -387,7 +474,31 @@ void CEnemyBoss::HitDetection(D3DXVECTOR3 MyPos, float attackrange, float target
 	{// 現在のフレームが攻撃判定発生フレーム以上かつ攻撃判定終了フレームない
 
 		if (CGame::GetCollision()->Circle(MyPos, CGame::GetPlayer()->GetPosition(), attackrange, targetradius) == true)
-			CGame::GetPlayer()->Damage(GetMotion()->GetAttackDamege(), D3DXVECTOR3(sinf(GetRotition().y) * GetMotion()->GetKnockBack(), 0.0f, cosf(GetRotition().y) * GetMotion()->GetKnockBack()));
+			CGame::GetPlayer()->Damage(GetMotion()->GetAttackDamage(), D3DXVECTOR3(sinf(GetRotition().y) * GetMotion()->GetKnockBack(), 0.0f, cosf(GetRotition().y) * GetMotion()->GetKnockBack()));
+	}
+}
+
+//================================================================
+// 走っているときのエフェクト
+//================================================================
+void CEnemyBoss::DashEffect(void)
+{
+	D3DMATRIX* mtx = {};
+
+	int nNow = GetMotion()->GetKeyFrame();
+
+	if (nNow == 1)
+	{
+		mtx = GetCharcter()[12]->GetMtxWorld();
+
+		CParticle::Create(D3DXVECTOR3(mtx->_41, 0.0f, mtx->_43), CParticle::TYPE_GROUND);
+	}
+
+	if (nNow % 20 == 0)
+	{
+		mtx = GetCharcter()[15]->GetMtxWorld();
+
+		CParticle::Create(D3DXVECTOR3(mtx->_41, 0.0f, mtx->_43), CParticle::TYPE_GROUND);
 	}
 }
 
@@ -466,18 +577,19 @@ void CEnemyBossStateMove::Update(CEnemyBoss* pEnemyBoss)
 
 	Info->pos += Info->move;
 
+	// 走っているときのエフェクト
+	pEnemyBoss->DashEffect();
+
 	// プレイヤーとの距離
 	float fLenght = utility::Distance(Info->pos, PlayerPos);
 
 	if (fLenght <= ATTACKLENGHT)
 	{// 攻撃可能範囲内に入った
 
-		Info->state = CEnemy::STATE_NEUTRAL;
 		pMotion->Set(CEnemy::MOTION_NEUTRAL);
 		pEnemyBoss->ChangeState(new CEnemyBossStateAttackWait);
 	}
 }
-
 
 //================================================================
 // 攻撃状態の処理
@@ -512,13 +624,14 @@ void CEnemyBossStateAttackWait::Update(CEnemyBoss* pEnemyBoss)
 		return;
 
 	// 攻撃していないとき
-	if(!m_bAttack)
+	if(!pEnemyBoss->GetbAttack())
 	   m_nAtcCounter++;
 	
-	if (m_nAtcCounter >= 60)
+	if (m_nAtcCounter >= 60 || pEnemyBoss->GetbAttackReady())
 	{
 		m_nAtcCounter = 0;
-		m_bAttack = true;
+		pEnemyBoss->SetbAttack(true);
+		pEnemyBoss->SetbAttackReady(false);
 
 		m_nAttackType = rand() % ATTACKTYPE_MAX;  //攻撃の種類抽選
 
@@ -549,7 +662,7 @@ void CEnemyBossStateAttackWait::Update(CEnemyBoss* pEnemyBoss)
 			break;
 		}
 	}
-	else if(m_nAtcCounter == 0 && m_bAttack == true)
+	else if(m_nAtcCounter == 0 && pEnemyBoss->GetbAttack())
 	{
 	switch (m_nAttackType)
 	{
@@ -576,14 +689,15 @@ void CEnemyBossStateAttackWait::Update(CEnemyBoss* pEnemyBoss)
 	}
 	}
 
+	// モーションが終了した
 	if (pMotion->IsFinish())
 	{
 		pEnemyBoss->ChangeState(new CEnemyBossStateMove);
-		m_bAttack = false;
+		pEnemyBoss->SetbAttack(false);
 	}
 		
 	// 攻撃しているときは処理を抜ける
-	if (m_bAttack)
+	if (pEnemyBoss->GetbAttack())
 		return;
 
 	// 敵の情報取得
@@ -602,11 +716,8 @@ void CEnemyBossStateAttackWait::Update(CEnemyBoss* pEnemyBoss)
 
 	if (fLenght > ATTACKLENGHT)
 		pEnemyBoss->ChangeState(new CEnemyBossStateMove);
+
 }
-
-
-
-
 
 //================================================================
 // ダメージ状態の処理
@@ -614,15 +725,15 @@ void CEnemyBossStateAttackWait::Update(CEnemyBoss* pEnemyBoss)
 //===========================================================
 // ダメージ状態のコンストラクタ
 //===========================================================
-CEnemyBossStateDamege::CEnemyBossStateDamege()
+CEnemyBossStateDamage::CEnemyBossStateDamage()
 {
-	m_nRecoverDamageTime = DAMEGECOUNT;
+	m_nRecoverDamageTime = DAMAGECOUNT;
 }
 
 //===========================================================
 // ダメージ状態の更新処理
 //===========================================================
-void CEnemyBossStateDamege::Update(CEnemyBoss* pEnemyBoss)
+void CEnemyBossStateDamage::Update(CEnemyBoss* pEnemyBoss)
 {// 更新処理
 
 	// 敵の情報取得
@@ -646,7 +757,7 @@ void CEnemyBossStateDamege::Update(CEnemyBoss* pEnemyBoss)
 	{
 		pMotion->Set(pEnemyBoss->MOTION_NEUTRAL);
 		pEnemyBoss->ChangeState(new CEnemyBossStateMove);
-		pEnemyBoss->SetbDamage();
+		
 	}
 }
 
@@ -656,14 +767,14 @@ void CEnemyBossStateDamege::Update(CEnemyBoss* pEnemyBoss)
 //===========================================================
 // 強い攻撃を受けた状態のコンストラクタ
 //===========================================================
-CEnemyBossStateHeavyDamege::CEnemyBossStateHeavyDamege()
+CEnemyBossStateHeavyDamage::CEnemyBossStateHeavyDamage()
 {
 }
 
 //===========================================================
 // 強い攻撃を受けた状態の更新処理
 //===========================================================
-void CEnemyBossStateHeavyDamege::Update(CEnemyBoss* pEnemyBoss)
+void CEnemyBossStateHeavyDamage::Update(CEnemyBoss* pEnemyBoss)
 {
 	// モーションの情報取得
 	CMotion* pMotion = pEnemyBoss->GetMotion();
@@ -672,13 +783,16 @@ void CEnemyBossStateHeavyDamege::Update(CEnemyBoss* pEnemyBoss)
 		return;
 
 	// モーションがノックダウン以外のとき
-	if (pMotion->GetType() != pEnemyBoss->MOTION_HEATDAMEGE)
-		pMotion->Set(pEnemyBoss->MOTION_HEATDAMEGE);
+	if (pMotion->GetType() != pEnemyBoss->MOTION_HEATDAMAGE)
+		pMotion->Set(pEnemyBoss->MOTION_HEATDAMAGE);
 
 	// モーションが終了していたら
 	if (pMotion->IsFinish())
 	{
 		pEnemyBoss->ChangeState(new CEnemyBossStateGetUp);
+
+		// ヒートアクションをくらったフラグを折る
+		pEnemyBoss->RestHeatDamageFrag();
 	}
 }
 
@@ -747,12 +861,13 @@ void CEnemyBossStateKnockDown::Update(CEnemyBoss* pEnemyBoss)
 		return;
 
 	// モーションがノックダウン以外のとき
-	if (pMotion->GetType() != pEnemyBoss->MOTION_HEATDAMEGE)
-		pMotion->Set(pEnemyBoss->MOTION_HEATDAMEGE);
+	if (pMotion->GetType() != pEnemyBoss->MOTION_HEATDAMAGE)
+		pMotion->Set(pEnemyBoss->MOTION_HEATDAMAGE);
 
 	// モーションが終了していたら
 	if (pMotion->IsFinish())
 	{
+		pEnemyBoss->SetbHeatDamage(false);
 		pEnemyBoss->ChangeState(new CEnemyBossStateGetUp);
 	}
 }
@@ -795,6 +910,7 @@ void CEnemyBossStateGetUp::Update(CEnemyBoss* pEnemyBoss)
 
 		// よろめき状態に切り替える
 		pEnemyBoss->ChangeState(new CEnemyBossStateStagger);
+		pEnemyBoss->SetbDamage();
 	}
 	else if (pMotion->IsFinish())
 	{// モーションが終了している
@@ -892,7 +1008,6 @@ void CEnemyBossStateDeath::Update(CEnemyBoss* pEnemyBoss)
 		// 敵の総数を減らす
 		int nNum = CEnemyManager::GetNum() - 1;
 		CEnemyManager::SetNum(nNum);
-		//pEnemyBoss->Uninit();
 
 		if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_GAME)
 		{// ゲームの時
@@ -905,6 +1020,65 @@ void CEnemyBossStateDeath::Update(CEnemyBoss* pEnemyBoss)
 			
 		}
 	}
+}
+
+//================================================================
+// 電子レンジで死亡した状態の処理
+//================================================================
+//===========================================================
+// 電子レンジで死亡した状態のコンストラクタ
+//===========================================================
+CEnemyBossStateDeathByMicrowave::CEnemyBossStateDeathByMicrowave()
+{
+}
+
+//===========================================================
+// 電子レンジで死亡した状態の更新処理
+//===========================================================
+void CEnemyBossStateDeathByMicrowave::Update(CEnemyBoss* pEnemyBoss)
+{
+	////フェードの情報を取得
+	//CFade* pFade = CManager::GetInstance()->GetFade();
+
+	//if (pFade->Get() != pFade->FADE_OUT)
+	//	pFade->Set(CScene::MODE_RESULT);
+
+	// 死亡した状態のとき処理を抜ける
+	if (m_bDeath)
+		return;
+
+	// 敵の総数を減らす
+	int nNum = CEnemyManager::GetNum() - 1;
+	CEnemyManager::SetNum(nNum);
+
+	if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_GAME)
+	{// ゲームの時
+
+		// 敵を倒した数を増やす
+		int nDefeat = CManager::GetInstance()->GetDefeat();
+		nDefeat++;
+		CManager::GetInstance()->SetDefeat(nDefeat);
+		m_bDeath = true;
+	}
+}
+
+//================================================================
+// 捕まれている状態の処理
+//================================================================
+//===========================================================
+// 捕まれている状態のコンストラクタ
+//===========================================================
+CEnemyBossStateGrabbed::CEnemyBossStateGrabbed()
+{
+
+}
+
+//===========================================================
+// 捕まれている状態の更新処理
+//===========================================================
+void CEnemyBossStateGrabbed::Update(CEnemyBoss* pEnemyBoss)
+{
+
 }
 
 //================================================================
@@ -1026,155 +1200,33 @@ void CEnemyBossOnStege::Update(CEnemyBoss* pEnemyBoss)
 	{
 		pEnemyBoss->ChangeState(new CEnemyBossStateMove);
 		pMotion->Set(pEnemyBoss->MOTION_NEUTRAL);
-		//CManager::GetInstance()->GetCamera()->ChangeState(new FollowPlayerCamera);
 	}
 }
 
-
-
-////===========================================================
-//// 攻撃の種類
-////===========================================================
-//CAttackType::CAttackType()
-//{
-//}
-//
-//CAttackTypeRollingPunch::CAttackTypeRollingPunch()
-//{
-//}
-//
-////===========================================================
-//// 攻撃の種類：ローリングパンチ
-////===========================================================
-//void CAttackTypeRollingPunch::Update(CEnemy* pEnemy)
-//{
-//	// キャラのパーツ取得
-//	CCharacter** ppParts = nullptr;
-//	ppParts = pEnemy->GetCharcter();
-//
-//	if (ppParts == nullptr)
-//		return;
-//
-//	D3DXVECTOR3 PartsPosR = {};
-//	D3DXMATRIX* PartsMtxR = {};
-//	D3DXVECTOR3 PartsPosL = {};
-//	D3DXMATRIX* PartsMtxL = {};
-//
-//	// 左手
-//	if (ppParts[8] != nullptr)
-//	{
-//		// マトリックスの取得
-//		PartsMtxR = ppParts[8]->GetMtxWorld();
-//
-//		PartsPosR.x = PartsMtxR->_41;
-//		PartsPosR.y = PartsMtxR->_42;
-//		PartsPosR.z = PartsMtxR->_43;
-//	}
-//
-//	// 右手
-//	if (ppParts[11] != nullptr)
-//	{
-//		// マトリックスの取得
-//		PartsMtxL = ppParts[11]->GetMtxWorld();
-//
-//		PartsPosL.x = PartsMtxL->_41;
-//		PartsPosL.y = PartsMtxL->_42;
-//		PartsPosL.z = PartsMtxL->_43;
-//	}
-//
-//	// 攻撃判定
-//	pEnemy->HitDetection(PartsPosR, 20.0f, 50.0f);
-//
-//	// 攻撃判定
-//	pEnemy->HitDetection(PartsPosL, 20.0f, 50.0f);
-//}
-//
-//CAttackTypeNormalPunch::CAttackTypeNormalPunch()
-//{
-//}
-//
-////===========================================================
-//// 攻撃の種類：ノーマルパンチ
-////===========================================================
-//void CAttackTypeNormalPunch::Update(CEnemy* pEnemy)
-//{
-//	// キャラのパーツ取得
-//	CCharacter** ppParts = nullptr;
-//	ppParts = pEnemy->GetCharcter();
-//
-//	if (ppParts == nullptr)
-//		return;
-//
-//	D3DXVECTOR3 PartsPos = {};
-//	D3DXMATRIX* PartsMtx = {};
-//
-//	// 右手
-//	if (ppParts[11] != nullptr)
-//	{
-//		// マトリックスの取得
-//		PartsMtx = ppParts[11]->GetMtxWorld();
-//
-//		PartsPos.x = PartsMtx->_41;
-//		PartsPos.y = PartsMtx->_42;
-//		PartsPos.z = PartsMtx->_43;
-//	}
-//
-//	// 攻撃判定
-//	pEnemy->HitDetection(PartsPos, 50.0f, 50.0f);
-//}
-//
-//CAttackTypeBodyPress::CAttackTypeBodyPress()
-//{
-//}
-//
-////===========================================================
-//// 攻撃の種類：フライングプレス
-////===========================================================
-//void CAttackTypeBodyPress::Update(CEnemy* pEnemy)
-//{
-//	// キャラのパーツ取得
-//	CCharacter** ppParts = nullptr;
-//	ppParts = pEnemy->GetCharcter();
-//
-//	if (ppParts == nullptr)
-//		return;
-//
-//	D3DXVECTOR3 PartsPos = {};
-//	D3DXMATRIX* PartsMtx = {};
-//
-//	// 腹
-//	if (ppParts[5] != nullptr)
-//	{
-//		// マトリックスの取得
-//		PartsMtx = ppParts[5]->GetMtxWorld();
-//
-//		PartsPos.x = PartsMtx->_41;
-//		PartsPos.y = PartsMtx->_42;
-//		PartsPos.z = PartsMtx->_43;
-//	}
-//
-//	// 攻撃判定
-//	pEnemy->HitDetection(PartsPos, 50.0f, 50.0f);
-//}
-//
-////===========================================================
-//// ステイトの変更
-////===========================================================
-//void CEnemyStateAttack::ChangeState(CAttackType* pAttackType)
-//{
-//	if (m_pAttackType != nullptr)
-//	{
-//		delete m_pAttackType;
-//		m_pAttackType = nullptr;
-//	}
-//
-//	m_pAttackType = pAttackType;
-//}
-
-CEnemyBossStateGrabbed::CEnemyBossStateGrabbed()
+//================================================================
+// 拒否状態の処理
+//================================================================
+//===========================================================
+// 拒否状態のコンストラクタ
+//===========================================================
+CEnemyBossStateDenial::CEnemyBossStateDenial()
 {
+
 }
 
-void CEnemyBossStateGrabbed::Update(CEnemyBoss* pEnemyBoss)
+//===========================================================
+// 拒否状態の更新処理
+//===========================================================
+void CEnemyBossStateDenial::Update(CEnemyBoss* pEnemyBoss)
 {
+	// モーションの情報取得
+	CMotion* pMotion = pEnemyBoss->GetMotion();
+
+	if (pMotion == nullptr)
+		return;
+
+	// モーションが拒否以外のとき
+	if (pMotion->GetType() != pEnemyBoss->MOTION_DENIAL)
+		pMotion->Set(pEnemyBoss->MOTION_DENIAL);
+
 }

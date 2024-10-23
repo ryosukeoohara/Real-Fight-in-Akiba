@@ -117,7 +117,7 @@ CPlayer::CPlayer()
 	m_nIdxTexture = -1;
 	m_nIdxShaadow = -1;
 	m_nCntColi = 0;
-	m_nDamegeCounter = 0;
+	m_nDamageCounter = 0;
 	m_nUseCounter = 0;
 	m_Readpos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_Readrot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -150,14 +150,6 @@ CPlayer::CPlayer()
 	m_bInvi = false;
 	m_bHeatActFlag = false;
 	
-	m_bPushW = false;
-	m_bPushA = false;
-	m_bPushS = false;
-	m_bPushD = false;
-	m_bAttack = false;
-	m_bAvoi = false;
-	m_bWhee = false;
-
 	m_pPlayer = this;
 }
 
@@ -182,7 +174,7 @@ CPlayer::CPlayer(D3DXVECTOR3 pos, int nPriority) : CObject(nPriority)
 	m_nIdxTexture = -1;
 	m_nIdxShaadow = -1;
 	m_nCntColi = 0;
-	m_nDamegeCounter = 0;
+	m_nDamageCounter = 0;
 	m_nUseCounter = 0;
 	m_Readpos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_Readrot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -214,14 +206,6 @@ CPlayer::CPlayer(D3DXVECTOR3 pos, int nPriority) : CObject(nPriority)
 	m_bGrap = false;
 	m_bInvi = false;
 	m_bHeatActFlag = false;
-
-	m_bPushW = false;
-	m_bPushA = false;
-	m_bPushS = false;
-	m_bPushD = false;
-	m_bAttack = false;
-	m_bAvoi = false;
-	m_bWhee = false;
 
 	m_pPlayer = this;
 }
@@ -279,9 +263,10 @@ CPlayer * CPlayer::Create(void)
 //===========================================================
 void CPlayer::Damage(int nDamage, D3DXVECTOR3 KnockBack)
 {
-	if (m_Info.state != STATE_DAMEGE && m_Info.state != STATE_EVASION)
+	// ダメージ状態かつ回避状態かつヒートアクションをしていないとき
+	if (m_Info.state != STATE_DAMAGE && m_Info.state != STATE_EVASION && !m_bHeatActFlag)
 	{
-		m_Info.state = STATE_DAMEGE;
+		m_Info.state = STATE_DAMAGE;
 		m_pMotion->Set(TYPE_DAMAGE);
 		CManager::GetInstance()->GetSound()->Play(CSound::SOUND_LABEL_SE_PUNCH);
 		m_Info.nLife -= nDamage;
@@ -343,7 +328,7 @@ HRESULT CPlayer::Init(void)
 	m_fStamina = MAX_STAMINA;
 	m_Info.nLife = MAX_LIFE;
 	m_Info.fRadius = MY_RADIUS;
-	m_nDamegeCounter = DAMAGE_COUNT;
+	m_nDamageCounter = DAMAGE_COUNT;
 
 	ReadText(PLAYER_TEXT);
 
@@ -416,21 +401,20 @@ void CPlayer::Uninit(void)
 //================================================================
 void CPlayer::Update(void)
 {
-	if (m_Info.state == STATE_DAMEGE)
+	if (m_Info.state == STATE_DAMAGE)
 	{
-		m_nDamegeCounter--;
+		m_nDamageCounter--;
 
-		if (m_nDamegeCounter <= 0)
+		if (m_nDamageCounter <= 0)
 		{
 			m_Info.state = STATE_NONE;
-			m_nDamegeCounter = DAMAGE_COUNT;
+			m_nDamageCounter = DAMAGE_COUNT;
 		}
 	}
 	else
 	{
 		// 制御処理
-		if (m_Mobility == Mobile)
-			Control();
+		Control();
 
 	}
 	
@@ -604,6 +588,9 @@ void CPlayer::Move(void)
 	//カメラ取得
 	CCamera *pCamera = CManager::GetInstance()->GetCamera();
 
+	if (m_Mobility == Immobile)
+		return;
+
 	D3DXVECTOR3 CameraRot = pCamera->GetRotation();
 
 	m_bDesh = false;
@@ -617,7 +604,7 @@ void CPlayer::Move(void)
 	else
 		fSpeed = MOVE_SPEED;
 
-	if (m_Info.state != STATE_GRAP && m_Info.state != STATE_EVASION && m_Info.state != STATE_ATTACK && m_Info.state != STATE_HEAT && m_Info.state != STATE_DAMEGE)
+	if (m_Info.state != STATE_GRAP && m_Info.state != STATE_EVASION && m_Info.state != STATE_ATTACK && m_Info.state != STATE_HEAT && m_Info.state != STATE_DAMAGE)
 	{
 		if (InputKeyboard->GetPress(DIK_W) == true || pInputJoyPad->GetLYStick(CInputJoyPad::STICK_LY, 0) > 0)
 		{//Wキーが押された
@@ -760,10 +747,6 @@ void CPlayer::Move(void)
 	if (CCollision::GetInstance() != nullptr)
 		CCollision::GetInstance()->Map(&m_Info.pos, &m_Info.posOld, 40.0f);
 
-	CMapObject_Dramcan* pDramcan = CMapObject_Dramcan::GetTop();
-
-	//utility::CheckCirclePushOut(&m_Info.pos, &pDramcan->GetPosition(), 30.0f, forward);
-
 }
 
 //================================================================
@@ -781,6 +764,9 @@ void CPlayer::Attack(void)
 		return;
 
 	if (pInputJoyPad == nullptr)
+		return;
+
+	if (m_Mobility == Immobile)
 		return;
 
 	// 通常攻撃
@@ -851,6 +837,9 @@ void CPlayer::Grap(void)
 	//ゲームパッドを取得
 	CInputJoyPad *pInputJoyPad = CManager::GetInstance()->GetInputJoyPad();
 
+	if (m_Mobility == Immobile)
+		return;
+
 	// 敵を掴む
 	if (InputKeyboard->GetTrigger(DIK_E) == true || pInputJoyPad->GetTrigger(CInputJoyPad::BUTTON_Y, 0) == true)
 	{
@@ -908,7 +897,7 @@ void CPlayer::Grap(void)
 			else
 			{
 
-				if (CGame::GetCollision()->Circle(m_Info.pos, m_pEnemy->GetPosition(), 40.0f, 40.0f) == true)
+				if (CGame::GetCollision()->Circle(m_Info.pos, m_pEnemy->GetPosition(), 40.0f, 40.0f) && !m_pEnemy->GetbDeathFlag())
 					GrapEnemy(true);
 			}
 		}
@@ -927,6 +916,9 @@ void CPlayer::Evasion(void)
 	CInputJoyPad *pInputJoyPad = CManager::GetInstance()->GetInputJoyPad();
 
 	if (InputKeyboard == nullptr || pInputJoyPad == nullptr)
+		return;
+
+	if (m_Mobility == Immobile)
 		return;
 
 	if (InputKeyboard->GetTrigger(DIK_LSHIFT) == true || pInputJoyPad->GetTrigger(CInputJoyPad::BUTTON_A, 0) == true)
@@ -989,12 +981,6 @@ void CPlayer::State(void)
 		{
 			CGame::GetCollision()->AttackCircle(&D3DXVECTOR3(mtx->_41, mtx->_42, mtx->_43), 50.0f, 50.0f, 100.0f);
 
-			/*if(CCollision::GetInstance()->HitMapObject(D3DXVECTOR3(mtx->_41, mtx->_42, mtx->_43), {}, 30.0f, 10.0f))
-				CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(mtx->_41, mtx->_42, mtx->_43));
-
-			if (CCollision::GetInstance()->HitElectricBox(D3DXVECTOR3(mtx->_41, mtx->_42, mtx->_43), {}, 30.0f, 30.0f))
-				CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(mtx->_41, mtx->_42, mtx->_43));*/
-
 		}
 			
 	}
@@ -1007,7 +993,7 @@ void CPlayer::State(void)
 	}
 
 	// 回避
-	if (m_Info.state == STATE_EVASION)
+	if (m_Info.state == STATE_EVASION && m_Grap.pEnemy == nullptr)
 	{
 		m_bDesh = false;
 		m_Info.move.x += sinf(m_Info.rot.y + D3DX_PI) * 0.5f;
@@ -1160,8 +1146,10 @@ void CPlayer::Heat(void)
 			return;
 
 		if (IsHeatAct(m_pEnemy->GetPosition()))
+		{
 			m_HeatAct = HEAT_SMASH;
-
+			SetHeatActType();  // 種類設定
+		}
 	}
 
 	// 電子レンジ
@@ -1181,8 +1169,10 @@ void CPlayer::Heat(void)
 		}
 
 		if (IsHeatAct(m_pItemMicro->GetPosition()))
+		{
 			m_HeatAct = HEAT_FIRE;
-
+			SetHeatActType();  // 種類設定
+		}
 	}
 }
 
@@ -1205,6 +1195,8 @@ void CPlayer::SetHeatActType(void)
 		if (CGame::GetEnemyManager() != nullptr)
 			CGame::GetEnemyManager()->SetTarget(m_pEnemy->GetIdxID());
 
+		m_pEnemy->Denial();
+
 		m_Info.state = STATE_HEAT;
 
 		// ヒートアクションしている
@@ -1213,6 +1205,8 @@ void CPlayer::SetHeatActType(void)
 		m_pMotion->Set(TYPE_THROW);
 
 		m_Info.Atc = TYPE_HEATACTBIKE;
+
+		m_Mobility = Immobile;
 
 		break;
 
@@ -1236,7 +1230,12 @@ void CPlayer::SetHeatActType(void)
 		// 敵を離す
 		m_bGrap = false;
 
+		// 走っているフラグをおる
+		m_bDesh = false;
+
 		m_Info.Atc = TYPE_HEATACTMICROWAVE;
+
+		m_Mobility = Immobile;
 
 		break;
 
@@ -1269,7 +1268,10 @@ bool CPlayer::IsHeatAct(D3DXVECTOR3 TargetPos)
 	if (pInputJoyPad == nullptr)
 		return false;
 
-	if (CGame::GetCollision()->Circle(m_Info.pos, TargetPos, 40.0f, 40.0f))
+	bool b = m_pEnemy->GetbHeatDamageFlag();
+	bool a = m_pEnemy->GetbDeathFlag();
+
+	if (CGame::GetCollision()->Circle(m_Info.pos, TargetPos, 40.0f, 40.0f) && !m_pEnemy->GetbHeatDamageFlag() && !m_pEnemy->GetbDeathFlag())
 	{// 範囲内
 
 		// Xボタンが出てくる
@@ -1284,7 +1286,8 @@ bool CPlayer::IsHeatAct(D3DXVECTOR3 TargetPos)
 
 		if (pInputKeyboard->GetTrigger(DIK_R) == true || pInputJoyPad->GetTrigger(CInputJoyPad::BUTTON_X, 0) == true)
 		{
-			SetHeatActType();  // 種類設定
+			m_Mobility = Immobile;
+			m_bDesh = false;
 			return true;
 		}
 	}
@@ -1582,6 +1585,12 @@ void CPlayer::GrapEnemy(bool value)
 		m_bGrap = false;
 		m_Grap.pEnemy->Grabbed();
 		m_Grap.pEnemy = nullptr;
+
+		if (m_pBotton != nullptr)
+		{
+			m_pBotton->Uninit();
+			m_pBotton = nullptr;
+		}
 	}
 }
 
@@ -1611,6 +1620,12 @@ void CPlayer::GrapItem(bool value)
 		m_Info.state = STATE_NEUTRAL;
 		m_pMotion->Set(TYPE_NEUTRAL);
 		m_bLift = false;
+
+		if (m_pBotton != nullptr)
+		{
+			m_pBotton->Uninit();
+			m_pBotton = nullptr;
+		}
 	}
 }
 

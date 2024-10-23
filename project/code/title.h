@@ -19,6 +19,7 @@ class CField;
 class CObject2D;
 class CMap;
 class CPlayer;
+class CSpeedLines;
 
 //===========================================================
 // タイトルクラス定義
@@ -45,6 +46,8 @@ private:
 	static CPlayer *m_pPlayer;
 	int m_nCnt;
 	int m_nCntPos;
+
+	CSpeedLines* m_pLines;
 
 };
 #endif // !_TITLE_H_

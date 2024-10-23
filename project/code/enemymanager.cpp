@@ -16,6 +16,7 @@
 #include "manager.h"
 #include "input.h"
 #include "utility.h"
+#include "tutorial_enemy.h"
 #include "debugproc.h"
 
 //===========================================================
@@ -90,7 +91,7 @@ HRESULT CEnemyManager::Init(void)
 //===========================================================
 void CEnemyManager::Uninit(void)
 {
-	
+	m_nNum = 0;
 }
 
 //===========================================================
@@ -189,35 +190,43 @@ void CEnemyManager::ReadText(const char *text)
 
 					}//ENEMYSET_END‚Ì‚©‚Á‚± 
 
-					if (nType == CEnemy::WEAK)
-					{// ŽG‹›“G
+					if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_GAME)
+					{
+						if (nType == CEnemy::WEAK)
+						{// ŽG‹›“G
 
-						CEnemyWeak::Create(m_Readpos, m_Readrot, nLife);
+							CEnemyWeak::Create(m_Readpos, m_Readrot, nLife);
 
+						}
+						else if (nType == CEnemy::WEAK_FAR)
+						{// ŽG‹›“G
+
+							CEnemyWeakFar::Create(m_Readpos, m_Readrot, nLife);
+
+						}
+						else if (nType == CEnemy::BOSS)
+						{// ƒ{ƒX“G
+
+							// ƒ{ƒX“G‚ÌoŒ»ˆÊ’uÝ’èˆ—
+							SetSpawnPosition();
+
+							CPlayer* pPlayer = CPlayer::GetInstance();
+							D3DXVECTOR3 Playerpos = { 0.0f, 0.0f, 0.0f };
+							float rot = 0.0f;
+
+							if (pPlayer != nullptr)
+								Playerpos = pPlayer->GetPosition();
+
+							rot = utility::MoveToPosition(m_Readpos, Playerpos, rot);
+
+							CEnemyBoss::Create(m_Readpos, D3DXVECTOR3(m_Readrot.x, rot, m_Readrot.z), nLife);
+						}
 					}
-					else if (nType == CEnemy::WEAK_FAR)
-					{// ŽG‹›“G
-
-						CEnemyWeakFar::Create(m_Readpos, m_Readrot, nLife);
-
+					else if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_TUTORIAL)
+					{
+						CTutorial_Enemy::Create(m_Readpos, m_Readrot, nLife);
 					}
-					else if (nType == CEnemy::BOSS)
-					{// ƒ{ƒX“G
-
-						// ƒ{ƒX“G‚ÌoŒ»ˆÊ’uÝ’èˆ—
-						SetSpawnPosition();
-						
-						CPlayer* pPlayer = CPlayer::GetInstance();
-						D3DXVECTOR3 Playerpos = { 0.0f, 0.0f, 0.0f };
-						float rot = 0.0f;
-
-						if (pPlayer != nullptr)
-							Playerpos = pPlayer->GetPosition();
-
-						rot = utility::MoveToPosition(m_Readpos, Playerpos, rot);
-
-						CEnemyBoss::Create(m_Readpos, D3DXVECTOR3(m_Readrot.x, rot, m_Readrot.z), nLife);
-					}
+					
 
 					m_nNum++;
 					

@@ -125,9 +125,9 @@ int CMotion::GetAttackEnd(void)
 //===========================================================
 // çUåÇóÕ
 //===========================================================
-int CMotion::GetAttackDamege(void)
+int CMotion::GetAttackDamage(void)
 {
-	return m_aInfo[m_nType].nAttackDamege;
+	return m_aInfo[m_nType].nAttackDAMAGE;
 }
 
 //===========================================================
@@ -305,7 +305,7 @@ void CMotion::ReadText(const char *TextFilename)
 						if (strcmp("ATTACK", aString) == 0)
 						{
 							fscanf(pFile, "%s", &aString);
-							fscanf(pFile, "%d", &m_aInfo[nCntMotion].nAttackDamege);
+							fscanf(pFile, "%d", &m_aInfo[nCntMotion].nAttackDAMAGE);
 						}
 
 						if (strcmp("STRAT_CANCEL", aString) == 0)

@@ -23,11 +23,6 @@ class CObject3D;
 //===========================================================
 class CObjectX : public CObject
 {
-private:
-	
-
-	
-
 public:
 
 	struct INFO
@@ -44,7 +39,7 @@ public:
 	};
 
 	CObjectX();
-	CObjectX(const char *aModelFliename, int nPriority = 3);
+	CObjectX(const char *aModelFliename, int nPriority = 2);
 	~CObjectX();
 
 	HRESULT Init(void);           // 初期化処理    
@@ -54,7 +49,7 @@ public:
 						          
 	void ReadText(void);          //テキストファイル読み込み
 
-	static CObjectX *Create(const char *aModelFliename, int nPriority = 3);  //生成
+	static CObjectX *Create(const char *aModelFliename, int nPriority = 2);  //生成
 
 	void BindModel(INFO pObjX);
 

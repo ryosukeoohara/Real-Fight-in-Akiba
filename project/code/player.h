@@ -49,7 +49,7 @@ public:
 		STATE_ENEMYGRAP,    // 敵を投げる
 		STATE_GRAPWALK,     // 敵を掴んで歩く
 		STATE_POWERFUL,     // 地面にたたきつける
-		STATE_DAMEGE,       // ダメージ
+		STATE_DAMAGE,       // ダメージ
 		STATE_INVINCIBE,    // 無敵
 		STATE_DEATH,        // 死亡
 		STATE_OTA,          // タイトルのオタ芸
@@ -176,6 +176,7 @@ public:
 	void SetbHeatActFlag(bool bValue) { m_bHeatActFlag = bValue; }
 	void SetDiff(float diff) { m_fDest = diff; }
 	void SetHeatActType(HEAT heat) { m_HeatAct = heat; }
+	void SetbDash(bool bdash) { m_bDesh = bdash; }
 
 	// 取得系
 	D3DXVECTOR3 GetPosition(void) { return m_Info.pos; }       // 位置取得
@@ -220,7 +221,7 @@ private:
 	void GrapEnemy(bool value);
 	void GrapItem(bool value);
 	void MoveLimit(void);
-	void DashEffect(void);
+	void DashEffect(void);         // 走っているときに出すエフェクト
 	void Hit(void);
 	
 
@@ -267,15 +268,8 @@ private:
 	bool m_bGrap;                         // 投げ
 	bool m_bInvi;                         // 無敵かどうか
 	bool m_bHeatActFlag;                  // ヒートアクションしているかどうか
-
-	//チュートリアルで使う関数,変数
-	void ControlTutorial(void);          // チュートリアルのプレイヤーの制御
-	bool m_bPushW;                       // Wキーを押した
-	bool m_bPushA;                       // Aキーを押した
-	bool m_bPushS;                       // Sキーを押した
-	bool m_bPushD;                       // Dキーを押した
 	bool m_bAvoi;                        // 回避した
-	bool m_bWhee;                        // ホイールを回転した
+
 };
 
 #endif

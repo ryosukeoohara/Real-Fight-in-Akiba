@@ -179,7 +179,6 @@
     <ClCompile Include="code\enemy_boss.cpp" />
     <ClCompile Include="code\enemy_weak.cpp" />
     <ClCompile Include="code\enemy_weak_far.cpp" />
-    <ClCompile Include="code\enemy_weak_near.cpp" />
     <ClCompile Include="code\fade.cpp" />
     <ClCompile Include="code\field.cpp" />
     <ClCompile Include="code\gage.cpp" />
@@ -225,13 +224,14 @@
     <ClCompile Include="code\result.cpp" />
     <ClCompile Include="code\ripples.cpp" />
     <ClCompile Include="code\score.cpp" />
-    <ClCompile Include="code\shadow.cpp" />
     <ClCompile Include="code\sound.cpp" />
+    <ClCompile Include="code\speedlines.cpp" />
     <ClCompile Include="code\texture.cpp" />
     <ClCompile Include="code\time.cpp" />
     <ClCompile Include="code\title.cpp" />
     <ClCompile Include="code\tutorial.cpp" />
     <ClCompile Include="code\tutorialUI.cpp" />
+    <ClCompile Include="code\tutorial_enemy.cpp" />
     <ClCompile Include="code\UImanager.cpp" />
     <ClCompile Include="code\userrankUI.cpp" />
     <ClCompile Include="code\utility.cpp" />
@@ -256,7 +256,6 @@
     <ClInclude Include="code\enemy_boss.h" />
     <ClInclude Include="code\enemy_weak.h" />
     <ClInclude Include="code\enemy_weak_far.h" />
-    <ClInclude Include="code\enemy_weak_near.h" />
     <ClInclude Include="code\fade.h" />
     <ClInclude Include="code\field.h" />
     <ClInclude Include="code\gage.h" />
@@ -297,13 +296,14 @@
     <ClInclude Include="code\result.h" />
     <ClInclude Include="code\ripples.h" />
     <ClInclude Include="code\score.h" />
-    <ClInclude Include="code\shadow.h" />
     <ClInclude Include="code\sound.h" />
+    <ClInclude Include="code\speedlines.h" />
     <ClInclude Include="code\texture.h" />
     <ClInclude Include="code\time.h" />
     <ClInclude Include="code\title.h" />
     <ClInclude Include="code\tutorial.h" />
     <ClInclude Include="code\tutorialUI.h" />
+    <ClInclude Include="code\tutorial_enemy.h" />
     <ClInclude Include="code\UImanager.h" />
     <ClInclude Include="code\userrankUI.h" />
     <ClInclude Include="code\utility.h" />

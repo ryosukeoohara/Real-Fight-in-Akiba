@@ -25,14 +25,6 @@ class CMapObject : public CObjectX
 {
 public:
 
-	/*enum TYPE
-	{
-		TYPE_KAN,
-		TYPE_BOX,
-		TYPE_KAN,
-		TYPE_MAX
-	};*/
-
 	CMapObject();   // コンストラクタ
 	CMapObject(const char* aModelFliename, int nPriority = 3);
 	~CMapObject();  // デストラクタ
@@ -47,38 +39,21 @@ public:
 	// 設定系
 	void SetNext(CMapObject* pNext) { m_pNext = pNext; }
 	void SetPrev(CMapObject* pPrev) { m_pPrev = pPrev; }
-	//void SetbShut(bool bValue) { m_bShut = bValue; }
 
 	// 取得系
-	CObjectX** GetObjectX(void) { return m_appObjectX; }
 	int GetNum(void) { return m_nNumModel; }
 	static CMapObject* GetInstance(void) { return m_pMap; }
 	CMapObject* GetNext(void) { return m_pNext; }
 	
 private:
 
-	void ListOut(void);  // 自身をリストから消す
-
-	struct TEX
-	{
-		char aName[MAX_NAME];
-	};
-
-	//TYPE m_type;
-	void TextLoad(void);
-	void Shoot(void);
-	void FallDown(void);
-
 	static CMapObject* m_pMap;
-	CObjectX** m_appObjectX;
 	int m_nNumModel;
 	int m_nNumItem;
 	CMapObject* m_pNext;        // 次のオブジェクトへのポインタ
 	CMapObject* m_pPrev;        // 前のオブジェクトへのポインタ
 	
 	bool m_bDeath;              // 死亡フラグ
-
-	TEX m_aTex[MAX_MODEL];
 
 	bool m_bShut = false;
 	bool m_bDown = false;

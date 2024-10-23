@@ -68,7 +68,7 @@ HRESULT CResult::Init(void)
 	if (pField != nullptr)
 	{
 		pField->Init();
-		pField->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist("data\\TEXTURE\\FIELD\\concreat.png"));
+		pField->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist("data\\TEXTURE\\Field002.jpg"));
 		pField->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 		pField->SetSize(5000.0f, 5000.0f);
 		pField->SetDraw(true);
@@ -102,6 +102,8 @@ HRESULT CResult::Init(void)
 void CResult::Uninit(void)
 {
 	CManager::GetInstance()->GetSound()->Stop();
+
+	CManager::GetInstance()->SetDefeat(0);
 
 	if (m_pField != nullptr)
 	{
@@ -164,11 +166,11 @@ void CResult::Update(void)
 		if (m_pUserRank == nullptr)
 		{
 			int nNum = CManager::GetInstance()->GetDefeat();
-			if (nNum >= 4)
+			if (nNum >= 6)
 			{
 				m_pUserRank = CUserRankUI::Create(CUserRankUI::TYPE_TOP);
 			}
-			else if (nNum <= 3 && nNum >= 2)
+			else if (nNum <= 5 && nNum >= 2)
 			{
 				m_pUserRank = CUserRankUI::Create(CUserRankUI::TYPE_MIDDLE);
 			}

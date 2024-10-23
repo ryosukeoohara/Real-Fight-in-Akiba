@@ -11,6 +11,7 @@
 // ‘O•ûéŒ¾
 //===========================================================
 class CEnemy;
+class CSpeedLines;
 class CCameraState;
 
 //===========================================================
@@ -297,6 +298,7 @@ public:
 private:
 
 	CEnemy* m_pEnemy = nullptr;
+	CSpeedLines* m_pLines = nullptr;
 
 	int m_nFocusCounter = 0;
 	int m_nLookCount = 0;

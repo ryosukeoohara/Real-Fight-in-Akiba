@@ -123,19 +123,22 @@ void CMapObject_Dramcan::Update(void)
 	if (pPlayer->GetState() == CPlayer::STATE_ATTACK && pPlayer->IsHitCollision())
 	{
 		// 攻撃が当たっていたら
-		if (CCollision::GetInstance()->AttackHitCheck(pPlayer, this, 30.0f, 30.0f))
+		if (CCollision::GetInstance()->AttackHitCheck(pPlayer, this, 30.0f, 30.0f) && !m_bHit)
 		{
 			// ステートの変更：殴られた状態
 			ChangeState(new CDramcanBlowAway);
+
+			m_bHit = true;
 
 			CSound* pSound = CManager::GetInstance()->GetSound();
 
 			if (pSound != nullptr)
 				pSound->Play(CSound::SOUND_LABEL_SE_IRON_ROT_HIT);
+
 		}
 	}
 
-	//CCollision::GetInstance()->CheckPlayerMapObject(pPlayer, this, 20.0f);
+	CCollision::GetInstance()->CheckPlayerMapObject(pPlayer, this, 20.0f);
 
 	// ステートの変更
 	if (m_pState != nullptr)

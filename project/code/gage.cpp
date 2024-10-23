@@ -284,18 +284,30 @@ void CGage3D::SetCol(void)
 	}
 }
 
+//===========================================================
+// 位置設定
+//===========================================================
 void CGage3D::SetMixPos(void)
 {
-	if (m_pPos == nullptr)
-		return;
-
-	D3DXVECTOR3 pos = *m_pPos;
+	D3DXVECTOR3 pos = m_pos;
 
 	pos.y += m_UpHeight;
 
+	D3DXMATRIX mtxTrans;	// 計算用マトリックス
+	D3DXMATRIX mtxParent;	// 親のマトリックス情報
+
+	//ワールドマトリックスの初期化
+	D3DXMatrixIdentity(&m_mtxWorld);
+
+	// 位置を反映
+	D3DXMatrixTranslation(&mtxTrans, pos.x, pos.y, pos.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
+
+	SetCurrent(&m_mtxWorld);
+	
 	if (m_pLifeGage != nullptr)
-		m_pLifeGage->SetPosition(D3DXVECTOR3(pos.x, pos.y, pos.z));
+		m_pLifeGage->SetPosition(D3DXVECTOR3(m_mtxWorld._41, m_mtxWorld._42, m_mtxWorld._43));
 
 	if (m_pFrameGage != nullptr)
-		m_pFrameGage->SetPosition(D3DXVECTOR3(pos.x, pos.y, pos.z));
+		m_pFrameGage->SetPosition(D3DXVECTOR3(m_mtxWorld._41, m_mtxWorld._42, m_mtxWorld._43));
 }

@@ -41,7 +41,7 @@ int CEnemy::m_nNumAll = 0;
 //===========================================================
 namespace
 {
-	const int DAMEGECOUNT = 15;     // ダメージ状態
+	const int DAMAGECOUNT = 15;     // ダメージ状態
 	const float RADIUS = 20.0f;     // 横幅
 	const float ATTACKLENGHT = 50.0f;  // 攻撃可能範囲
 	const float ENEMY_MOVE = 2.0f;  // 移動量
@@ -64,7 +64,7 @@ CEnemy::CEnemy()
 	m_Info.nLife = 0;
 	m_Info.nIdxID = -1;
 	m_Info.bDraw = true;
-	m_nDamegeCounter = 0;
+	m_nDamageCounter = 0;
 	m_pCurrent = nullptr;
 	m_pNext = nullptr;
 	m_pLife2D = nullptr;
@@ -101,7 +101,7 @@ CEnemy::CEnemy(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nPriority)
 	m_Info.nLife = nlife;
 	m_Info.nIdxID = -1;
 	m_Info.bDraw = true;
-	m_nDamegeCounter = 0;
+	m_nDamageCounter = 0;
 	m_pCurrent = nullptr;
 	m_pNext = nullptr;
 	m_pLife2D = nullptr;
@@ -163,7 +163,7 @@ HRESULT CEnemy::Init(void)
 		m_pMotion->Init();
 	}
 
-	m_nDamegeCounter = DAMEGECOUNT;
+	m_nDamageCounter = DAMAGECOUNT;
 
 	m_Info.nIdxID = m_nNumAll;
 	m_nNumAll++;
@@ -308,14 +308,14 @@ void CEnemy::Draw(void)
 //	int nNum = 0;
 //	CEnemy **ppEnemy = nullptr;
 //
-//	if (m_Info.state == STATE_DAMEGE || m_Info.state == STATE_HEATDAMEGE)
+//	if (m_Info.state == STATE_DAMAGE || m_Info.state == STATE_HEATDAMAGE)
 //	{
-//		m_nDamegeCounter--;
+//		m_nDamageCounter--;
 //
-//		if (m_nDamegeCounter <= 0)
+//		if (m_nDamageCounter <= 0)
 //		{
 //			m_Info.state = STATE_NONE;
-//			m_nDamegeCounter = DAMEGECOUNT;
+//			m_nDamageCounter = DAMAGECOUNT;
 //		}
 //	}
 //	else
@@ -586,6 +586,6 @@ void CEnemy::HitDetection(D3DXVECTOR3 MyPos, float attackrange, float targetradi
 	{// 現在のフレームが攻撃判定発生フレーム以上かつ攻撃判定終了フレームない
 
 		if (CGame::GetCollision()->Circle(MyPos, CGame::GetPlayer()->GetPosition(), attackrange, targetradius) == true)
-			CPlayer::GetInstance()->Damage(GetMotion()->GetAttackDamege(), D3DXVECTOR3(sinf(GetRotition().y) * GetMotion()->GetKnockBack(), 0.0f, cosf(GetRotition().y) * GetMotion()->GetKnockBack()));
+			CPlayer::GetInstance()->Damage(GetMotion()->GetAttackDamage(), D3DXVECTOR3(sinf(GetRotition().y) * GetMotion()->GetKnockBack(), 0.0f, cosf(GetRotition().y) * GetMotion()->GetKnockBack()));
 	}
 }

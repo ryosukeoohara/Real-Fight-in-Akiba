@@ -48,6 +48,8 @@ private:
 	static CMapObject_Dramcan* m_pCur;  // 最後尾のオブジェクトへのポインタ
 	CMapObject_Dramcan* m_pNext;        // 次のオブジェクトへのポインタ
 	CMapObject_Dramcan* m_pPrev;        // 前のオブジェクトへのポインタ
+
+	bool m_bHit;
 };
 
 //===========================================================

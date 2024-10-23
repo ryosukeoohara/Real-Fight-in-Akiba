@@ -71,6 +71,15 @@ HRESULT CTutorialUI::Init(void)
 //===========================================================
 void CTutorialUI::Uninit(void)
 {
+	for (int nCount = 0; nCount < TYPE_MAX; nCount++)
+	{
+		if (m_apObject2D[nCount] != nullptr)
+		{// Žg—p‚µ‚Ä‚¢‚½‚ç
+
+			m_apObject2D[nCount]->Uninit();
+			m_apObject2D[nCount] = nullptr;
+		}
+	}
 }
 
 //===========================================================

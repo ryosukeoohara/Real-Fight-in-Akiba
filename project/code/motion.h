@@ -12,8 +12,13 @@
 //===========================================================
 #include "objectX.h"
 
-//マクロ定義
-#define MAX_INFO   (64)
+//===========================================================
+// 定数定義
+//===========================================================
+namespace MOTION_INFO
+{
+	const int MAX_INFO = 64;  // モーションの最大数
+}
 
 //===========================================================
 // 前方宣言
@@ -38,7 +43,7 @@ private:
 	//モデル---------------------------------------------------------------
 	typedef struct
 	{
-		KEY aKey[MAX_INFO];  //現在のキー
+		KEY aKey[MOTION_INFO::MAX_INFO];  //現在のキー
 		int nFrame;   //モーションのフレーム数
 
 	} KEYINFO;
@@ -51,7 +56,7 @@ private:
 		int nNumFrame;  // フレームの総数
 		int nAttackOccurs;  // 攻撃判定発生フレーム
 		int nAttackEnd;  // 攻撃判定終了フレーム
-		int nAttackDamege;  // 攻撃力
+		int nAttackDAMAGE;  // 攻撃力
 		int nInvincibleStart;  // 完全無敵状態開始
 		int nInvincibleEnd;    // 完全無敵終了
 		int nCancellFrame;   // キャンセル可能フレーム
@@ -60,7 +65,7 @@ private:
 		bool bLoop;     // ループするかどうか
 		bool bFinish;   // 終了したかどうか
 
-		KEYINFO KeySet[MAX_INFO];
+		KEYINFO KeySet[MOTION_INFO::MAX_INFO];
 
 	} INFO;
 
@@ -87,16 +92,16 @@ public:
 	// 取得系
 	int GetType(void);                                  // 種類
 	int GetNumFrame(void) { return m_nNowFrame; }       // モーションの総フレーム
-	int GetNowFrame(void);
-	int GetAttackOccurs(void);
-	int GetAttackEnd(void);
-	int GetAttackDamege(void);
-	int GetInvincibleStrat(void);
-	int GetInvincibleEnd(void);
-	int GetCancellFrame(void);
-	int GetCancellFrameEnd(void);
-	int GetKeyFrame(void) { return m_nKeyFrame; }
-	float GetKnockBack(void);
+	int GetNowFrame(void);                              // 現在のフレーム
+	int GetAttackOccurs(void);                          // 攻撃判定が発生するフレーム
+	int GetAttackEnd(void);                             // 攻撃判定が終了するフレーム
+	int GetAttackDamage(void);                          // その攻撃のダメージ量
+	int GetInvincibleStrat(void);                       // 無敵判定が発生するフレーム
+	int GetInvincibleEnd(void);                         // 無敵判定が終了するフレーム
+	int GetCancellFrame(void);                          // キャンセル可能判定が発生するフレーム
+	int GetCancellFrameEnd(void);                       // キャンセル可能判定が終了するフレーム
+	int GetKeyFrame(void) { return m_nKeyFrame; }       // モーションのキー数
+	float GetKnockBack(void);                           // 吹き飛ぶ値
 	INFO GetInfo(void);
 
 private:
@@ -105,8 +110,8 @@ private:
 	void BlendON(void);
 	void BlendOFF(void);
 
-	INFO m_aInfo[MAX_INFO];
-	KEY m_aOldInfo[MAX_INFO];
+	INFO m_aInfo[MOTION_INFO::MAX_INFO];
+	KEY m_aOldInfo[MOTION_INFO::MAX_INFO];
 	int  m_nNumAll;              //モーションの総数
 	int  m_nType;                //モーションの種類
 	int m_nTypeold;              //前回のモーションの種類

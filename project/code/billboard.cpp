@@ -324,29 +324,25 @@ void CBillBoard::Draw(void)
 		//ワールドマトリックスの初期化
 		D3DXMatrixIdentity(&m_mtxWorld);
 
-		//ビューマトリックスを取得
-		pDevice->GetTransform(D3DTS_VIEW, &m_mtxView);
-
-		//ポリゴンをカメラに対して正面に向ける
-		D3DXMatrixInverse(&m_mtxWorld, NULL, &m_mtxView);
-		m_mtxWorld._41 = 0.0f;
-		m_mtxWorld._42 = 0.0f;
-		m_mtxWorld._43 = 0.0f;
-
 		if (m_pCurrent == nullptr)
 		{
-			//位置を反映
-			D3DXMatrixTranslation(&m_mtxTrans, m_pos.x, m_pos.y, m_pos.z);
+			//ビューマトリックスを取得
+			pDevice->GetTransform(D3DTS_VIEW, &m_mtxView);
 
-			D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &m_mtxTrans);
+			//ポリゴンをカメラに対して正面に向ける
+			D3DXMatrixInverse(&m_mtxWorld, NULL, &m_mtxView);
+			m_mtxWorld._41 = 0.0f;
+			m_mtxWorld._42 = 0.0f;
+			m_mtxWorld._43 = 0.0f;
 		}
-		else
+
+		//位置を反映
+		D3DXMatrixTranslation(&m_mtxTrans, m_pos.x, m_pos.y, m_pos.z);
+
+		D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &m_mtxTrans);
+
+		if (m_pCurrent != nullptr)
 		{
-			//位置を反映
-			D3DXMatrixTranslation(&m_mtxTrans, m_pos.x, m_pos.y, m_pos.z);
-
-			D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &m_mtxTrans);
-
 			// マトリックスと親のマトリックスをかけ合わせる
 			D3DXMatrixMultiply(&m_mtxWorld,
 				&m_mtxWorld, m_pCurrent);

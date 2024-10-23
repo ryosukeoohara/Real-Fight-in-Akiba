@@ -22,7 +22,12 @@
 #include "motion.h"
 #include "enemy_boss.h"
 #include "sound.h"
+#include "texture.h"
+#include "object2D.h"
+#include "speedlines.h"
 #include "utility.h"
+#include "fade.h"
+#include "character.h"
 
 //===========================================================
 // 静的メンバ変数
@@ -578,6 +583,8 @@ CameraZoomOut::CameraZoomOut()
 	TargetPosV.x = pCameraInfo->posV.x + pCameraInfo->posR.x - sinf(pCameraInfo->rot.y) * 400.0f;
 	TargetPosV.y = pCameraInfo->posV.y;
 	TargetPosV.z = pCameraInfo->posV.z + pCameraInfo->posR.z - sinf(pCameraInfo->rot.y) * 400.0f;
+
+	CPlayer::GetInstance()->SetbDash(false);
 }
 
 //================================================================
@@ -830,8 +837,9 @@ FinalBlowCamera::FinalBlowCamera()
 	// カメラの情報取得
 	CCamera::Info* pCameraInfo = CCamera::GetInstance()->GetInfo();
 	m_pEnemy = CEnemy::GetTop();
+	D3DXMATRIX* mtx = m_pEnemy->GetCharcter()[0]->GetMtxWorld();
 	D3DXVECTOR3 pos = m_pEnemy->GetPosition();
-	pCameraInfo->posR = D3DXVECTOR3(pos.x, pos.y + 75.0f, pos.z);
+	pCameraInfo->posR = D3DXVECTOR3(mtx->_41, mtx->_42/* + 75.0f*/, mtx->_43);
 	pCameraInfo->rot.y = CAMERA_ROT[m_nLookCount];
 	m_fShankeX = m_fShankeZ = sinf(m_fShakeAngle) * (1.0f - ((float)m_nShakeTimeCounter / SHAKE_TIME)) * 0.5f;
 
@@ -839,6 +847,8 @@ FinalBlowCamera::FinalBlowCamera()
 
 	if (pSound != nullptr)
 		pSound->Play(CSound::SOUND_LABEL_SE_KO);
+
+	m_pLines = CSpeedLines::Create();
 }
 
 //================================================================
@@ -850,6 +860,9 @@ void FinalBlowCamera::Update(CCamera* pCamera)
 	if (pCamera == nullptr || m_pEnemy == nullptr)
 		return;
 
+	if(m_pLines != nullptr)
+	   m_pLines->Update();
+  
 	// カメラの情報取得
 	CCamera::Info* pCameraInfo = pCamera->GetInfo();
 
@@ -869,9 +882,29 @@ void FinalBlowCamera::Update(CCamera* pCamera)
 		
 		if (m_nLookCount >= 3)
 		{
-			pCamera->ChangeState(new FollowPlayerCamera);
-			CGame::GetInstance()->SetbFinish(false);
+			if (m_pLines != nullptr)
+			{
+				m_pLines->Uninit();
+				m_pLines = nullptr;
+			}
 
+			CGame::GetInstance()->SetbFinish(false);
+			
+			CPlayer* pPlayer = CPlayer::GetInstance();
+
+			if (pPlayer->GetHeatAct() == pPlayer->HEAT_FIRE)
+			{
+				//フェードの情報を取得
+				CFade* pFade = CManager::GetInstance()->GetFade();
+
+				if (pFade->Get() != pFade->FADE_OUT)
+					pFade->Set(CScene::MODE_RESULT);
+
+				return;
+				
+			}
+
+			pCamera->ChangeState(new FollowPlayerCamera);
 			return;
 		}
 

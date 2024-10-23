@@ -129,9 +129,9 @@ void CCollision::AttackCircle(D3DXVECTOR3 * pMyPos, float fMyRadius, float fTarg
 
 		c = sqrtf(circleX * circleX + circleZ * circleZ);
 
-		if (c <= fMyRadius + fTargetRadius && (pMyPos->y >= pEnemy->GetPosition().y && pMyPos->y <= pEnemy->GetPosition().y + fHeight) && pEnemy->GetState() != CEnemy::STATE_DAMEGE)
+		if (c <= fMyRadius + fTargetRadius && (pMyPos->y >= pEnemy->GetPosition().y && pMyPos->y <= pEnemy->GetPosition().y + fHeight) && pEnemy->GetState() != CEnemy::STATE_DAMAGE)
 		{
-			pEnemy->Damege();
+			pEnemy->Damage();
 
 			CSound* pSound = CManager::GetInstance()->GetSound();
 
@@ -408,7 +408,7 @@ void CCollision::ItemAttack(CObjectX * pobj)
 		{
 			pEnemy->SetRotition(-CGame::GetPlayer()->GetRotition());
 			pEnemy->SetMove(D3DXVECTOR3(sinf(CGame::GetPlayer()->GetRotition().y) * -3.0f, 1.0f, cosf(CGame::GetPlayer()->GetRotition().y) * -3.0f));
-			pEnemy->SetState(CEnemy::STATE_DAMEGE);
+			pEnemy->SetState(CEnemy::STATE_DAMAGE);
 			int nLife = pEnemy->GetLife();
 			nLife -= 1;
 			pEnemy->SetLife(nLife);
@@ -429,12 +429,8 @@ bool CCollision::ItemEnemy(CItem *pItem, CEnemy *pEnemy, float fMyRadius, float 
 
 		c = (float)sqrt(circleX * circleX + circleZ * circleZ);
 
-		if (c <= fMyRadius + fTargetRadius && (pItem->GetPosition().y >= pEnemy->GetPosition().y && pItem->GetPosition().y <= pEnemy->GetPosition().y + fHeight) && pEnemy->GetState() != CEnemy::STATE_DAMEGE && pEnemy->GetState() != CEnemy::STATE_HEATDAMEGE)
+		if (c <= fMyRadius + fTargetRadius && (pItem->GetPosition().y >= pEnemy->GetPosition().y && pItem->GetPosition().y <= pEnemy->GetPosition().y + fHeight) && pEnemy->GetState() != CEnemy::STATE_DAMAGE && pEnemy->GetState() != CEnemy::STATE_HEATDAMAGE)
 		{
-			//pEnemy->Damege(CPlayer::GetInstance()->GetMotion()->GetAttackDamege(), CPlayer::GetInstance()->GetMotion()->GetKnockBack(), CPlayer::GetInstance()->GetActType());
-
-			//CParticle::Create(pEnemy->GetPosition(), CParticle::TYPE_BLOOD);
-
 			return true;
 		}
 	}

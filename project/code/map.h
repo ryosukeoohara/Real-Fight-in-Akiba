@@ -13,9 +13,14 @@
 class CObjectX;
 class CMapObject;
 
-// マクロ定義
-#define MAX_MODEL (512)  // モデルの最大数
-#define MAX_NAME  (128)  // テクスチャの最大文字数
+//===========================================================
+// 定数定義
+//===========================================================
+namespace MODEL_FILE
+{
+	const int MAX_MODEL = 512;  // モデルの最大数
+	const int MAX_NAME = 124;   // ファイルパスの最大文字数
+}
 
 //===========================================================
 // マップクラス定義
@@ -48,7 +53,7 @@ private:
 
 	struct TEX
 	{
-		char aName[MAX_NAME];
+		char aName[MODEL_FILE::MAX_NAME];
 	} ;
 	
 
@@ -66,7 +71,9 @@ private:
 	int m_nNumModel;
 	int m_nNumItem;
 
-	TEX m_aTex[MAX_MODEL];
+	TEX m_aTex[MODEL_FILE::MAX_MODEL];
 };
+
+
 
 #endif
