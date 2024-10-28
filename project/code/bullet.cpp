@@ -147,7 +147,7 @@ void CBullet::Update(void)
 			pPlayer->Damage(DAMAGE, D3DXVECTOR3(sinf(rot.y) * KNOCK_BACK, 0.0f, cosf(rot.y) * KNOCK_BACK));
 
 			// エフェクトの再生
-			CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(pos.x, pos.y, pos.z));
+			MyEffekseer::EffectCreate(CMyEffekseer::TYPE_HIT, false, D3DXVECTOR3(pos.x, pos.y, pos.z));
 		}
 	}
 

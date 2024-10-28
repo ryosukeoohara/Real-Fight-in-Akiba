@@ -281,7 +281,7 @@ void CEnemyWeakFar::Damage(void)
 
 	Info->nLife -= CPlayer::GetInstance()->GetMotion()->GetAttackDamage();
 	
-	CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(Info->pos.x, Info->pos.y + 50.0f, Info->pos.z));
+	MyEffekseer::EffectCreate(CMyEffekseer::TYPE_HIT, false, D3DXVECTOR3(Info->pos.x, Info->pos.y + 50.0f, Info->pos.z));
 
 	if (Info->nLife > 0 && CPlayer::GetInstance()->GetHeatAct() == CPlayer::HEAT_NONE)
 	{// ‘Ì—Í‚ª‚T‚OˆÈã‚Ì‚Æ‚«
@@ -465,7 +465,7 @@ void CEnemyWeakFarStateAttack::Update(CEnemyWeakFar* pEnemyWeak)
 
 	if (pMotion->GetNowFrame() == 30)
 	{
-		CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_ATTACK, ::Effekseer::Vector3D(Info->pos.x, Info->pos.y + 50.0f, Info->pos.z), ::Effekseer::Vector3D(0.0f, 0.0f, 0.0f), ::Effekseer::Vector3D(25.0f, 25.0f, 25.0f));
+		MyEffekseer::EffectCreate(CMyEffekseer::TYPE_ATTACK, false, D3DXVECTOR3(Info->pos.x, Info->pos.y + 50.0f, Info->pos.z));
 	}
 
 	if (!m_bAttack && pMotion->GetNowFrame() == 70)

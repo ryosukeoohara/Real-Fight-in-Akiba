@@ -22,6 +22,7 @@
 #include "itemmanager.h"
 #include "collision.h"
 #include "tutorialUI.h"
+#include "MyEffekseer.h"
 
 //===========================================================
 // 静的メンバ変数
@@ -220,6 +221,11 @@ void CTutorial::Update(void)
 			//シーンをゲームに遷移
 			pFade->Set(CScene::MODE_GAME);
 		}
+	}
+
+	if (InputKeyboard->GetTrigger(DIK_K) == true)
+	{
+		MyEffekseer::EffectCreate(CMyEffekseer::TYPE_IMPACT, true, D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	}
 
 	if (m_pEnemyManager != nullptr)

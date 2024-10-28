@@ -30,6 +30,7 @@
 #include "InputKeyBoard.h"
 #include "InputJoyPad.h"
 #include "ripples.h"
+#include "MyEffekseer.h"
 
 //================================================================
 // 静的メンバ変数
@@ -286,7 +287,6 @@ void CGame::Update(void)
 		m_bUse = m_bUse ? false : true;
 	}
 		
-
 	// エディットモード中
 	if (m_bUse)
 	{

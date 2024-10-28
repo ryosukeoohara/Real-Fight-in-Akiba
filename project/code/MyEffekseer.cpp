@@ -19,32 +19,68 @@
 #include "MyEffekseer.h"
 #include "camera.h"
 
-// エフェクトの名前
-const char* CMyEffekseer::m_apEfkName[CMyEffekseer::TYPE_MAX] =
+//===========================================================
+// 静的メンバ変数
+//===========================================================
+std::list<CEffekseer*> CMyEffekseer::m_List = {};  // リスト
+
+//===========================================================
+// 定数定義
+//===========================================================
+namespace
 {
-	"",                                                // なんもない
-	"data\\EFFEKSEER\\Effect\\impact.efkefc",          // 衝撃波
-	"data\\EFFEKSEER\\Effect\\hit.efkefc",             // ヒット
-	"data\\EFFEKSEER\\Effect\\attack_impact.efkefc",   // 攻撃の予兆
-};
+	const float DELTA_TIME = 60.0f;
+}
+
+namespace MyEffekseer
+{
+	// エフェクトの名前
+	const char* EFFECT_PATH[CMyEffekseer::TYPE_MAX] =
+	{
+		"",                                                // なんもない
+		"data\\EFFEKSEER\\Effect\\impact.efkefc",          // 衝撃波
+		"data\\EFFEKSEER\\Effect\\hit.efkefc",             // ヒット
+		"data\\EFFEKSEER\\Effect\\attack_impact.efkefc",   // 攻撃の予兆
+		"data\\EFFEKSEER\\Effect\\taillamp.efkefc",        // 軌跡
+	};
+
+	//============================================
+	// エフェクトの生成
+	// パラメーター
+	// type  : 列挙
+	// bLopp : ループするかのフラグ
+	// pos   : エフェクトの位置
+	// rot   : エフェクトの向き
+	// scale : エフェクトの大きさ
+	// 
+	// 戻り値
+	// エフェクト。失敗したときはnullptrが返る
+	//============================================
+	CEffekseer* EffectCreate(CMyEffekseer::TYPE type, bool bLoop, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 scale)
+	{
+		// エフェクシア取得
+		CMyEffekseer* pMyEffekseer = CManager::GetInstance()->GetMyEffekseer();
+
+		// 使用されていない場合処理を抜ける
+		if (pMyEffekseer == nullptr)
+			return nullptr;
+
+		// エフェクトを生成
+		CEffekseer* pEffekseer = pMyEffekseer->CreateEffect(EFFECT_PATH[type],
+			Effekseer::Vector3D(pos.x, pos.y, pos.z),
+			Effekseer::Vector3D(rot.x, rot.y, rot.z),
+			Effekseer::Vector3D(scale.x, scale.y, scale.z),
+			bLoop);
+
+		return pEffekseer;
+	}
+}
 
 //===========================================================
 // コンストラクタ
 //===========================================================
 CMyEffekseer::CMyEffekseer()
 {
-	// 値を初期化
-	for (int i = 0; i < MAX_EFK; i++)
-	{
-		m_Info[i].pos = {};
-		m_Info[i].rot = {};
-		m_Info[i].effect = nullptr;
-		m_Info[i].efkHandle = NULL;
-		m_Info[i].EfkName = {};
-		m_Info[i].time = 0;
-	}
-
-	m_nNum = 0;
 }
 
 //===========================================================
@@ -52,7 +88,53 @@ CMyEffekseer::CMyEffekseer()
 //===========================================================
 CMyEffekseer::~CMyEffekseer()
 {
+}
 
+//===========================================================
+// 生成処理
+//===========================================================
+CEffekseer* CMyEffekseer::CreateEffect(const char* FileName, ::Effekseer::Vector3D pos, ::Effekseer::Vector3D rot, ::Effekseer::Vector3D scale, bool bLoop)
+{
+	CEffekseer* pEffect = new CEffekseer;
+
+	if (pEffect == nullptr)
+		return nullptr;
+
+	// char16_tに変換
+	std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> converter;
+	std::u16string string16t = converter.from_bytes(FileName);
+
+	// エフェクトの読込
+	Effekseer::EffectRef effect = Effekseer::Effect::Create(m_EfkManager, string16t.c_str());
+	pEffect->SetEffect(effect);
+
+	// エフェクトの再生
+	Effekseer::Handle Handle = m_EfkManager->Play(effect, 0, 0, 0);
+	pEffect->SetEfkHandle(Handle);
+
+	// エフェクトネーム設定
+	pEffect->SetEfkName(FileName);
+
+	// 位置設定
+	pEffect->SetPosition(pos);
+
+	// 向き設定
+	pEffect->SetRotation(rot);
+
+	// 大きさ設定
+	pEffect->SetScale(scale);
+
+	// 初期化処理
+	pEffect->Init(pos, rot, scale, bLoop);
+
+	m_List.push_back(pEffect);
+
+	// 位置、向き、大きさ設定
+	m_EfkManager->SetLocation(Handle, pos);
+	m_EfkManager->SetRotation(Handle, { 0.0f, 1.0f, 0.0f }, rot.Y);
+	m_EfkManager->SetScale(Handle, scale.X, scale.Y, scale.Z);
+
+	return pEffect;
 }
 
 //===========================================================
@@ -60,26 +142,25 @@ CMyEffekseer::~CMyEffekseer()
 //===========================================================
 void CMyEffekseer::Init(void)
 {
+	// 全要素削除
+	m_List.clear();
+
 	// エフェクトのマネージャーの作成
 	m_EfkManager = ::Effekseer::Manager::Create(8000);
 
-	// Specify a position of view
 	// 視点位置を確定
 	m_ViewerPosition = ::Effekseer::Vector3D(0.0f, 0.0f, 0.0f);
 
 	// 座標系を設定する。アプリケーションと一致させる必要がある。
 	m_EfkManager->SetCoordinateSystem(Effekseer::CoordinateSystem::LH);
 
-	// Setup effekseer modules
 	// Effekseerのモジュールをセットアップする
 	SetupEffekseerModules(m_EfkManager);
 
-	// Specify a projection matrix
 	// 投影行列を設定
 	m_ProjectionMatrix.PerspectiveFovLH(90.0f / 180.0f * 3.14f, (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 1.0f, 500.0f);
 
-	// Specify a camera matrix
-		// カメラ行列を設定
+	// カメラ行列を設定
 	m_CameraMatrix.LookAtLH(m_ViewerPosition, ::Effekseer::Vector3D(0.0f, 0.0f, 0.0f), ::Effekseer::Vector3D(0.0f, 1.0f, 0.0f));
 }
 
@@ -88,17 +169,8 @@ void CMyEffekseer::Init(void)
 //===========================================================
 void CMyEffekseer::Uninit(void)
 {
-	for (int i = 0; i < MAX_EFK; i++)
-	{
-		m_Info[i].pos = {};
-		m_Info[i].rot = {};
-		m_Info[i].effect = nullptr;
-		m_Info[i].efkHandle = NULL;
-		m_Info[i].EfkName = {};
-		m_Info[i].time = 0;
-	}
-
-	m_nNum = 0;
+	// すべての要素を削除する
+	ReleaseAll();
 }
 
 //===========================================================
@@ -106,44 +178,72 @@ void CMyEffekseer::Uninit(void)
 //===========================================================
 void CMyEffekseer::Update(void)
 {
-	for (int i = 0; i < MAX_EFK; i++)
+	// タイム加算
+	m_nTime++;
+
+	for(auto it = m_List.begin(); it != m_List.end();)
 	{
-		if (m_Info[i].effect != nullptr)
+		// ハンドル、位置、向き、大きさを取得
+		Effekseer::Handle Handle = (*it)->GetHandle();
+		Effekseer::Vector3D pos = (*it)->GetPosition();
+		Effekseer::Vector3D rot = (*it)->GetRotation();
+		Effekseer::Vector3D scale = (*it)->GetScale();
+
+		// エフェクトの再生が終了した
+		if (!m_EfkManager->Exists(Handle))
 		{
-			m_Info[i].pos = m_EfkManager->GetLocation(m_Info[i].efkHandle);
+			// 再生の停止
+			m_EfkManager->StopEffect(Handle);
 
-			// Move the effect
-			// エフェクトの移動
-			m_EfkManager->AddLocation(m_Info[i].efkHandle, ::Effekseer::Vector3D(0.0f, 0.0f, 0.0f));
-
-			// Set layer parameters
-			// レイヤーパラメータの設定
-			Effekseer::Manager::LayerParameter layerParameter;
-			layerParameter.ViewerPosition = m_ViewerPosition;
-			m_EfkManager->SetLayerParameter(0, layerParameter);
-
-			// Update the manager
-			// マネージャーの更新
-			Effekseer::Manager::UpdateParameter updateParameter;
-			m_EfkManager->Update(updateParameter);
-
-			// Update a time
-			// 時間を更新する
-			m_EfkRenderer->SetTime(m_time / 60.0f);
-			//m_Info[i].time++;
-			
-			// 毎フレーム、エフェクトが再生終了しているか確認する
-			if (m_EfkManager->Exists(m_Info[i].efkHandle) == false)
+			// ループするフラグが立っている
+			if ((*it)->IsLoop())
 			{
-				// 新たにエフェクトを再生し直す。座標はエフェクトを表示したい場所を設定する
-				// (位置や回転、拡大縮小も設定しなおす必要がある)
-				m_EfkManager->StopEffect(m_Info[i].efkHandle);
-				Release(i);
+				Effekseer::EffectRef effect = (*it)->GetEffect();
+
+				// エフェクトの再生
+				Handle = m_EfkManager->Play(effect, pos);
+
+				// ハンドルの設定
+				(*it)->SetEfkHandle(Handle);
+
+				// 位置や向き、大きさをもう一度設定
+				m_EfkManager->SetLocation(Handle, pos);
+				m_EfkManager->SetRotation(Handle, { 0.0f, 1.0f, 0.0f }, rot.Y);
+				m_EfkManager->SetScale(Handle, scale.X, scale.Y, scale.Z);
+
+				// 次の要素
+				it++;
 			}
+			else
+			{
+				// 指定された要素を削除する
+				it = m_List.erase(it);
+			}
+		}
+		else
+		{
+			(*it)->SetPosition(pos);
+			(*it)->SetRotation(rot);
+			(*it)->SetScale(scale);
+
+			// 位置や向き、大きさをもう一度設定
+			m_EfkManager->SetLocation(Handle, pos);
+			m_EfkManager->SetRotation(Handle, { 0.0f, 1.0f, 0.0f }, rot.Y);
+			m_EfkManager->SetScale(Handle, scale.X, scale.Y, scale.Z);
+
+			// 次の要素
+			it++;
 		}
 	}
 
-	m_time++;
+	// レイヤーパラメータの設定
+	Effekseer::Manager::LayerParameter layerParameter;
+	layerParameter.ViewerPosition = m_ViewerPosition;
+	m_EfkManager->SetLayerParameter(0, layerParameter);
+
+	// マネージャーの更新
+	Effekseer::Manager::UpdateParameter updateParameter;
+	m_EfkManager->Update(updateParameter);
 }
 
 //===========================================================
@@ -151,85 +251,50 @@ void CMyEffekseer::Update(void)
 //===========================================================
 void CMyEffekseer::Draw(void)
 {
-	if (m_EfkRenderer != nullptr)
+	// レンダラーが使用されていない場合処理を抜ける
+	if (m_EfkRenderer == nullptr)
+		return;
+
+	// タイム設定
+	m_EfkRenderer->SetTime(m_nTime / DELTA_TIME);
+
+	// 投影行列を設定
+	m_EfkRenderer->SetProjectionMatrix(m_ProjectionMatrix);
+
+	// カメラ取得
+	CCamera* pCamera = CManager::GetInstance()->GetCamera();
+
+	// カメラが使用されていない場合処理抜ける
+	if (pCamera == nullptr)
+		return;
+
+	auto ViewMatrix = pCamera->GetView();
+	auto Projection = pCamera->GetProjection();
+
+	for (int i = 0; i < 4; i++)
 	{
-		// Specify a projection matrix
-		// 投影行列を設定
-		m_EfkRenderer->SetProjectionMatrix(m_ProjectionMatrix);
-
-		CCamera* pCamera = CManager::GetInstance()->GetCamera();
-
-		auto ViewMatrix = pCamera->GetView();
-		auto Projection = pCamera->GetProjection();
-
-		for (int i = 0; i < 4; i++)
+		for (int j = 0; j < 4; j++)
 		{
-			for (int j = 0; j < 4; j++)
-			{
-				m_ProjectionMatrix.Values[i][j] = Projection.m[i][j];
-				m_CameraMatrix.Values[i][j] = ViewMatrix.m[i][j];
-			}
-		}
-
-		// Specify a camera matrix
-		// カメラ行列を設定
-		m_EfkRenderer->SetCameraMatrix(m_CameraMatrix);
-
-		// Begin to rendering effects
-		// エフェクトの描画開始処理を行う。
-		m_EfkRenderer->BeginRendering();
-
-		// Render effects
-		// エフェクトの描画を行う。
-		Effekseer::Manager::DrawParameter drawParameter;
-		drawParameter.ZNear = 0.0f;
-		drawParameter.ZFar = 1.0f;
-		drawParameter.ViewProjectionMatrix = m_EfkRenderer->GetCameraProjectionMatrix();
-		m_EfkManager->Draw(drawParameter);
-
-		// Finish to rendering effects
-		// エフェクトの描画終了処理を行う。
-		m_EfkRenderer->EndRendering();
-	}
-}
-
-//===========================================================
-// 設定
-//===========================================================
-void CMyEffekseer::Set(TYPE type, ::Effekseer::Vector3D pos, ::Effekseer::Vector3D rot, ::Effekseer::Vector3D scale)
-{
-	for (int i = 0; i < MAX_EFK; i++)
-	{
-		if (m_Info[i].effect == nullptr)
-		{
-			// char16_tに変換
-			std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> converter;
-			std::u16string string16t = converter.from_bytes(m_apEfkName[type]);
-
-			m_Info[i].pos = pos;
-			m_Info[i].rot = rot;
-			m_Info[i].scale = scale;
-			m_Info[i].time = 0;
-
-			// std::char_16
-			// Load an effect
-			// エフェクトの読込
-			m_Info[i].effect = Effekseer::Effect::Create(m_EfkManager, string16t.c_str());
-
-			// Play an effect
-			// エフェクトの再生
-			m_Info[i].efkHandle = m_EfkManager->Play(m_Info[i].effect, 0, 0, 0);
-
-			m_Info[i].EfkName = m_apEfkName[type];
-
-			// 位置、向き、大きさ設定
-			m_EfkManager->SetLocation(m_Info[i].efkHandle, m_Info[i].pos);
-			m_EfkManager->SetRotation(m_Info[i].efkHandle, {0.0f, 1.0f, 0.0f}, m_Info[i].rot.Y);
-			m_EfkManager->SetScale(m_Info[i].efkHandle, m_Info[i].scale.X, m_Info[i].scale.Y, m_Info[i].scale.Z);
-
-			break;
+			m_ProjectionMatrix.Values[i][j] = Projection.m[i][j];
+			m_CameraMatrix.Values[i][j] = ViewMatrix.m[i][j];
 		}
 	}
+
+	// カメラ行列を設定
+	m_EfkRenderer->SetCameraMatrix(m_CameraMatrix);
+
+	// エフェクトの描画開始処理
+	m_EfkRenderer->BeginRendering();
+
+	// エフェクトの描画
+	Effekseer::Manager::DrawParameter drawParameter;
+	drawParameter.ZNear = 0.0f;
+	drawParameter.ZFar = 1.0f;
+	drawParameter.ViewProjectionMatrix = m_EfkRenderer->GetCameraProjectionMatrix();
+	m_EfkManager->Draw(drawParameter);
+
+	// エフェクトの描画終了処理
+	m_EfkRenderer->EndRendering();
 }
 
 //===========================================================
@@ -237,16 +302,13 @@ void CMyEffekseer::Set(TYPE type, ::Effekseer::Vector3D pos, ::Effekseer::Vector
 //===========================================================
 void CMyEffekseer::SetupEffekseerModules(::Effekseer::ManagerRef efkManager)
 {
-	// Create a  graphics device
 	// 描画デバイスの作成
-	::Effekseer::Backend::GraphicsDeviceRef graphicsDevice;
+	Effekseer::Backend::GraphicsDeviceRef graphicsDevice;
 	graphicsDevice = ::EffekseerRendererDX9::CreateGraphicsDevice(CManager::GetInstance()->GetRenderer()->GetDevice());
 
-	// Create a renderer of effects
 	// エフェクトのレンダラーの作成
 	m_EfkRenderer = ::EffekseerRendererDX9::Renderer::Create(graphicsDevice, 8000);
 
-	// Sprcify rendering modules
 	// 描画モジュールの設定
 	efkManager->SetSpriteRenderer(m_EfkRenderer->CreateSpriteRenderer());
 	efkManager->SetRibbonRenderer(m_EfkRenderer->CreateRibbonRenderer());
@@ -254,10 +316,8 @@ void CMyEffekseer::SetupEffekseerModules(::Effekseer::ManagerRef efkManager)
 	efkManager->SetTrackRenderer(m_EfkRenderer->CreateTrackRenderer());
 	efkManager->SetModelRenderer(m_EfkRenderer->CreateModelRenderer());
 
-	// Specify a texture, model, curve and material loader
-	// It can be extended by yourself. It is loaded from a file on now.
-	// テクスチャ、モデル、カーブ、マテリアルローダーの設定する。
-	// ユーザーが独自で拡張できる。現在はファイルから読み込んでいる。
+	// テクスチャ、モデル、カーブ、マテリアルローダーの設定する
+	// ユーザーが独自で拡張できる。現在はファイルから読み込んでいる
 	efkManager->SetTextureLoader(m_EfkRenderer->CreateTextureLoader());
 	efkManager->SetModelLoader(m_EfkRenderer->CreateModelLoader());
 	efkManager->SetMaterialLoader(m_EfkRenderer->CreateMaterialLoader());
@@ -265,19 +325,71 @@ void CMyEffekseer::SetupEffekseerModules(::Effekseer::ManagerRef efkManager)
 }
 
 //===========================================================
-// 指定した奴消す
+// 指定した要素を削除
 //===========================================================
-void CMyEffekseer::Release(int idx)
+void CMyEffekseer::Release(CEffekseer* pEffect)
 {
-	if (m_Info[idx].effect != nullptr)
-	{
-		// 値を初期化
-		m_Info[idx].pos = {};
-		m_Info[idx].rot = {};
-		m_Info[idx].scale = {};
-		m_Info[idx].effect = nullptr;
-		m_Info[idx].efkHandle = NULL;
-		m_Info[idx].EfkName = {};
-		m_Info[idx].time = 0;
-	}
+	// 使用されていない場合処理を抜ける
+	if (pEffect == nullptr)
+		return;
+
+	// 終了処理
+	pEffect->Uninit();
+
+	// 指定した要素を削除する
+	m_List.remove(pEffect);
+}
+
+//===========================================================
+// すべての要素を削除
+//===========================================================
+void CMyEffekseer::ReleaseAll(void)
+{
+	// すべての要素を削除
+	m_List.clear();
+}
+
+void CMyEffekseer::ListIn(CEffekseer* pEffect)
+{
+
+}
+
+//===========================================================================
+// エフェクトクラス
+//===========================================================================
+//===========================================================
+// コンストラクタ
+//===========================================================
+CEffekseer::CEffekseer()
+{
+
+}
+
+//===========================================================
+// デストラクタ
+//===========================================================
+CEffekseer::~CEffekseer()
+{
+
+}
+
+//===========================================================
+// 初期化処理
+//===========================================================
+void CEffekseer::Init(Effekseer::Vector3D pos, Effekseer::Vector3D rot, Effekseer::Vector3D scale, bool bLoop)
+{
+	m_bLoop = bLoop;
+}
+
+//===========================================================
+// 終了処理
+//===========================================================
+void CEffekseer::Uninit(void)
+{
+
+}
+
+void CEffekseer::FollowPosition(D3DXVECTOR3 pos)
+{
+	SetPosition(Effekseer::Vector3D(pos.x, pos.y, pos.z));
 }

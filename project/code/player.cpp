@@ -132,6 +132,7 @@ CPlayer::CPlayer()
 	m_pBotton = nullptr;
 	m_pGekiatu = nullptr;
 	m_pHeatAct = nullptr;
+	m_pEffect = nullptr;
 	m_nIdxEne = -1;
 	m_nIdxItem = -1;
 	m_nDefeat = 0;
@@ -189,6 +190,7 @@ CPlayer::CPlayer(D3DXVECTOR3 pos, int nPriority) : CObject(nPriority)
 	m_pBotton = nullptr;
 	m_pGekiatu = nullptr;
 	m_pHeatAct = nullptr;
+	m_pEffect = nullptr;
 	m_nIdxEne = -1;
 	m_nIdxItem = -1;
 	m_nDefeat = 0;
@@ -274,7 +276,7 @@ void CPlayer::Damage(int nDamage, D3DXVECTOR3 KnockBack)
 		m_Info.move.y = -KnockBack.y;
 		m_Info.move.z = -KnockBack.z;
 
-		CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(m_Info.pos.x, m_Info.pos.y + 50.0f, m_Info.pos.z));
+		MyEffekseer::EffectCreate(CMyEffekseer::TYPE_HIT, false, D3DXVECTOR3(m_Info.pos.x, m_Info.pos.y + 50.0f, m_Info.pos.z));
 	}
 }
 
@@ -340,6 +342,9 @@ HRESULT CPlayer::Init(void)
 		m_pStamina->GetObj2D()->SetEdgeCenterTex(m_fStamina * 10.0f);
 	}
 
+	D3DXMATRIX* mtx = m_ppCharacter[0]->GetMtxWorld();
+	m_pEffect = MyEffekseer::EffectCreate(CMyEffekseer::TYPE_ORBIT, true, D3DXVECTOR3(mtx->_41, mtx->_42, mtx->_43));
+
 	return S_OK;
 }
 
@@ -391,6 +396,12 @@ void CPlayer::Uninit(void)
 	{
 		m_pLife->Uninit();
 		m_pLife = nullptr;
+	}
+
+	if (m_pEffect != nullptr)
+	{
+		m_pEffect->Uninit();
+		m_pEffect = nullptr;
 	}
 
 	CObject::Release();
@@ -747,6 +758,13 @@ void CPlayer::Move(void)
 	if (CCollision::GetInstance() != nullptr)
 		CCollision::GetInstance()->Map(&m_Info.pos, &m_Info.posOld, 40.0f);
 
+	if (m_pEffect != nullptr)
+	{
+		m_pEffect->FollowPosition(m_Info.pos);
+		m_pEffect->SetRotation(Effekseer::Vector3D(m_Info.rot.x, m_Info.rot.y, m_Info.rot.z));
+	}
+		
+
 }
 
 //================================================================
@@ -983,7 +1001,8 @@ void CPlayer::State(void)
 			CGame::GetCollision()->AttackCircle(&D3DXVECTOR3(mtx->_41, mtx->_42, mtx->_43), 50.0f, 50.0f, 100.0f);
 
 		}
-			
+
+		
 	}
 
 	// ƒAƒCƒeƒ€‚ðŽ‚Á‚½

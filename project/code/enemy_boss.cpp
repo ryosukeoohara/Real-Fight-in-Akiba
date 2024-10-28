@@ -318,7 +318,7 @@ void CEnemyBoss::Damage(void)
 	
 	Info->nLife -= CPlayer::GetInstance()->GetMotion()->GetAttackDamage();
 	m_bStagger = false;
-	CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(Info->pos.x, Info->pos.y + 50.0f, Info->pos.z));
+	MyEffekseer::EffectCreate(CMyEffekseer::TYPE_HIT, false, D3DXVECTOR3(Info->pos.x, Info->pos.y + 50.0f, Info->pos.z));
 
 	if (Info->nLife >= 30 && CPlayer::GetInstance()->GetHeatAct() == CPlayer::HEAT_NONE)
 	{// ‘Ì—Í‚ª‚T‚OˆÈã‚Ì‚Æ‚«
@@ -466,7 +466,7 @@ void CEnemyBoss::HitDetection(D3DXVECTOR3 MyPos, float attackrange, float target
 	if (Now == Occurs)
 	{
 		D3DXMATRIX mtx = *GetCharcter()[0]->GetMtxWorld();
-		CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_ATTACK, ::Effekseer::Vector3D(mtx._41, mtx._42, mtx._43), ::Effekseer::Vector3D(0.0f, 0.0f, 0.0f), ::Effekseer::Vector3D(25.0f, 25.0f, 25.0f));
+		MyEffekseer::EffectCreate(CMyEffekseer::TYPE_ATTACK, false, D3DXVECTOR3(mtx._41, mtx._42, mtx._43));
 	}
 
 	if (GetMotion()->GetAttackOccurs() <= GetMotion()->GetNowFrame() && GetMotion()->GetAttackEnd() >= GetMotion()->GetNowFrame())

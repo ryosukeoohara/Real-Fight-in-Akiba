@@ -25,6 +25,7 @@ class CEnemy;
 class CObject2D;
 class CItem;
 class CHeatAction;
+class CEffekseer;
 
 //===========================================================
 // プレイヤークラス定義
@@ -251,6 +252,7 @@ private:
 	CObject2D *m_pGekiatu;
 	CHeatAction *m_pHeatAct;
 	static CPlayer *m_pPlayer;
+	CEffekseer* m_pEffect;
 	int m_nDefeat;  // 敵を倒した数
 	int m_nIdxEne;
 	int m_nIdxItem;

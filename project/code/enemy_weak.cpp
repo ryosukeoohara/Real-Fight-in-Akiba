@@ -272,7 +272,7 @@ void CEnemyWeak::Damage(void)
 
 	Info->nLife -= CPlayer::GetInstance()->GetMotion()->GetAttackDamage();
 	
-	CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_HIT, ::Effekseer::Vector3D(Info->pos.x, Info->pos.y + 50.0f, Info->pos.z));
+	MyEffekseer::EffectCreate(CMyEffekseer::TYPE_HIT, false, D3DXVECTOR3(Info->pos.x, Info->pos.y + 50.0f, Info->pos.z));
 
 	if (Info->nLife > 0 && CPlayer::GetInstance()->GetHeatAct() == CPlayer::HEAT_NONE)
 	{// ‘Ì—Í‚ª‚T‚OˆÈã‚Ì‚Æ‚«

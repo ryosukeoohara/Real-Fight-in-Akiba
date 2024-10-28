@@ -204,7 +204,7 @@ void BikeCrash::Update(CHeatAction* pHeatAct)
 				pSound->Play(CSound::SOUND_LABEL_SE_ULT_HIT);
 
 			// エフェクトの再生
-			CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_IMPACT, ::Effekseer::Vector3D(Enempos.x, Enempos.y, Enempos.z));
+			MyEffekseer::EffectCreate(CMyEffekseer::TYPE_IMPACT, false, D3DXVECTOR3(Enempos.x, Enempos.y, Enempos.z));
 		}
 	}
 	else if (pPlayer->GetMotion()->GetAttackEnd() <= pPlayer->GetMotion()->GetNowFrame())

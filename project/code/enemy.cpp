@@ -579,7 +579,7 @@ void CEnemy::HitDetection(D3DXVECTOR3 MyPos, float attackrange, float targetradi
 	if (m_pMotion->GetNowFrame() == m_pMotion->GetAttackOccurs())
 	{
 		D3DXMATRIX mtx = *GetCharcter()[0]->GetMtxWorld();
-		CManager::GetInstance()->GetMyEffekseer()->Set(CMyEffekseer::TYPE_ATTACK, ::Effekseer::Vector3D(mtx._41, mtx._42, mtx._43), ::Effekseer::Vector3D(0.0f, 0.0f, 0.0f), ::Effekseer::Vector3D(25.0f, 25.0f, 25.0f));
+		MyEffekseer::EffectCreate(CMyEffekseer::TYPE_ATTACK, false, D3DXVECTOR3(mtx._41, mtx._42, mtx._43));
 	}
 
 	if (m_pMotion->GetAttackOccurs() <= m_pMotion->GetNowFrame() && m_pMotion->GetAttackEnd() >= m_pMotion->GetNowFrame())
