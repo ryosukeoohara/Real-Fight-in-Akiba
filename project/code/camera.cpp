@@ -73,6 +73,77 @@ namespace
 	};
 }
 
+namespace Title
+{
+	const D3DXVECTOR3 CAMERA_POSV = D3DXVECTOR3(0.0f, 200.0f, -500.0f);  // カメラの視点
+	const D3DXVECTOR3 CAMERA_POSR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);       // カメラの注視点
+	const D3DXVECTOR3 CAMERA_POSU = D3DXVECTOR3(0.0f, 5.0f, 0.0f);       // カメラの上方向ベクトル
+	const D3DXVECTOR3 CAMERA_ROT = D3DXVECTOR3(0.0f, 0.0f, 0.0f);        // カメラの向き
+}
+
+namespace Follow
+{
+	const float CAMERA_POSV_Y = 150.0f;  // 視点のY座標の位置
+	const float CAMERA_POSR_Y = 75.0f;   // 注視点のY座標の位置
+
+	const float CAMERA_ROT_Y_DELTA = 0.05f;  // コントローラーでの視点の変化量
+	const float CAMERA_ROT_Y_ADJUST = 0.005f;  // マウスでの視点操作時の補正値
+}
+
+namespace Overview
+{
+	const float CAMERA_POSR_Y = 50.0f;   // 注視点のY座標の位置
+	const float CAMERA_ADJUST = 0.005f;  // 補正値
+	const float CAMERA_ROT_Y_ADJUST = -0.7f;  // カメラの向きの補正値
+}
+
+namespace ZoomOut
+{
+	const float CURRENT_DISTANCE = 400.0f;  // 現在のカメラの距離
+	const float TARGET_DISTANCE = 100.0f;   // 目標のカメラの距離
+	const float CAMERA_ADJUST = 0.005f;     // カメラの向きの補正値
+}
+
+namespace TargetFocus
+{
+	const float CAMERA_POS_ADJUST = 0.8f;  // カメラの位置の補正値
+	const float CAMERA_POSR_Y = 100.0f;    // 注視点のY座標の位置
+	const float ADJUST_SPEED = 0.05f;      // 補正値
+}
+
+namespace Fixed
+{
+	const D3DXVECTOR3 CAMERA_POSV = D3DXVECTOR3(100.0f, 50.0f, 100.0f);  // 視点の位置
+	const D3DXVECTOR3 CAMERA_POSR = D3DXVECTOR3(50.0f, 50.0f, 10.0f);    // 注視点の位置
+}
+
+namespace CutScene
+{
+	const float CURRENT_DISTANCE = 400.0f;  // 現在のカメラの距離
+	const float TARGET_DISTANCE = 100.0f;   // 目標のカメラの距離
+	const float CAMERA_ADJUST = 0.005f;     // カメラの向きの補正値
+	const float CAMERA_POSR_Y = 75.0f;      // 注視点のY座標の位置
+}
+
+namespace FinalBlow
+{
+	const float CAMERA_POSR_Y = 75.0f;      // 注視点のY座標の位置
+	const float CAMERA_DISTANCE = 200.0f;   // カメラの距離
+	const int END_COUNT = 3;
+}
+
+namespace HeatAction
+{
+	const float CAMERA_POSV_Y = 150.0f;  // 視点のY座標の位置
+	const float CAMERA_POSR_Y = 50.0f;   // 注視点のY座標の位置
+}
+
+namespace Edit
+{
+	const D3DXVECTOR3 CAMERA_MOVE = D3DXVECTOR3(0.005f, 1.0f, 0.005f);  // カメラの移動速度
+	const float MOVE_ADJUST = 0.005f;
+}
+
 //================================================================
 // コンストラクタ
 //================================================================
@@ -90,6 +161,9 @@ CCamera::CCamera()
 
 	m_pEnemy = nullptr;
 	m_pCamera = this;
+	m_bTarget = false;
+	m_pState = nullptr;
+
 }
 
 //================================================================
@@ -109,10 +183,10 @@ void CCamera::Init(void)
 
 	if (pScene->GetMode() == CScene::MODE_TITLE)
 	{
-		m_Info.posV = D3DXVECTOR3(0.0f, 200.0f, -500.0f);
-		m_Info.posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		m_Info.posU = D3DXVECTOR3(0.0f, 5.0f, 0.0f);
-		m_Info.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		m_Info.posV = Title::CAMERA_POSV;
+		m_Info.posR = Title::CAMERA_POSR;
+		m_Info.posU = Title::CAMERA_POSU;
+		m_Info.rot = Title::CAMERA_ROT;
 	}
 
 	// 距離
@@ -125,6 +199,17 @@ void CCamera::Init(void)
 void CCamera::Uninit(void)
 {
 	m_pCamera = nullptr;
+	
+	if (m_pState != nullptr)
+	{
+		delete m_pState;
+		m_pState = nullptr;
+	}
+
+	if (m_pEnemy != nullptr)
+	{
+		m_pEnemy = nullptr;
+	}
 }
 
 //================================================================
@@ -135,6 +220,9 @@ void CCamera::Update(void)
 	// ステートの更新
 	if (m_pState != nullptr)
 		m_pState->Update(this);
+
+	if (CManager::GetInstance()->GetDebugProc() == nullptr)
+		return;
 
 	CManager::GetInstance()->GetDebugProc()->Print("\nカメラの注視点の位置：%f,%f,%f\n", m_Info.posR.x, m_Info.posR.y, m_Info.posR.z);
 	CManager::GetInstance()->GetDebugProc()->Print("\nカメラの視点の位置  ：%f,%f,%f\n", m_Info.posV.x, m_Info.posV.y, m_Info.posV.z);
@@ -247,9 +335,6 @@ void CCamera::AdjustToTarget(D3DXVECTOR3 targetPosR, D3DXVECTOR3 targetPosV, flo
 
 	D3DXVECTOR3 posDestV = targetPosV - m_Info.posV;
 	m_Info.posV = m_Info.posV + posDestV * fCorrent;
-
-	//pCameraInfo->posV.x = pCameraInfo->posR.x - sinf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
-	//pCameraInfo->posV.z = pCameraInfo->posR.z - cosf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
 }
 
 //================================================================
@@ -260,8 +345,8 @@ void CCamera::Follow(D3DXVECTOR3 posV, D3DXVECTOR3 posR, D3DXVECTOR3 rot)
 	m_Info.posV.x = m_Info.posR.x - sinf(rot.y) * -m_Info.fLength;
 	m_Info.posV.z = m_Info.posR.z - cosf(rot.y) * -m_Info.fLength;
 
-	m_Info.posV = D3DXVECTOR3(0.0f + m_Info.posV.x, 150.0f, 0.0f + m_Info.posV.z);
-	m_Info.posR = D3DXVECTOR3(posR.x, 75.0f, posR.z);
+	m_Info.posV = D3DXVECTOR3(0.0f + m_Info.posV.x, Follow::CAMERA_POSV_Y, 0.0f + m_Info.posV.z);
+	m_Info.posR = D3DXVECTOR3(posR.x, Follow::CAMERA_POSR_Y, posR.z);
 
 	//目標の注視点を設定
 	m_Info.posRDest.x = posR.x;
@@ -354,43 +439,23 @@ void FollowPlayerCamera::Update(CCamera* pCamera)
 
 	if (pInputJoyPad->GetRXStick(CInputJoyPad::STICK_RX, 0) > 0)
 	{
-		pCameraInfo->rot.y += 0.05f;
+		pCameraInfo->rot.y += Follow::CAMERA_ROT_Y_DELTA;
 	}
 	else if (pInputJoyPad->GetRXStick(CInputJoyPad::STICK_RX, 0) < 0)
 	{
-		pCameraInfo->rot.y -= 0.05f;
+		pCameraInfo->rot.y -= Follow::CAMERA_ROT_Y_DELTA;
 	}
 
 	if (pPlayer->GetMobility() == CPlayer::Mobile)
-		pCameraInfo->rot.y += MousePos.x * 0.005f;
-
-	// 角度の値を修正する
-	pCameraInfo->rot.y = utility::CorrectAngle(pCameraInfo->rot.y);
-
-	pCameraInfo->posV.x = pCameraInfo->posR.x - sinf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
-	pCameraInfo->posV.z = pCameraInfo->posR.z - cosf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
+		pCameraInfo->rot.y += MousePos.x * Follow::CAMERA_ROT_Y_ADJUST;
 
 	D3DXVECTOR3 pos = pPlayer->GetPosition();
 
-	pCameraInfo->posV = D3DXVECTOR3(0.0f + pCameraInfo->posV.x, 150.0f, 0.0f + pCameraInfo->posV.z);
-	pCameraInfo->posR = D3DXVECTOR3(pos.x, 75.0f, pos.z);
-
-	//目標の注視点を設定
-	pCameraInfo->posRDest.x = pos.x;
-	pCameraInfo->posRDest.z = pos.z;
-
-	//カメラの移動量
-	pCameraInfo->move.x = pCameraInfo->posRDest.x - pCameraInfo->posR.x;
-	pCameraInfo->move.z = pCameraInfo->posRDest.z - pCameraInfo->posR.z;
-
-	//位置に移動量を保存
-	pCameraInfo->posR.x += pCameraInfo->move.x;
-	pCameraInfo->posR.z += pCameraInfo->move.z;
-
-	pCameraInfo->OldposR = pCameraInfo->posR;
-	pCameraInfo->OldposV = pCameraInfo->posV;
-	pCameraInfo->Oldrot = pCameraInfo->rot;
-	pCameraInfo->fOldLength = pCameraInfo->fLength;
+	pCameraInfo->posV = D3DXVECTOR3(0.0f + pCameraInfo->posV.x, Follow::CAMERA_POSV_Y, 0.0f + pCameraInfo->posV.z);
+	pCameraInfo->posR = D3DXVECTOR3(pos.x, Follow::CAMERA_POSR_Y, pos.z);
+	
+	// 追尾
+	pCamera->Follow(pCameraInfo->posV, pCameraInfo->posR, pCameraInfo->rot);
 }
 
 //=============================================================================
@@ -451,7 +516,7 @@ CameraEnemyOverview::CameraEnemyOverview()
 	// 敵の位置を取得
 	D3DXVECTOR3 posEnemy = m_pEnemy->GetPosition();
 
-	pCameraInfo->posR = D3DXVECTOR3(posEnemy.x, posEnemy.y + 50.0f, posEnemy.z);
+	pCameraInfo->posR = D3DXVECTOR3(posEnemy.x, posEnemy.y + Overview::CAMERA_POSR_Y, posEnemy.z);
 }
 
 //================================================================
@@ -466,7 +531,7 @@ void CameraEnemyOverview::Update(CCamera* pCamera)
 	// カメラの情報取得
 	CCamera::Info* pCameraInfo = pCamera->GetInfo();
 
-	pCamera->AdjustToTarget(pCameraInfo->posR, CAMERA_POSV[m_nLookCount], 0.005f);
+	pCamera->AdjustToTarget(pCameraInfo->posR, CAMERA_POSV[m_nLookCount], Overview::CAMERA_ADJUST);
 	
 	// カウントアップ
 	m_nFocusCounter++;
@@ -485,7 +550,7 @@ void CameraEnemyOverview::Update(CCamera* pCamera)
 			// 敵の位置を取得
 			D3DXVECTOR3 posEnemy = m_pEnemy->GetPosition();
 
-			pCameraInfo->posR = D3DXVECTOR3(posEnemy.x, posEnemy.y + 50.0f, posEnemy.z);
+			pCameraInfo->posR = D3DXVECTOR3(posEnemy.x, posEnemy.y + Overview::CAMERA_POSR_Y, posEnemy.z);
 			pCameraInfo->posV = CAMERA_POS[m_nLookCount];
 		}
 		else
@@ -522,7 +587,7 @@ FollowEnemyOverviewCamera::FollowEnemyOverviewCamera()
 
 	CPlayer* pPlayer = CPlayer::GetInstance();
 
-	pCameraInfo->posR = D3DXVECTOR3(posEnemy.x, posEnemy.y + 50.0f, posEnemy.z);
+	pCameraInfo->posR = D3DXVECTOR3(posEnemy.x, posEnemy.y + Overview::CAMERA_POSR_Y, posEnemy.z);
 
 	pCameraInfo->rot.y = utility::MoveToPosition(m_pEnemy->GetPosition(), pPlayer->GetPosition(), pCameraInfo->rot.y);
 
@@ -558,15 +623,10 @@ void FollowEnemyOverviewCamera::Update(CCamera* pCamera)
 		{
 			// 敵の位置を取得
 			D3DXVECTOR3 rotEnemy = m_pEnemy->GetRotition();
-			pCameraInfo->rot.y += rotEnemy.y * -0.7f;
+			pCameraInfo->rot.y += rotEnemy.y * Overview::CAMERA_ADJUST;
 			pCameraInfo->rot.y = utility::CorrectAngle(pCameraInfo->rot.y);
 		}
 	}
-
-	// 3回敵を注視したら、カメラのステートを変更する
-	//if (m_nLookCount >= FOCUS_COUNT)
-		//pCamera->ChangeState(new CutSceneCamera);
-
 }
 
 //=============================================================================
@@ -580,9 +640,9 @@ CameraZoomOut::CameraZoomOut()
 	// カメラの情報取得
 	CCamera::Info* pCameraInfo = CCamera::GetInstance()->GetInfo();
 
-	TargetPosV.x = pCameraInfo->posV.x + pCameraInfo->posR.x - sinf(pCameraInfo->rot.y) * 400.0f;
+	TargetPosV.x = pCameraInfo->posV.x + pCameraInfo->posR.x - sinf(pCameraInfo->rot.y) * ZoomOut::TARGET_DISTANCE;
 	TargetPosV.y = pCameraInfo->posV.y;
-	TargetPosV.z = pCameraInfo->posV.z + pCameraInfo->posR.z - sinf(pCameraInfo->rot.y) * 400.0f;
+	TargetPosV.z = pCameraInfo->posV.z + pCameraInfo->posR.z - sinf(pCameraInfo->rot.y) * ZoomOut::TARGET_DISTANCE;
 
 	CPlayer::GetInstance()->SetbDash(false);
 }
@@ -595,7 +655,7 @@ void CameraZoomOut::Update(CCamera* pCamera)
 	// カメラの情報取得
 	CCamera::Info* pCameraInfo = pCamera->GetInfo();
 
-	pCamera->AdjustToTarget(pCameraInfo->posR, TargetPosV, 0.005f);
+	pCamera->AdjustToTarget(pCameraInfo->posR, TargetPosV, ZoomOut::CAMERA_ADJUST);
 	m_nFocusCount++;
 	if (m_nFocusCount >= ZOOM_OUT_TIME)
 	{
@@ -623,9 +683,9 @@ CameraTargetFocus::CameraTargetFocus()
 
 	D3DXVECTOR3 posEnemy = pEnemy->GetPosition();
 
-	TargetPosV.x = sinf(pCameraInfo->rot.y) + (posEnemy.x * 0.8f);
-	TargetPosV.y = posEnemy.y + 100.0f;
-	TargetPosV.z = cosf(pCameraInfo->rot.y) + (posEnemy.z * 0.8f);
+	TargetPosV.x = sinf(pCameraInfo->rot.y) + (posEnemy.x * TargetFocus::CAMERA_POS_ADJUST);
+	TargetPosV.y = posEnemy.y + TargetFocus::CAMERA_POSR_Y;
+	TargetPosV.z = cosf(pCameraInfo->rot.y) + (posEnemy.z * TargetFocus::CAMERA_POS_ADJUST);
 }
 
 //================================================================
@@ -643,7 +703,7 @@ void CameraTargetFocus::Update(CCamera* pCamera)
 
 	D3DXVECTOR3 posEnemy = pEnemy->GetPosition();
 
-	pCamera->AdjustToTarget(D3DXVECTOR3(posEnemy.x, posEnemy.y + 100.0f, posEnemy.z), TargetPosV, 0.05f);
+	pCamera->AdjustToTarget(D3DXVECTOR3(posEnemy.x, posEnemy.y + TargetFocus::CAMERA_POSR_Y, posEnemy.z), TargetPosV, TargetFocus::ADJUST_SPEED);
 	m_nFocusCount++;
 
 	if (m_nFocusCount >= FOCUS_ENEMY_TIME)
@@ -678,11 +738,8 @@ void FixedCamera::Update(CCamera* pCamera)
 	// カメラの情報取得
 	CCamera::Info* pCameraInfo = pCamera->GetInfo();
 
-	pCameraInfo->posV.x = pCameraInfo->posR.x - sinf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
-	pCameraInfo->posV.z = pCameraInfo->posR.z - cosf(pCameraInfo->rot.y) * -pCameraInfo->fLength;
-
-	pCameraInfo->posV = D3DXVECTOR3(100.0f, 50.0f, 100.0f);
-	pCameraInfo->posR = D3DXVECTOR3(50.0f, 50.0f, 10.0f);
+	pCameraInfo->posV = Fixed::CAMERA_POSV;
+	pCameraInfo->posR = Fixed::CAMERA_POSR;
 }
 
 //=============================================================================
@@ -704,15 +761,14 @@ CutSceneCamera::CutSceneCamera()
 	pCameraInfo->rot.y -= D3DX_PI;
 	pCameraInfo->rot.y = utility::CorrectAngle(pCameraInfo->rot.y);
 
-	pCameraInfo->posV.x = sinf(pCameraInfo->rot.y) * 400.0f;
-	//pCameraInfo->posV.y = 100.0f;
-	pCameraInfo->posV.z = cosf(pCameraInfo->rot.y) * 400.0f;
+	pCameraInfo->posV.x = sinf(pCameraInfo->rot.y) * CutScene::CURRENT_DISTANCE;
+	pCameraInfo->posV.z = cosf(pCameraInfo->rot.y) * CutScene::CURRENT_DISTANCE;
 
-	TargetPosV.x = sinf(pCameraInfo->rot.y) * 100.0f;
-	TargetPosV.y = 75.0f;										   
-	TargetPosV.z = cosf(pCameraInfo->rot.y) * 100.0f;
+	TargetPosV.x = sinf(pCameraInfo->rot.y) * CutScene::TARGET_DISTANCE;
+	TargetPosV.y = CutScene::CAMERA_POSR_Y;
+	TargetPosV.z = cosf(pCameraInfo->rot.y) * CutScene::TARGET_DISTANCE;
 
-	pCameraInfo->posR = D3DXVECTOR3(pEnemy->GetPosition().x, 75.0f, pEnemy->GetPosition().z);
+	pCameraInfo->posR = D3DXVECTOR3(pEnemy->GetPosition().x, CutScene::CAMERA_POSR_Y, pEnemy->GetPosition().z);
 }
 
 //================================================================
@@ -839,10 +895,9 @@ FinalBlowCamera::FinalBlowCamera()
 	m_pEnemy = CEnemy::GetTop();
 	D3DXMATRIX* mtx = m_pEnemy->GetCharcter()[0]->GetMtxWorld();
 	D3DXVECTOR3 pos = m_pEnemy->GetPosition();
-	pCameraInfo->posR = D3DXVECTOR3(mtx->_41, mtx->_42/* + 75.0f*/, mtx->_43);
+	pCameraInfo->posR = D3DXVECTOR3(mtx->_41, mtx->_42 + FinalBlow::CAMERA_POSR_Y, mtx->_43);
 	pCameraInfo->rot.y = CAMERA_ROT[m_nLookCount];
-	m_fShankeX = m_fShankeZ = sinf(m_fShakeAngle) * (1.0f - ((float)m_nShakeTimeCounter / SHAKE_TIME)) * 0.5f;
-
+	
 	CSound* pSound = CManager::GetInstance()->GetSound();
 
 	if (pSound != nullptr)
@@ -866,8 +921,8 @@ void FinalBlowCamera::Update(CCamera* pCamera)
 	// カメラの情報取得
 	CCamera::Info* pCameraInfo = pCamera->GetInfo();
 
-	pCameraInfo->posV.x = pCameraInfo->posR.x + sinf(pCameraInfo->rot.y) * 200.0f;
-	pCameraInfo->posV.z = pCameraInfo->posR.z + cosf(pCameraInfo->rot.y) * 200.0f;
+	pCameraInfo->posV.x = pCameraInfo->posR.x + sinf(pCameraInfo->rot.y) * FinalBlow::CAMERA_DISTANCE;
+	pCameraInfo->posV.z = pCameraInfo->posR.z + cosf(pCameraInfo->rot.y) * FinalBlow::CAMERA_DISTANCE;
 
 	// カウントアップ
 	m_nFocusCounter++;
@@ -878,7 +933,7 @@ void FinalBlowCamera::Update(CCamera* pCamera)
 		m_nFocusCounter = 0;
 		m_nLookCount++;
 		
-		if (m_nLookCount >= 3)
+		if (m_nLookCount >= FinalBlow::END_COUNT)
 		{
 			if (m_pLines != nullptr)
 			{
@@ -951,8 +1006,8 @@ void HeatActionCamera::Update(CCamera* pCamera)
 
 	D3DXVECTOR3 pos = CPlayer::GetInstance()->GetPosition();
 
-	pCameraInfo->posV = D3DXVECTOR3(pCameraInfo->posV.x, 150.0f, 30.0f + pCameraInfo->posV.z);
-	pCameraInfo->posR = D3DXVECTOR3(pos.x, 50.0f, pos.z + 10.0f);
+	pCameraInfo->posV = D3DXVECTOR3(pCameraInfo->posV.x, HeatAction::CAMERA_POSV_Y, pCameraInfo->posV.z);
+	pCameraInfo->posR = D3DXVECTOR3(pos.x, HeatAction::CAMERA_POSR_Y, pos.z);
 
 	//目標の注視点を設定
 	pCameraInfo->posRDest.x = pos.x;
@@ -1010,22 +1065,20 @@ void EditCamera::Update(CCamera* pCamera)
 
 	if (pInputMouse->GetLButton() == true)
 	{
-		pCameraInfo->rot.x += MousePos.y * 0.005f;
-		pCameraInfo->rot.y += MousePos.x * 0.005f;
-		//pCameraInfo->rot.y += MousePos.x * 0.005f;
+		pCameraInfo->rot.x += MousePos.y * Edit::MOVE_ADJUST;
+		pCameraInfo->rot.y += MousePos.x * Edit::MOVE_ADJUST;
 	}
 		
-
 	if (pInput->GetPress(DIK_J) == true)
 	{
-		pCameraInfo->posV.y += 1.0f;
-		pCameraInfo->posR.y += 1.0f;
+		pCameraInfo->posV.y += Edit::CAMERA_MOVE.y;
+		pCameraInfo->posR.y += Edit::CAMERA_MOVE.y;
 	}
 
 	if (pInput->GetPress(DIK_K) == true)
 	{
-		pCameraInfo->posV.y -= 1.0f;
-		pCameraInfo->posR.y -= 1.0f;
+		pCameraInfo->posV.y -= Edit::CAMERA_MOVE.y;
+		pCameraInfo->posR.y -= Edit::CAMERA_MOVE.y;
 	}
 
 	pCameraInfo->posV.x = pCameraInfo->posR.x - sinf(pCameraInfo->rot.y) * -pCameraInfo->fLength;

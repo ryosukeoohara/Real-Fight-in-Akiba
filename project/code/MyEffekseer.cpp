@@ -23,6 +23,7 @@
 // 静的メンバ変数
 //===========================================================
 std::list<CEffekseer*> CMyEffekseer::m_List = {};  // リスト
+CMyEffekseer *CMyEffekseer::m_pInstance = nullptr; // 自分自身のポインタ
 
 //===========================================================
 // 定数定義
@@ -81,6 +82,7 @@ namespace MyEffekseer
 //===========================================================
 CMyEffekseer::CMyEffekseer()
 {
+	m_pInstance = this;
 }
 
 //===========================================================
@@ -333,9 +335,6 @@ void CMyEffekseer::Release(CEffekseer* pEffect)
 	if (pEffect == nullptr)
 		return;
 
-	// 終了処理
-	pEffect->Uninit();
-
 	// 指定した要素を削除する
 	m_List.remove(pEffect);
 }
@@ -351,7 +350,7 @@ void CMyEffekseer::ReleaseAll(void)
 
 void CMyEffekseer::ListIn(CEffekseer* pEffect)
 {
-
+	
 }
 
 //===========================================================================
@@ -386,7 +385,7 @@ void CEffekseer::Init(Effekseer::Vector3D pos, Effekseer::Vector3D rot, Effeksee
 //===========================================================
 void CEffekseer::Uninit(void)
 {
-
+	CMyEffekseer::GetInstance()->Release(this);
 }
 
 void CEffekseer::FollowPosition(D3DXVECTOR3 pos)

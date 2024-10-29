@@ -29,14 +29,18 @@ namespace
 	const int MICROWAVE = 3600;        // ヒートアクション:電子レンジが再度利用可能になるまでの時間
 	const int SHOCK_COUNT_TIMER = 60;  // ヒートアクション:電子レンジで敵がびりびりしだすまでのカウント
 	const int STUN_COUNT_TIMER = 120;  // ヒートアクション:電子レンジで敵が気絶するまでのカウント
+	const int MICROWAVE_DAMAGE = 100;  // ヒートアクション:電子レンジで敵が受けるダメージ
+	const int MICROWAVE_SMOOK_RATE = 20;  // 電子レンジから煙のエフェクトが出る間隔
 
-	const D3DXVECTOR3 CAMERA_ROT[CPlayer::HEAT_MAX] =
+	const D3DXVECTOR3 GAME_CAMERA_ROT[CPlayer::HEAT_MAX] =
 	{
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
 		D3DXVECTOR3(0.0f, 2.35f, D3DX_PI * -0.38f),
 		D3DXVECTOR3(0.0f, D3DX_PI, D3DX_PI * -0.38f),
 
 	};  // ヒートアクション時のカメラ位置
+
+	const D3DXVECTOR3 TUTORIAL_CAMERA_ROT = D3DXVECTOR3(0.0f, -1.3f, 0.0f);
 
 	const D3DXVECTOR3 TUTORIALCAMERAROT[CPlayer::HEAT_MAX] =
 	{
@@ -65,10 +69,18 @@ namespace
 	const D3DXVECTOR3 ENEMY_POSITION = { 0.0f, -70.0f, -30.0f };             // ヒートアクション:電子レンジを使用した際の敵の位置
 }
 
+//===========================================================
+// コンストラクタ
+//===========================================================
 CHeatAction::CHeatAction()
 {
+	m_pPlayer = nullptr;
+	m_pEnemy = nullptr;
 }
 
+//===========================================================
+// デストラクタ
+//===========================================================
 CHeatAction::~CHeatAction()
 {
 }
@@ -78,7 +90,7 @@ CHeatAction::~CHeatAction()
 //===========================================================
 void CHeatAction::Init(void)
 {
-	m_bInMicroWave = false;
+	
 }
 
 //===========================================================
@@ -141,12 +153,9 @@ void CHeatAction::ChangeState(CHeatActionState* Behaviour)
 //===========================================================
 BikeCrash::BikeCrash()
 {
-	CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(CAMERA_ROT[1].x, CAMERA_ROT[1].y, CAMERA_ROT[1].z));
+	CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(GAME_CAMERA_ROT[1].x, GAME_CAMERA_ROT[1].y, GAME_CAMERA_ROT[1].z));
 
 	CEnemyManager* pEnemyManager = CEnemyManager::GetInstance();
-
-
-	
 }
 
 //===========================================================
@@ -187,7 +196,18 @@ void BikeCrash::Update(CHeatAction* pHeatAct)
 		&& pPlayer->GetMotion()->GetAttackEnd() >= pPlayer->GetMotion()->GetNowFrame())
 	{// 現在のフレームが攻撃判定発生フレーム以上かつ攻撃判定終了フレーム以下
 
-		if (CGame::GetCollision()->ItemEnemy(pPlayer->GetGrapItem(), pEnemy, 50.0f, 50.0f, 100.0f) == true)
+		// 敵の半径
+		float EnemyRadius = pEnemy->GetRadius();
+
+		// 敵の高さ
+		float EnemyHeight = pEnemy->GetHeight();
+
+		CItem* pItem = pPlayer->GetGrapItem();
+
+		if (pItem == nullptr)
+			return;
+
+		if (CGame::GetCollision()->ItemEnemy(pItem, pEnemy, EnemyRadius, pItem->GetRadius(), EnemyHeight) == true)
 		{
 			pEnemy->Damage();
 
@@ -232,7 +252,7 @@ MicroWave::MicroWave()
 
 	if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_GAME)
 	{
-		CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(CAMERA_ROT[2].x, CAMERA_ROT[2].y, CAMERA_ROT[2].z));
+		CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(GAME_CAMERA_ROT[2].x, GAME_CAMERA_ROT[2].y, GAME_CAMERA_ROT[2].z));
 	}
 }
 
@@ -329,12 +349,12 @@ void MicroWave::Update(CHeatAction* pHeatAct)
 
 				if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_TUTORIAL)
 				{
-					CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(0.0f, -1.3f, 0.0f));
+					CManager::GetInstance()->GetCamera()->SetRotation(TUTORIAL_CAMERA_ROT);
 				}
 
 				if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_GAME)
 				{
-					CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(CAMERA_ROT[0].x, CAMERA_ROT[0].y, CAMERA_ROT[0].z));
+					CManager::GetInstance()->GetCamera()->SetRotation(D3DXVECTOR3(GAME_CAMERA_ROT[0].x, GAME_CAMERA_ROT[0].y, GAME_CAMERA_ROT[0].z));
 				}
 
 			}
@@ -349,7 +369,7 @@ void MicroWave::Update(CHeatAction* pHeatAct)
 		{
 			pEnemy->SetState(CEnemy::STATE_HEATACTFAINTING);
 			pEnemy->GetMotion()->Set(CEnemy::MOTION_HEATACTFAINTING);
-			pEnemy->GetInfo()->nLife -= 100;
+			pEnemy->GetInfo()->nLife -= MICROWAVE_DAMAGE;
 			CManager::GetInstance()->GetCamera()->ChangeState(new ReturnPlayerBehindCamera);
 
 			if (pEnemy->GetInfo()->nLife > 0)
@@ -383,7 +403,7 @@ void MicroWave::Update(CHeatAction* pHeatAct)
 
 	if (pEnemy->GetState() == CEnemy::STATE_HEATACTELECTRO)
 	{
-		if (m_nHeatActTime % 20 == 0)
+		if (m_nHeatActTime % MICROWAVE_SMOOK_RATE == 0)
 		{
 			CParticle::Create(CPlayer::GetInstance()->GetItem()->GetPosition(), CParticle::TYPE_BREAKDOWN);
 		}

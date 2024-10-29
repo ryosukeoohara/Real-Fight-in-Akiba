@@ -29,7 +29,7 @@ CItem *CItem::m_pCur = nullptr;
 namespace
 {
 	const D3DXVECTOR2 TEX_SIZE = { 15.0f, 15.0f };           // UIのサイズ
-	const float RADIUS = 40.0f;                                    // 半径
+	const float RADIUS = 40.0f;                              // 半径
 	const char *ITEM_TEXT = "data\\TEXT\\item.txt";          // アイテムの配置
 	const char* GRAP_BOTTON = "data\\TEXTURE\\Ybutton.png";  // アイテムを掴めるときに出すUIのテクスチャパス
 }
@@ -39,6 +39,7 @@ namespace
 //================================================================
 CItem::CItem()
 {
+	m_fRadius = 0.0f;
 	m_pBill = nullptr;
 
 	if (m_pTop != nullptr)
@@ -63,6 +64,7 @@ CItem::CItem(D3DXVECTOR3 pos, D3DXVECTOR3 rot, TYPE Type, int nIdx, const char *
 {
 	SetPosition(pos);
 	SetRotition(rot);
+	m_fRadius = 0.0f;
 	m_pBill = nullptr;
 
 	if (m_pTop != nullptr)
@@ -165,6 +167,9 @@ void CItem::Collision(D3DXVECTOR3* pos, D3DXVECTOR3* posOld, float fRadius)
 HRESULT CItem::Init(void)
 {
 	CObjectX::Init();
+
+	// 半径
+	m_fRadius = RADIUS;
 
 	return S_OK;
 }

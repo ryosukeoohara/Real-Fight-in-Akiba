@@ -62,35 +62,39 @@ namespace
 	const float MY_RADIUS = 25.0f;                             // プレイヤーの横幅
 	const char* PLAYER_TEXT = "data\\TEXT\\motion_player.txt"; // プレイヤーのテキストファイル
 
-	const D3DXVECTOR3 CAMERA_ROT[CPlayer::HEAT_MAX] = 
+	const D3DXVECTOR3 CAMERA_ROT[CPlayer::HEAT_MAX] =          // ヒートアクション時のカメラ位置
 	{ 
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(0.0f, 2.35f, D3DX_PI * -0.38f),
-		D3DXVECTOR3(0.0f, D3DX_PI, D3DX_PI * -0.38f),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),                         // NONE
+		D3DXVECTOR3(0.0f, 2.35f, D3DX_PI * -0.38f),            // 自転車たたきつけ
+		D3DXVECTOR3(0.0f, D3DX_PI, D3DX_PI * -0.38f),          // 電子レンジ
 
-	};  // ヒートアクション時のカメラ位置
+	};  
 
-	const float CAMERA_DISTNCE[CPlayer::HEAT_MAX] =
+	const float CAMERA_DISTNCE[CPlayer::HEAT_MAX] =             // ヒートアクション時のカメラの距離
 	{
-		300.0f,
-		300.0f,
-		200.0f,
+		300.0f,                                                 // NONE
+		300.0f,                                                 // 自転車たたきつけ
+		200.0f,                                                 // 電子レンジ
 
-	};  // ヒートアクション時のカメラの距離
+	}; 
 
-	const D3DXVECTOR3 ENEMY_GRAP_POS[CEnemy::MAX] =
+	const D3DXVECTOR3 ENEMY_GRAP_POS[CEnemy::MAX] =             // 敵を掴んだ時の敵の位置
 	{
-		D3DXVECTOR3(-10.0f, -10.0f, 60.0f),  // 雑魚敵
-		D3DXVECTOR3(-10.0f, -10.0f, 60.0f),  // 遠距離雑魚敵
-		D3DXVECTOR3(-15.0f, -15.0f, 80.0f),  // ボス敵
+		D3DXVECTOR3(-10.0f, -10.0f, 60.0f),                     // 雑魚敵
+		D3DXVECTOR3(-10.0f, -10.0f, 60.0f),                     // 遠距離雑魚敵
+		D3DXVECTOR3(-15.0f, -15.0f, 80.0f),                     // ボス敵
 	};
 
 	const D3DXVECTOR3 MAP_LIMIT_MAX = D3DXVECTOR3(800.0f, 0.0f, 1000.0f);   // マップの制限
 	const D3DXVECTOR3 MAP_LIMIT_MIN = D3DXVECTOR3(-850.0f, 0.0f, -670.0f);  // マップの制限
 	const float TUTORIAL_MAP_LIMITZ = 30.0f;                                // チュートリアルマップのZ軸の制限
-
-	const D3DXVECTOR3 STICK_ENEMY = D3DXVECTOR3(100.0f, 0.0f, 100.0f);      // 
 	const D3DXVECTOR2 HEATACT_BUTTON_SIZE = D3DXVECTOR2(25.0f, 25.0f);      // ヒートアクション可能時に出るテクスチャのサイズ
+
+	const D3DXVECTOR2 LIFE_GAGE_POS = D3DXVECTOR2(50.0f, 50.0f);            // 体力ゲージの位置
+	const D3DXVECTOR2 STAMINA_GAGE_POS = D3DXVECTOR2(50.0f, 110.0f);        // スタミナゲージの位置
+
+	const float LIFE_GAGE_HEIGHT = 40.0f;                                   // 体力ゲージの高さ
+	const float STAMINA_GAGE_HEIGHT = 20.0f;                                 // スタミナゲージの高さ
 }
 
 //===========================================================
@@ -336,14 +340,11 @@ HRESULT CPlayer::Init(void)
 
 	if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_GAME || CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_TUTORIAL)
 	{
-		m_pLife = CGage2D::Create(D3DXVECTOR3(50.0f, 50.0f, 0.0f), 40.0f, (float)m_Info.nLife * 2.0f, CGage2D::TYPE_PLAYER_LIFE);
+		m_pLife = CGage2D::Create(D3DXVECTOR3(LIFE_GAGE_POS.x, LIFE_GAGE_POS.y, 0.0f), LIFE_GAGE_HEIGHT, (float)m_Info.nLife * 2.0f, CGage2D::TYPE_PLAYER_LIFE);
 		m_pLife->GetObj2D()->SetEdgeCenterTex((float)(m_Info.nLife * 0.1f));
-		m_pStamina = CGage2D::Create(D3DXVECTOR3(50.0f, 110.0f, 0.0f), 20.0f, (float)(m_fStamina * 10.0f), CGage2D::TYPE_STAMINA);
+		m_pStamina = CGage2D::Create(D3DXVECTOR3(STAMINA_GAGE_POS.x, STAMINA_GAGE_POS.y, 0.0f), STAMINA_GAGE_HEIGHT, (float)(m_fStamina * 10.0f), CGage2D::TYPE_STAMINA);
 		m_pStamina->GetObj2D()->SetEdgeCenterTex(m_fStamina * 10.0f);
 	}
-
-	D3DXMATRIX* mtx = m_ppCharacter[0]->GetMtxWorld();
-	m_pEffect = MyEffekseer::EffectCreate(CMyEffekseer::TYPE_ORBIT, true, D3DXVECTOR3(mtx->_41, mtx->_42, mtx->_43));
 
 	return S_OK;
 }
@@ -714,15 +715,6 @@ void CPlayer::Move(void)
 			m_bDesh = true;
 		}
 
-		//m_fDest = atan2f(m_Info.move.z, m_Info.move.x);
-
-		// 角度の値を修正する
-		//m_fDest = utility::CorrectAngle(m_fDest);
-
-		
-
-		//D3DXVECTOR3 f = utility::CalculateDirection(Info->pos, PlayerPos);
-
 		m_fDiff = m_fDest - m_Info.rot.y;
 
 		// 角度の値を修正する
@@ -735,14 +727,6 @@ void CPlayer::Move(void)
 		m_Info.rot.y = utility::CorrectAngle(m_Info.rot.y);
 	}
 
-	D3DXVECTOR3 forward;
-	forward.x = sinf(m_fDest);
-	forward.y = 0.0f;
-	forward.z = cosf(m_fDest);
-
-	// ベクトルを正規化して単位ベクトルにする
-	D3DXVec3Normalize(&forward, &forward);
-
 	// 走っているとき
 	if (m_bDesh)
 		DashEffect();
@@ -753,17 +737,8 @@ void CPlayer::Move(void)
 
 	// 移動量を更新(減衰させる)
 	m_Info.move.x += (0.0f - m_Info.move.x) * 0.1f;
+	m_Info.move.y += (0.0f - m_Info.move.y) * 0.1f;
 	m_Info.move.z += (0.0f - m_Info.move.z) * 0.1f;
-
-	if (CCollision::GetInstance() != nullptr)
-		CCollision::GetInstance()->Map(&m_Info.pos, &m_Info.posOld, 40.0f);
-
-	if (m_pEffect != nullptr)
-	{
-		m_pEffect->FollowPosition(m_Info.pos);
-		m_pEffect->SetRotation(Effekseer::Vector3D(m_Info.rot.x, m_Info.rot.y, m_Info.rot.z));
-	}
-		
 
 }
 
@@ -790,7 +765,7 @@ void CPlayer::Attack(void)
 	// 通常攻撃
 	if (pInputMouse->GetLButton() == true || pInputJoyPad->GetTrigger(CInputJoyPad::BUTTON_B, 0) == true)
 	{
-		if (m_Info.state != STATE_GRAP && m_Info.state != STATE_HEAT && m_bGrap == false)
+		if (m_Info.state != STATE_GRAP && m_Info.state != STATE_HEAT && m_Info.state != STATE_GRAPDASH && m_bGrap == false)
 		{
 			// 攻撃一段目
 			if (m_Info.state != STATE_ATTACK)
@@ -900,13 +875,13 @@ void CPlayer::Grap(void)
 	// 敵またはアイテムを掴む
 	if (m_Info.state == STATE_GRAP && m_bGrap == false && m_bLift == false)
 	{
-		float f = EnemyDistance();
-		float g = ItemDistance();
+		float fEnemyDistance = EnemyDistance();
+		float fItemDistance = ItemDistance();
 
 		// 攻撃が発生していたら
 		if (IsHitCollision())
 		{
-			if (f > g)
+			if (fEnemyDistance > fItemDistance)
 			{// 範囲内
 
 				if (CGame::GetCollision()->Circle(m_Info.pos, m_pItem->GetPosition(), 40.0f, 40.0f) == true)
@@ -993,16 +968,12 @@ void CPlayer::State(void)
 			mtx = m_Grap.pItem->GetMtxWorld();
 
 		else 
-			mtx = m_ppCharacter[9]->GetMtxWorld();
+			mtx = m_ppCharacter[6]->GetMtxWorld();
 
 		// 攻撃が発生していたら
 		if (IsHitCollision())
-		{
 			CGame::GetCollision()->AttackCircle(&D3DXVECTOR3(mtx->_41, mtx->_42, mtx->_43), 50.0f, 50.0f, 100.0f);
 
-		}
-
-		
 	}
 
 	// アイテムを持った
@@ -1114,32 +1085,6 @@ void CPlayer::State(void)
 			m_bGrap = true;
 		}
 	}
-
-	/*if (m_Info.state == STATE_NEUTRAL)
-	{
-		m_pMotion->Set(TYPE_NEUTRAL);
-		m_Info.state = STATE_NEUTRAL;
-		m_bLift = false;
-		m_bAttack = false;
-		m_nCntColi = 0;
-
-		if (CGame::GetCollision() != nullptr)
-			CGame::GetCollision()->SetbColli(false);
-
-		if (m_Grap.pItem != nullptr)
-		{
-			m_Info.state = STATE_LIFT;
-			m_pMotion->Set(TYPE_LIFT);
-			m_bLift = true;
-		}
-
-		if (m_Grap.pEnemy != nullptr)
-		{
-			m_Info.state = STATE_GRAPNEUTRAL;
-			m_pMotion->Set(TYPE_GRAPNEUTRAL);
-			m_bGrap = true;
-		}
-	}*/
 }
 
 //================================================================
@@ -1535,11 +1480,17 @@ float CPlayer::ItemDistance(void)
 //================================================================
 void CPlayer::Collision(void)
 {
-	// 敵との当たり判定
+	// 敵との当たり判定-----------------------------------------
+
+	// 敵の先頭取得
 	CEnemy* pEnemy = CEnemy::GetTop();
 
 	// 当たり判定取得
 	CCollision* pCollision = CGame::GetCollision();
+
+	// 使用されていない場合処理を抜ける
+	if (pCollision != nullptr)
+		return;
 
 	while (pEnemy != nullptr)
 	{
@@ -1551,20 +1502,23 @@ void CPlayer::Collision(void)
 		pEnemy = pEnemyNext;
 	}
 
-	// アイテムとの当たり判定
-	//if (CManager::GetInstance()->GetScene()->GetMode() == CScene::MODE_TUTORIAL)
-	//{
-		CItem* pItem = CItem::GetTop();
+	// アイテムとの当たり判定-----------------------------------------
+	
+	// アイテムの先頭取得
+	CItem* pItem = CItem::GetTop();
 
-		while (pItem != nullptr)
-		{
-			CItem* pItemNext = pItem->GetNext();
+	while (pItem != nullptr)
+	{
+		CItem* pItemNext = pItem->GetNext();
 
-			pItem->Collision(&m_Info.pos, &m_Info.posOld, 20.0f);
+		pItem->Collision(&m_Info.pos, &m_Info.posOld, 20.0f);
 
-			pItem = pItemNext;
-		}
-	//}
+		pItem = pItemNext;
+	}
+
+	// マップとの当たり判定-----------------------------------------
+
+	pCollision->Map(&m_Info.pos, &m_Info.posOld, 40.0f);
 }
 
 //================================================================
@@ -1713,29 +1667,11 @@ void CPlayer::DashEffect(void)
 //================================================================
 void CPlayer::CreateRippleshEffect(void)
 {
-	//// 移動状態以外の時処理を抜ける
-	//if (m_Info.state != STATE_MOVE)
-	//	return;
-
-	D3DMATRIX* mtx = {};
-
 	// 現在のフレーム数を取得
 	int nNow = m_pMotion->GetKeyFrame();
 
-	//if (nNow == 1)
-	//{
-	//	// 左足のマトリックスを取得
-	//	mtx = m_ppCharacter[12]->GetMtxWorld();
-
-	//	// 波紋を生成
-	//	CRipples::Create(D3DXVECTOR3(mtx->_41, 1.0f, mtx->_43));
-	//}
-
 	if (nNow % 20 == 0)
 	{
-		// 右足のマトリックスを取得
-		mtx = m_ppCharacter[15]->GetMtxWorld();
-
 		// 波紋を生成
 		CRipples::Create(D3DXVECTOR3(m_Info.pos.x, 1.0f, m_Info.pos.z));
 	}

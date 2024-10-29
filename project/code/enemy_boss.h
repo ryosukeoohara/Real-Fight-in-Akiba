@@ -93,9 +93,7 @@ public:
 	static CEnemyBoss *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nPriority = 5);    //生成
 	void ChangeState(CEnemyBossState* pState);  // ステイトの切り替え
 	void DashEffect(void);         // 走っているときに出すエフェクト
-	void Damage(void) override;
 	
-
 	// 設定系
 	void SetChase(CHASE cha) { m_Chase = cha; }
 	void SetbDamage(void) { m_bDamage = false; }
@@ -107,12 +105,13 @@ public:
 	// 取得系
 	bool GetbAttack(void) { return m_bAttack; }
 	bool GetbAttackReady(void) { return m_IsAttackReady; }
-
-	void Grabbed(void) override;
-	void Denial(void) override;
-	bool GetbDeathFlag(void) override { return m_bDeath; }
-	bool GetbHeatDamageFlag(void) override { return m_bHeatDamage; }
-	bool GetbStaggerFlag(void) override { return m_bStagger; }
+	
+	void Damage(void) override;                                        // ダメージ処理
+	void Grabbed(void) override;                                       // 捕まれた時の処理
+	void Denial(void) override;                                        // ヒートアクション：自転車を受けるの待ち
+	bool GetbDeathFlag(void) override { return m_bDeath; }             // 死亡フラグ
+	bool GetbHeatDamageFlag(void) override { return m_bHeatDamage; }   // ヒートアクションによってダメージを受けたかのフラグ
+	bool GetbStaggerFlag(void) override { return m_bStagger; }         // よろけているかのフラグ
 
 	void RestHeatDamageFrag(void) { m_bHeatDamage = false; }
 	void RollingPunch(void);
@@ -121,20 +120,15 @@ public:
 
 private:
 
-	// 敵の動き制御
-	//void Controll(void) override;
-	
 	void HitDetection(D3DXVECTOR3 MyPos, float attackrange, float targetradius);
-	//void MicroWave(void) override;
 
 	CGage2D *m_pLife2D;           // ゲージのポインタ
-	CEnemyBossState* m_pState;         // ステイト
+	CEnemyBossState* m_pState;    // ステイト
 	int m_nDamageCounter;         // ダメージ状態でいるカウント
 	int m_nBiriBiriCount;         // 電子レンジびりびりカウント
 	int m_nAtcCounter;            // 攻撃のインターバル
 	int m_nReceivedAttack;        // 攻撃を受けた回数
 	int m_nIdleTime;              // 攻撃していない時間
-	int m_nIdx;
 	bool m_bDamage;               // 攻撃を受けたかどうか
 	bool m_bAttack;               // 攻撃しているかどうか
 	bool m_bHeatDamage;           // ヒートアクションをくらったかどうか

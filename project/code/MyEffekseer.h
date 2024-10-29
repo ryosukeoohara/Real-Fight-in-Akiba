@@ -44,6 +44,7 @@ public:
 	// 取得
 	::EffekseerRendererDX9::RendererRef GetEffekseerRenderer(void) { return m_EfkRenderer; }  // エフェクトレンダラー
 	::Effekseer::ManagerRef GetEfkManager(void) { return m_EfkManager; }                      // エフェクトマネージャ
+	static std::list<CEffekseer*> *GetList(void) { return &m_List; }
 
 	static CMyEffekseer* GetInstance(void) { return m_pInstance; }  // 自分自身
 

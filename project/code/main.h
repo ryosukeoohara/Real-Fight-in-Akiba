@@ -35,18 +35,6 @@ typedef struct
 } VERTEX_3D;
 
 
-#ifndef _DEBUG
-#pragma comment(lib, "Effekseer.lib")
-#else
-#pragma comment(lib, "Effekseerd.lib")
-#endif
-#include <Effekseer.h>
 
-#ifndef _DEBUG
-#pragma comment(lib, "EffekseerRendererDX9.lib")
-#else
-#pragma comment(lib, "EffekseerRendererDX9d.lib")
-#endif
-#include <EffekseerRendererDX9.h>
 
 #endif

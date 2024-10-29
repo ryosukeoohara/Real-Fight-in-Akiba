@@ -167,7 +167,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	if (m_Light == NULL)
 	{//使用されていなかったら
 
-	 //ライトを生成
+	    //ライトを生成
 		m_Light = new CLight;
 
 		//初期化処理
@@ -223,7 +223,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 void CManager::Uninit(void)
 {
 	//サウンドを止める
-	m_Sound->Stop();
+	if(m_Sound != nullptr)
+	   m_Sound->Stop();
 
 	//シーンの破棄
 	if (m_pScene != NULL)
@@ -367,6 +368,15 @@ void CManager::Uninit(void)
 		//使用していない状態にする
 		m_Fade = NULL;
 	}
+
+	if (m_pMyEffekseer != nullptr)
+	{
+		m_pMyEffekseer->Uninit();
+
+		delete m_pMyEffekseer;
+
+		m_pMyEffekseer = nullptr;
+	}
 }
 
 //================================================================
@@ -375,18 +385,20 @@ void CManager::Uninit(void)
 void CManager::Update(void)
 {
 	//レンダラーの更新処理
-	m_Renderer->Update();
+	if (m_Renderer != nullptr)
+	    m_Renderer->Update();
 
 	//キーボードの更新処理
-	m_InputKeyboard->Update();
-
+	if (m_InputKeyboard != nullptr)
+	    m_InputKeyboard->Update();
+ 
 	//マウスの更新処理
-	m_InputMouse->Update();
+	if (m_InputMouse != nullptr)
+	    m_InputMouse->Update();
 
 	//ゲームパッドの更新処理
-	m_InputJoyPad->Update();
-
-	m_Enemy = GetEnemy();
+	if (m_InputJoyPad != nullptr)
+	    m_InputJoyPad->Update();
 
 	if (m_Camera != nullptr && !CGame::GetbPause())
 	{
@@ -394,25 +406,31 @@ void CManager::Update(void)
 		m_Camera->Update();
 	}
 
-	if (m_pScene != nullptr)
+	if (m_InputKeyboard->GetTrigger(DIK_F3))
 	{
-		//シーンの更新
-		m_pScene->Update();
-	}
-	
-	if ((m_InputKeyboard->GetTrigger(DIK_RETURN) == true || m_InputJoyPad->GetTrigger(CInputJoyPad::BUTTON_A, 0) == true) && m_pScene->GetMode() == CScene::MODE_RESULT)
-	{//ENTERキーを押したかつシーンがゲームのとき
-
-		if (m_Fade->Get() != m_Fade->FADE_OUT)
+		if (m_pScene != nullptr)
 		{
-			//シーンをタイトルに遷移
-			m_Fade->Set(CScene::MODE_TITLE);
+			m_pScene->Uninit();
+			delete m_pScene;
+			m_pScene = nullptr;
+
+			//シーンの生成
+			m_pScene = CScene::Create(CScene::MODE_TITLE);
+
+			//初期化処理
+			m_pScene->Init();
 		}
 	}
 
-
+	//シーンの更新
+	if (m_pScene != nullptr)
+		m_pScene->Update();
+	
 	//使用しているテクスチャの合計枚数
 	int nTexAll = m_Texture->GetNumTexture();
+
+	if (m_DebugProc == nullptr)
+		return;
 
 	m_DebugProc->Print("\n<<テクスチャの総数 : %d>>", nTexAll);
 	m_DebugProc->Print("\n<<ENTERで次のシーンに遷移>>");
@@ -488,8 +506,11 @@ HRESULT CScene::Init(void)
 
 			m_Title->Init();
 
-			CManager::GetInstance()->GetCamera()->ChangeState(new FixedCamera);
-			CManager::GetInstance()->GetCamera()->Reset();
+			if (CManager::GetInstance()->GetCamera() != nullptr)
+			{
+				CManager::GetInstance()->GetCamera()->ChangeState(new FixedCamera);
+				CManager::GetInstance()->GetCamera()->Reset();
+			}
 		}
 
 		break;

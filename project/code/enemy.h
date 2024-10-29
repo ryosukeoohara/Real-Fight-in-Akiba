@@ -111,6 +111,8 @@ public:
 		STATE state;                // 状態
 		int nIdxID;                 // インデックス番号
 		int nLife;                  // 体力
+		float fRadius;              // 半径
+		float fHeight;              // 高さ
 		bool bDraw;                 // 描画するかどうか
 	};
 
@@ -135,41 +137,41 @@ public:
 	void SetCurrent(D3DXMATRIX *Current) { m_pCurrent = Current; }  // 親のマトリックス
 	void SetIdx(int idx) { m_Info.nIdxID = idx; }                   // ID
 	void SetType(TYPE type) { m_Type = type; }                      // 種類
-	void SetNumAll(int nNum) { m_nNumAll = nNum; }
-	virtual void SetChase(CHASE cha);
-	void SetDraw(bool value) { m_Info.bDraw = value; }
+	void SetNumAll(int nNum) { m_nNumAll = nNum; }                  // 総数
+	virtual void SetChase(CHASE cha);                               // 追跡
+	void SetDraw(bool value) { m_Info.bDraw = value; }              // 描画
 	void SetMobile(void) { m_Mobility = Mobile; }                    // 動けるようにする
 	void SetImmobile(void) { m_Mobility = Immobile; }                // 動けないようにする
 	
 	// 取得系
+	CEnemy::INFO* GetInfo(void) { return &m_Info; }            // 情報
 	D3DXVECTOR3 GetPosition(void) { return m_Info.pos; }       // 位置
 	D3DXVECTOR3 GetRotition(void) { return m_Info.rot; }       // 向き
 	D3DXVECTOR3 GetMove(void) { return m_Info.move; }          // 移動量
 	STATE GetState(void) { return m_Info.state; }              // 状態
 	int GetLife(void) { return m_Info.nLife; }                 // 体力
-	int GetIdxID(void) { return m_Info.nIdxID; }
-	TYPE GetType(void) { return m_Type; }
-	CCharacter **GetCharcter(void) { return m_apModel; }
-	static int GetNumAll(void) { return m_nNumAll; }
- 	CMotion *GetMotion(void) { return m_pMotion; }
-	MOBILITY GetMobility(void) { return m_Mobility; }
-	static CEnemy *GetTop(void) { return m_pTop; }
-	CEnemy *GetNext(void) { return m_pNext; }
-	CEnemy::INFO *GetInfo(void) { return &m_Info; }
-
-	virtual void Damage(void) = 0;
-	virtual void Grabbed(void) = 0;
-	virtual void Denial(void) = 0;
-	virtual bool GetbDeathFlag(void) = 0;
-	virtual bool GetbHeatDamageFlag(void) = 0;
-	virtual bool GetbStaggerFlag(void) = 0;
+	int GetIdxID(void) { return m_Info.nIdxID; }               // 番号
+	float GetRadius(void) { return m_Info.fRadius; }           // 半径
+	float GetHeight(void) { return m_Info.fHeight; }           // 高さ
+	TYPE GetType(void) { return m_Type; }                      // 種類
+	CCharacter **GetCharcter(void) { return m_apModel; }       // モデルパーツ
+	static int GetNumAll(void) { return m_nNumAll; }           // 総数
+ 	CMotion *GetMotion(void) { return m_pMotion; }             // モーション
+	MOBILITY GetMobility(void) { return m_Mobility; }          // 動けるかどうか
+	static CEnemy *GetTop(void) { return m_pTop; }             // 先頭の敵
+	CEnemy *GetNext(void) { return m_pNext; }                  // 次の敵
+	
+	virtual void Damage(void) = 0;                             // ダメージ処理
+	virtual void Grabbed(void) = 0;                            // 捕まれた時の処理
+	virtual void Denial(void) = 0;                             // ヒートアクション：自転車を受けるの待ち
+	virtual bool GetbDeathFlag(void) = 0;                      // 死亡フラグ
+	virtual bool GetbHeatDamageFlag(void) = 0;                 // ヒートアクションによってダメージを受けたかのフラグ
+	virtual bool GetbStaggerFlag(void) = 0;                    // よろけているかのフラグ
 
 	void HitDetection(D3DXVECTOR3 MyPos, float attackrange, float targetradius);
 
 protected:
 
-	// 制御処理
-	void Controll(void);
 	TYPE m_Type;
 
 private:
@@ -179,16 +181,14 @@ private:
 	INFO m_Info;                   // 情報
 	CMotion *m_pMotion;            // モーションへのポインタ
 	CCharacter **m_apModel;        // モデル(パーツ)へのポインタ
-	CGage3D *m_pLife3D;            // ゲージのポインタ
-	CGage2D *m_pLife2D;            // ゲージのポインタ
 	static int m_nNumAll;          // 敵の総数
 	int m_nDamageCounter;          // ダメージ状態でいるカウント
-	static int m_nIdx;             
+	static int m_nIdx;             // 番号
 	D3DXMATRIX *m_pCurrent;        // 親のマトリックス
-	static CEnemy *m_pTop;         //先頭のオブジェクトへのポインタ
-	static CEnemy *m_pCur;         //最後尾のオブジェクトへのポインタ
-	CEnemy *m_pNext;
-	CEnemy *m_pPrev;               //前のオブジェクトへのポインタ
+	static CEnemy *m_pTop;         // 先頭のオブジェクトへのポインタ
+	static CEnemy *m_pCur;         // 最後尾のオブジェクトへのポインタ
+	CEnemy *m_pNext;               // 次のオブジェクトへのポインタ
+	CEnemy *m_pPrev;               // 前のオブジェクトへのポインタ
 	bool m_bDeath;                 //死亡フラグ
 	bool m_bStagger;               // よろけフラグ
 	

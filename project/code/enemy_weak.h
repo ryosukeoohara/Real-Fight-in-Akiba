@@ -64,13 +64,12 @@ public:
 	void ChangeState(CEnemyWeakState* pState);  // ステイトの切り替え
 	void DashEffect(void);         // 走っているときに出すエフェクト
 	
-	void Damage(void) override;
-	void Grabbed(void) override;
-	void Denial(void) override;
-	bool GetbDeathFlag(void) override { return m_bDeath; }
-	bool GetbHeatDamageFlag(void) override { return m_bHeatDamage; }
-	bool GetbStaggerFlag(void) override { return m_bStagger; }
-
+	void Damage(void) override;                                        // ダメージ処理
+	void Grabbed(void) override;                                       // 捕まれた時の処理
+	void Denial(void) override;                                        // ヒートアクション：自転車を受けるの待ち
+	bool GetbDeathFlag(void) override { return m_bDeath; }             // 死亡フラグ
+	bool GetbHeatDamageFlag(void) override { return m_bHeatDamage; }   // ヒートアクションによってダメージを受けたかのフラグ
+	bool GetbStaggerFlag(void) override { return m_bStagger; }         // よろけているかのフラグ
 
 	 // 設定系
 	void SetChase(CHASE cha) { m_Chase = cha; }
@@ -81,11 +80,9 @@ public:
 private:
 
 	CGage3D *m_pLife3D;            // ゲージのポインタ
-	CEnemyWeakState* m_pState;         // ステイト
+	CEnemyWeakState* m_pState;     // ステイト
 	int m_nDamageCounter;          // ダメージ状態でいるカウント
-	int m_nBiriBiriCount;
 	int m_nAtcCounter;             // 攻撃のインターバル
-	int m_nIdx;
 	bool m_bDamage;               // 攻撃を受けたかどうか
 	bool m_bHeatDamage;           // ヒートアクションをくらったかどうか
 	bool m_bDeath;                // 死亡フラグ

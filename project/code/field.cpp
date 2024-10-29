@@ -34,9 +34,6 @@ CField *CField::Create(void)
 	//地面のポインタ
 	CField *pField = NULL;
 
-	//テクスチャの情報取得
-	CTexture *pTexture = CManager::GetInstance()->GetTexture();
-
 	if (pField == NULL)
 	{//使用されていなかったら
 
@@ -54,9 +51,6 @@ CField *CField::Create(void)
 //===========================================================
 HRESULT CField::Init(void)
 {
-	//テクスチャの情報取得
-	CTexture *pTexture = CManager::GetInstance()->GetTexture();
-
 	//初期化処理
 	CObject3D::SetTexPosition(D3DXVECTOR3(50.0f, 50.0f, 0.0f));
 	CObject3D::Init();
@@ -87,12 +81,6 @@ void CField::Update(void)
 //===========================================================
 void CField::Draw(void)
 {
-	CTexture *pTexture = CManager::GetInstance()->GetTexture();
-	CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();
-	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
-
-	pDevice->SetTexture(0, pTexture->GetAddress(m_nIdxTexture));
-
 	//描画処理
 	CObject3D::Draw();
 }

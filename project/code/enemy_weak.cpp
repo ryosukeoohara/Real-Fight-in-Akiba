@@ -38,6 +38,7 @@ namespace
 	const float ATTACKLENGHT = 50.0f;  // 攻撃可能範囲
 	const float SEARCHRANGE = 400.0f;  // 探索範囲
 	const int RECOVER_DAMAGE_TIME = 15;  // ダメージ状態でいる時間
+	const float ENMEY_WEAK_RADIUS = 40.0f;  // 半径
 	const char* TEXT_NAME = "data\\TEXT\\motion_enemy.txt";  // テキストファイルの名前
 }
 
@@ -47,17 +48,10 @@ namespace
 CEnemyWeak::CEnemyWeak()
 {
 	m_pLife3D = nullptr;
-	m_nBiriBiriCount = 0;
 	m_Chase = CHASE_ON;
-
-	
 	m_Mobility = Immobile;
 	m_nDamageCounter = 0;
-	/*m_pCurrent = nullptr;
-	m_pNext = nullptr;
-	m_pLife2D = nullptr;*/
 	m_pLife3D = nullptr;
-	//m_bDeath = false;
 	m_bDamage = false;
 	m_bStagger = false;
 	ChangeState(new CEnemyWeakStateMoveWait);
@@ -69,9 +63,7 @@ CEnemyWeak::CEnemyWeak()
 CEnemyWeak::CEnemyWeak(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nPriority) : CEnemy(pos, rot, nlife, nPriority)
 {
 	// 値をクリア
-	//SetState(CEnemy::STATE_NONE);
 	m_pLife3D = nullptr;
-	m_nBiriBiriCount = 0;
 	m_Chase = CHASE_ON;
 	m_Mobility = Immobile;
 	m_nDamageCounter = 0;
@@ -121,10 +113,19 @@ HRESULT CEnemyWeak::Init(void)
 	CEnemy::Init();
 	SetType(WEAK);
 
+	// テキスト読込
+	ReadText(TEXT_NAME);
+
 	// 敵の情報取得
 	CEnemy::INFO *Info = GetInfo();
 
-	ReadText(TEXT_NAME);
+	// 半径
+	Info->fRadius = ENMEY_WEAK_RADIUS;
+
+	// 高さ
+	Info->fHeight = GetCharcter()[0]->GetPosition().y + GetCharcter()[2]->GetPosition().y;
+
+
 
 	if (m_pLife3D == nullptr)
 	{
@@ -145,12 +146,14 @@ void CEnemyWeak::Uninit(void)
 {
 	CEnemy::Uninit();
 
+	// ライフゲージの破棄
 	if (m_pLife3D != nullptr)
 	{
 		m_pLife3D->Uninit();
 		m_pLife3D = nullptr;
 	}
 
+	// ステートの破棄
 	if (m_pState != nullptr)
 	{
 		delete m_pState;

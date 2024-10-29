@@ -57,6 +57,7 @@ public:
 	int GetID(void) { return m_nID; }
 	static CItem *GetTop(void) { return m_pTop; }
 	CItem *GetNext(void) { return m_pNext; }
+	float GetRadius(void) { return m_fRadius; }
 
 private:
 	CObjectX **m_appObjectX;
@@ -67,6 +68,7 @@ private:
 	CItem *m_pPrev;        // 前のオブジェクトへのポインタ
 	TYPE m_Type;
 	int m_nID;
+	float m_fRadius;       // 半径
 	static const char *m_apTexName[2];
 };
 

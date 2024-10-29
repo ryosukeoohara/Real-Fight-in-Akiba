@@ -284,7 +284,6 @@ void CEnemyManager::SetSpawnPosition(void)
 	if (z < 0.0f)
 		m_Readpos.z = -500.0f;
 
-
 }
 
 //===========================================================

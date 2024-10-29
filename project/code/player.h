@@ -187,20 +187,20 @@ public:
 	int GetLife(void) { return m_Info.nLife; }                 // 体力
 	float GetRadius(void) { return m_Info.fRadius; }           // 横幅
 	D3DXMATRIX *GetMatrix(void) { return &m_Info.mtxWorld; }   // マトリックス
-	CCharacter **GetChar(void) { return m_ppCharacter; }
+	CCharacter **GetChar(void) { return m_ppCharacter; }       // キャラクターモデル
 	bool GetbAttack(void) { return m_bAttack; }                // 攻撃中かどうか
-	CMotion *GetMotion(void) { return m_pMotion; }
-	ATTACKTYPE GetActType(void) { return m_Info.Atc; }
-	CItem *GetItem(void) { return m_pItemMicro; }
-	CEnemy *GetGrapEnemy(void) { return m_Grap.pEnemy; }
-	CItem *GetGrapItem(void) { return m_Grap.pItem; }
-	static CPlayer *GetInstance(void) { return m_pPlayer; }
-	int GetDefeat(void) { return m_nDefeat; }
-	HEAT GetHeatAct(void) { return m_HeatAct; }
-	bool GetHeatActFlag(void) { return m_bHeatActFlag; }
-	MOBILITY GetMobility(void) { return m_Mobility; }
-	CPlayer::INFO* GetInfo(void) { return &m_Info; }
-	bool GetbGrap(void) { return m_bGrap; }
+	CMotion *GetMotion(void) { return m_pMotion; }             // モーション
+	ATTACKTYPE GetActType(void) { return m_Info.Atc; }         // アクションの種類
+	CItem *GetItem(void) { return m_pItemMicro; }              // アイテム
+	CEnemy *GetGrapEnemy(void) { return m_Grap.pEnemy; }       // 掴んでいる敵
+	CItem *GetGrapItem(void) { return m_Grap.pItem; }          // 掴んでいるアイテム
+	static CPlayer *GetInstance(void) { return m_pPlayer; }    // 自分自身
+	int GetDefeat(void) { return m_nDefeat; }                  // 倒した敵
+	HEAT GetHeatAct(void) { return m_HeatAct; }                // ヒートアクションの種類
+	bool GetHeatActFlag(void) { return m_bHeatActFlag; }       // ヒートアクションのフラグ
+	MOBILITY GetMobility(void) { return m_Mobility; }          // 動けるかどうか
+	CPlayer::INFO* GetInfo(void) { return &m_Info; }           // 情報
+	bool GetbGrap(void) { return m_bGrap; }                    // 掴んでるかどうが
 	bool IsHitCollision(void);
 
 private:
@@ -223,7 +223,6 @@ private:
 	void GrapItem(bool value);
 	void MoveLimit(void);
 	void DashEffect(void);         // 走っているときに出すエフェクト
-	void Hit(void);
 	
 
 	// メンバ変数

@@ -28,10 +28,16 @@ CAudience* CAudience::m_pCur = nullptr;
 //===========================================================
 namespace
 {
-	const int JUMP_WAIT_TIME = 60;  // 再びジャンプできるようになるまでの時間
+	const int JUMP_WAIT_TIME = 60;   // 再びジャンプできるようになるまでの時間
 	const int THROW_WAIT_TIME = 60;  // 再び缶を投げられるようになるまでの時間
-	const float JUMP = 8.0f;      // ジャンプの高さ
-	const float GRAVITY = -1.0f;  // 重力
+	const float JUMP = 8.0f;         // ジャンプの高さ
+	const float GRAVITY = -1.0f;     // 重力
+	const float SHADOW_HEIGHT = 20.0f;  // 丸影の高さ
+	const float SHADOW_WIDTH = 20.0f;   // 丸影の幅
+	const char* SHADOW_TEX_PATH = "data\\TEXTURE\\shadow000.jpg";  // 丸影のテクスチャパス
+	const char* CAN_MODEL_PATH = "data\\MODEL\\map\\00_can.x";     // 観客が投げてくる缶のパス
+	const float CAN_THROW_POS_Y = 50.0f;                           // 缶を投げるY座標の位置
+	const float DISTANCE = 300.0f;
 }
 
 //================================================================
@@ -150,8 +156,8 @@ HRESULT CAudience::Init(void)
 
 	if (pShadow != nullptr)
 	{
-		pShadow->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist("data\\TEXTURE\\shadow000.jpg"));
-		pShadow->SetSize(20.0f, 20.0f);
+		pShadow->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist(SHADOW_TEX_PATH));
+		pShadow->SetSize(SHADOW_HEIGHT, SHADOW_WIDTH);
 		pShadow->SetTexPosition(D3DXVECTOR3(1.0f, 1.0f, 0.0f));
 		pShadow->SetPosition(D3DXVECTOR3(m_pos.x, 1.0f, m_pos.z));
 		pShadow->SetbSubBlend(true);
@@ -235,14 +241,14 @@ void CAudience::Update(void)
 	float fDistance = utility::Distance(m_pos, CPlayer::GetInstance()->GetPosition());
 
 	// プレイヤーが範囲内に入ったかつ、缶を投げていない
-	if (fDistance <= 300.0f && !m_bThrow)
+	if (fDistance <= DISTANCE && !m_bThrow)
 	{
 		int i = rand() % 7;
 
 		if (i == 1)
 		{
-			CMapObject_Can* pCan = CMapObject_Can::Create("data\\MODEL\\map\\00_can.x");
-			pCan->SetPosition(D3DXVECTOR3(m_pos.x, m_pos.y + 50.0f, m_pos.z));
+			CMapObject_Can* pCan = CMapObject_Can::Create(CAN_MODEL_PATH);
+			pCan->SetPosition(D3DXVECTOR3(m_pos.x, m_pos.y + CAN_THROW_POS_Y, m_pos.z));
 			D3DXVECTOR3 rot = GetRotition();
 			pCan->SetRotition(rot);
 			pCan->ChangeState(new CCanThrow);

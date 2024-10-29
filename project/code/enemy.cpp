@@ -67,8 +67,6 @@ CEnemy::CEnemy()
 	m_nDamageCounter = 0;
 	m_pCurrent = nullptr;
 	m_pNext = nullptr;
-	m_pLife2D = nullptr;
-	m_pLife3D = nullptr;
 	m_bDeath = false;
 	
 	if (m_pTop != nullptr)
@@ -104,8 +102,6 @@ CEnemy::CEnemy(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nPriority)
 	m_nDamageCounter = 0;
 	m_pCurrent = nullptr;
 	m_pNext = nullptr;
-	m_pLife2D = nullptr;
-	m_pLife3D = nullptr;
 	m_bDeath = false;
 	
 	if (m_pTop != nullptr)
@@ -183,6 +179,10 @@ void CEnemy::Uninit(void)
 	// 自分をリストから消す
 	ListOut();
 
+	// 親のポインタ
+	if (m_pCurrent != nullptr)
+		m_pCurrent = nullptr;
+
 	// モーションの破棄
 	if (m_pMotion != nullptr)
 	{
@@ -208,8 +208,6 @@ void CEnemy::Uninit(void)
 		m_apModel = nullptr;
 	}
 
-	
-
 	CObject::Release();
 }
 
@@ -232,8 +230,6 @@ void CEnemy::Update(void)
 			m_apModel[nCount]->Update();
 
 	}
-
-	
 
 	CManager::GetInstance()->GetDebugProc()->Print("\n敵の位置：%f,%f,%f\n", m_Info.pos.x, m_Info.pos.y, m_Info.pos.z);
 	CManager::GetInstance()->GetDebugProc()->Print("敵の向き：%f,%f,%f\n", m_Info.rot.x, m_Info.rot.y, m_Info.rot.z);
@@ -299,75 +295,6 @@ void CEnemy::Draw(void)
 		m_apModel[nCount]->Draw();
 	}
 }
-
-//===========================================================
-// 制御処理
-//===========================================================
-//void CEnemy::Controll(void)
-//{
-//	int nNum = 0;
-//	CEnemy **ppEnemy = nullptr;
-//
-//	if (m_Info.state == STATE_DAMAGE || m_Info.state == STATE_HEATDAMAGE)
-//	{
-//		m_nDamageCounter--;
-//
-//		if (m_nDamageCounter <= 0)
-//		{
-//			m_Info.state = STATE_NONE;
-//			m_nDamageCounter = DAMAGECOUNT;
-//		}
-//	}
-//	else
-//	{
-//		if (m_Info.state != STATE_GRAP && m_Mobility == Mobile)
-//			Move();
-//	}
-//
-//	if (m_Info.nLife <= 0)
-//	{
-//		m_Info.state = STATE_DEATH;
-//		GetMotion()->Set(TYPE_DETH);
-//		return;
-//	}
-//
-//	if (m_Info.state != STATE_GRAP && CPlayer::GetInstance()->GetHeatActFlag() == false)
-//	{
-//		m_Info.move.y -= 0.9f;
-//
-//		// 移動量
-//		m_Info.pos.x += m_Info.move.x;
-//		m_Info.pos.y += m_Info.move.y;
-//		m_Info.pos.z += m_Info.move.z;
-//
-//		if (m_Info.pos.y <= 0.0f)
-//			m_Info.pos.y = 0.0f;
-//
-//	}
-//
-//	//デバッグプロックの情報を取得
-//	CDebugProc *pDebugProc = CManager::GetInstance()->GetDebugProc();
-//	pDebugProc->Print("\n敵の位置：%f,%f,%f\n", m_Info.pos.x, m_Info.pos.y, m_Info.pos.z);
-//	pDebugProc->Print("敵の向き：%f,%f,%f\n", m_Info.rot.x, m_Info.rot.y, m_Info.rot.z);
-//	pDebugProc->Print("敵の体力：%d\n", m_Info.nLife);
-//	pDebugProc->Print("敵の番号：%d\n", m_Info.nIdxID);
-//}
-
-//===========================================================
-// 制御処理
-//===========================================================
-//void CEnemy::Attack(void)
-//{
-//	
-//}
-
-//===========================================================
-// 制御処理
-//===========================================================
-//void CEnemy::Move(void)
-//{
-//	
-//}
 
 //===========================================================
 // リストから自分を消す処理
@@ -564,9 +491,6 @@ void CEnemy::ReadText(const char *fliename)
 void CEnemy::SetChase(CHASE cha)
 {
 }
-
-
-
 
 //===========================================================
 // 攻撃が発生しているかどうか判定

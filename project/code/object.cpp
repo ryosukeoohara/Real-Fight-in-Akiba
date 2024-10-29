@@ -24,6 +24,8 @@ int CObject::m_nNumAll = 0;
 CObject::CObject(int nPriority)
 {
 	m_bDeath = false;
+	m_pNext = nullptr;
+	m_pPrev = nullptr;
 
 	this->SetPriority(nPriority);
 
@@ -107,7 +109,8 @@ void CObject::DrawAll(void)
 	DeadChuck();
 
 	//ƒJƒƒ‰‚ÌÝ’è
-	pCamera->SetCamera();
+	if(pCamera != nullptr)
+	   pCamera->SetCamera();
 
 	for (int i = 0; i < NUM_PRIORITY; i++)
 	{
@@ -123,7 +126,9 @@ void CObject::DrawAll(void)
 
 		if (i == 3)
 		{
-			CManager::GetInstance()->GetMyEffekseer()->Draw();
+			if(CManager::GetInstance()->GetMyEffekseer() != nullptr)
+			   CManager::GetInstance()->GetMyEffekseer()->Draw();
+
 		}
 	}
 }

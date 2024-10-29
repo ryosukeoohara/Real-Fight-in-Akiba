@@ -47,10 +47,7 @@ namespace
 CTutorial_Enemy::CTutorial_Enemy()
 {
 	m_pLife3D = nullptr;
-	m_nBiriBiriCount = 0;
 	m_Chase = CHASE_ON;
-
-
 	m_Mobility = Immobile;
 	m_nDamageCounter = 0;
 	m_pLife3D = nullptr;
@@ -66,7 +63,6 @@ CTutorial_Enemy::CTutorial_Enemy(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, in
 {
 	// ’l‚ðƒNƒŠƒA
 	m_pLife3D = nullptr;
-	m_nBiriBiriCount = 0;
 	m_Chase = CHASE_ON;
 	m_Mobility = Immobile;
 	m_nDamageCounter = 0;

@@ -9,6 +9,14 @@
 #include "renderer.h"
 
 //===========================================================
+// 定数定義
+//===========================================================alphaDelta
+namespace
+{
+	const float ALPHA_DELTA = 0.015f;  // α値の変化量
+}
+
+//===========================================================
 // コンストラクタ
 //===========================================================
 CFade::CFade()
@@ -91,9 +99,9 @@ HRESULT CFade::Init(void)
 
 	//頂点座標の設定
 	pVtx[0].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	pVtx[1].pos = D3DXVECTOR3(1280.0f, 0.0f, 0.0f);
-	pVtx[2].pos = D3DXVECTOR3(0.0f, 720.0f, 0.0f);
-	pVtx[3].pos = D3DXVECTOR3(1280.0f, 720.0f, 0.0f);
+	pVtx[1].pos = D3DXVECTOR3(SCREEN_WIDTH, 0.0f, 0.0f);
+	pVtx[2].pos = D3DXVECTOR3(0.0f, SCREEN_HEIGHT, 0.0f);
+	pVtx[3].pos = D3DXVECTOR3(SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f);
 
 	//rhwの設定
 	pVtx[0].rhw = 1.0f;
@@ -148,7 +156,7 @@ void CFade::Update(void)
 	{
 		if (m_fade == FADE_IN)
 		{
-			m_Color.a -= 0.015f;
+			m_Color.a -= ALPHA_DELTA;
 
 			if (m_Color.a <= 0.0f)
 			{
@@ -159,7 +167,7 @@ void CFade::Update(void)
 		}
 		else if (m_fade == FADE_OUT)
 		{
-			m_Color.a += 0.015f;
+			m_Color.a += ALPHA_DELTA;
 
 			if (m_Color.a >= 1.0f)
 			{
@@ -172,7 +180,7 @@ void CFade::Update(void)
 		}
 		else if (m_fade == FADE_BLACK)
 		{
-			m_Color.a += 0.015f;
+			m_Color.a += ALPHA_DELTA;
 
 			if (m_Color.a >= 1.0f)
 			{
@@ -191,9 +199,9 @@ void CFade::Update(void)
 
 	//頂点座標の設定
 	pVtx[0].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	pVtx[1].pos = D3DXVECTOR3(1280.0f, 0.0f, 0.0f);
-	pVtx[2].pos = D3DXVECTOR3(0.0f, 720.0f, 0.0f);
-	pVtx[3].pos = D3DXVECTOR3(1280.0f, 720.0f, 0.0f);
+	pVtx[1].pos = D3DXVECTOR3(SCREEN_WIDTH, 0.0f, 0.0f);
+	pVtx[2].pos = D3DXVECTOR3(0.0f, SCREEN_HEIGHT, 0.0f);
+	pVtx[3].pos = D3DXVECTOR3(SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f);
 
 	//頂点カラーの設定
 	pVtx[0].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, m_Color.a);

@@ -40,6 +40,7 @@ namespace
 	const float ATTACKLENGHT = 200.0f;  // 攻撃可能範囲
 	const float SEARCHRANGE = 400.0f;  // 探索範囲
 	const int RECOVER_DAMAGE_TIME = 15;  // ダメージ状態でいる時間
+	const float ENMEY_FAR_RADIUS = 40.0f;  // 半径
 	const char* TEXT_NAME = "data\\TEXT\\enemyfar.txt";  // テキストファイルの名前
 }
 
@@ -49,13 +50,9 @@ namespace
 CEnemyWeakFar::CEnemyWeakFar()
 {
 	m_pLife3D = nullptr;
-	m_nBiriBiriCount = 0;
 	m_Chase = CHASE_ON;
-
-
 	m_Mobility = Immobile;
 	m_nDamageCounter = 0;
-	m_pLife3D = nullptr;
 	m_bDamage = false;
 	m_bStagger = false;
 	ChangeState(new CEnemyWeakFarStateMoveWait);
@@ -68,11 +65,9 @@ CEnemyWeakFar::CEnemyWeakFar(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nP
 {
 	// 値をクリア
 	m_pLife3D = nullptr;
-	m_nBiriBiriCount = 0;
 	m_Chase = CHASE_ON;
 	m_Mobility = Immobile;
 	m_nDamageCounter = 0;
-	m_pLife3D = nullptr;
 	m_bDamage = false;
 	m_bStagger = false;
 	ChangeState(new CEnemyWeakFarStateMoveWait);
@@ -118,10 +113,17 @@ HRESULT CEnemyWeakFar::Init(void)
 	CEnemy::Init();
 	SetType(WEAK);
 
+	// テキスト読込
+	ReadText(TEXT_NAME);
+
 	// 敵の情報取得
 	CEnemy::INFO* Info = GetInfo();
 
-	ReadText(TEXT_NAME);
+	// 半径
+	Info->fRadius = ENMEY_FAR_RADIUS;
+
+	// 高さ
+	Info->fHeight = GetCharcter()[0]->GetPosition().y + GetCharcter()[2]->GetPosition().y;
 
 	if (m_pLife3D == nullptr)
 	{
@@ -142,12 +144,14 @@ void CEnemyWeakFar::Uninit(void)
 {
 	CEnemy::Uninit();
 
+	// ライフゲージの破棄
 	if (m_pLife3D != nullptr)
 	{
 		m_pLife3D->Uninit();
 		m_pLife3D = nullptr;
 	}
 
+	// ステートの破棄
 	if (m_pState != nullptr)
 	{
 		delete m_pState;
@@ -494,13 +498,20 @@ void CEnemyWeakFarStateAttack::Update(CEnemyWeakFar* pEnemyWeak)
 	}
 }
 
-//===========================================================
+//================================================================
 // 移動状態の処理
+//================================================================
+//===========================================================
+// 移動状態のコンストラクタ
 //===========================================================
 CEnemyWeakFarStateMove::CEnemyWeakFarStateMove()
 {
+
 }
 
+//===========================================================
+// 移動状態の更新処理
+//===========================================================
 void CEnemyWeakFarStateMove::Update(CEnemyWeakFar* pEnemyWeak)
 {
 	// 敵の情報取得
@@ -571,14 +582,20 @@ void CEnemyWeakFarStateMove::Update(CEnemyWeakFar* pEnemyWeak)
 	}
 }
 
-//===========================================================
+//================================================================
 // ダメージ状態の処理
+//================================================================
+//===========================================================
+// ダメージ状態コンストラクタ
 //===========================================================
 CEnemyWeakFarStateDamage::CEnemyWeakFarStateDamage()
 {
 	m_nRecoverDamageTime = RECOVER_DAMAGE_TIME;
 }
 
+//===========================================================
+// ダメージ状態の更新処理
+//===========================================================
 void CEnemyWeakFarStateDamage::Update(CEnemyWeakFar* pEnemyWeak)
 {
 	// 敵の情報取得
@@ -639,6 +656,9 @@ void CEnemyWeakFarStateDenial::Update(CEnemyWeakFar* pEnemyWeak)
 
 }
 
+//================================================================
+// 強い攻撃を受けた状態の処理
+//================================================================
 //===========================================================
 // 強い攻撃を受けた状態の処理
 //===========================================================
@@ -672,13 +692,19 @@ void CEnemyWeakFarStateHeavyDamage::Update(CEnemyWeakFar* pEnemyWeak)
 	}
 }
 
-//===========================================================
+//================================================================
 // 死亡状態の処理
+//================================================================
+//===========================================================
+// 死亡状態のコンストラクタ
 //===========================================================
 CEnemyWeakFarStateDeath::CEnemyWeakFarStateDeath()
 {
 }
 
+//===========================================================
+// 死亡状態の更新処理
+//===========================================================
 void CEnemyWeakFarStateDeath::Update(CEnemyWeakFar* pEnemyWeak)
 {
 	// モーションの情報取得
@@ -710,10 +736,20 @@ void CEnemyWeakFarStateDeath::Update(CEnemyWeakFar* pEnemyWeak)
 	}
 }
 
+//================================================================
+// 起き上がり状態の処理
+//================================================================
+//===========================================================
+// 起き上がり状態のコンストラクタ
+//===========================================================
 CEnemyWeakFarStateGetUp::CEnemyWeakFarStateGetUp()
 {
+
 }
 
+//===========================================================
+// 起き上がり状態の更新処理
+//===========================================================
 void CEnemyWeakFarStateGetUp::Update(CEnemyWeakFar* pEnemyWeak)
 {
 	// モーションの情報取得
@@ -741,10 +777,21 @@ void CEnemyWeakFarStateGetUp::Update(CEnemyWeakFar* pEnemyWeak)
 	}
 }
 
+//================================================================
+// 捕まれた状態の処理
+//================================================================
+//===========================================================
+// 捕まれた状態のコンストラクタ
+//===========================================================
 CEnemyWeakFarStateGrabbed::CEnemyWeakFarStateGrabbed()
 {
+
 }
 
+//===========================================================
+// 捕まれた状態の更新処理
+//===========================================================
 void CEnemyWeakFarStateGrabbed::Update(CEnemyWeakFar* pEnemyWeak)
 {
+
 }

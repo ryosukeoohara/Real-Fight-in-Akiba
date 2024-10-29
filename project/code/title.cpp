@@ -88,15 +88,14 @@ CTitle *CTitle::Create(void)
 //===========================================================
 HRESULT CTitle::Init(void)
 {
-	CField *pField = new CField;
-
-	if (pField != nullptr)
+	if (m_pField == nullptr)
 	{
-		pField->Init();
-		pField->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist("data\\TEXTURE\\Field002.jpg"));
-		pField->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-		pField->SetSize(5000.0f, 5000.0f);
-		pField->SetDraw(true);
+		m_pField = DEBUG_NEW CField;
+		m_pField->Init();
+		m_pField->SetIdxTex(CManager::GetInstance()->GetTexture()->Regist("data\\TEXTURE\\Field002.jpg"));
+		m_pField->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+		m_pField->SetSize(5000.0f, 5000.0f);
+		m_pField->SetDraw(true);
 	}
 
 	// マップの生成
@@ -130,7 +129,8 @@ HRESULT CTitle::Init(void)
 		m_pBg->SetDraw(true);
 	}
 
-	CManager::GetInstance()->GetSound()->Play(CSound::SOUND_LABEL_BGM_TITLE);
+	if (CManager::GetInstance()->GetSound() != nullptr)
+	    CManager::GetInstance()->GetSound()->Play(CSound::SOUND_LABEL_BGM_TITLE);
 	
 	return S_OK;
 }
@@ -140,7 +140,8 @@ HRESULT CTitle::Init(void)
 //===========================================================
 void CTitle::Uninit(void)
 {
-	CManager::GetInstance()->GetSound()->Stop();
+	if(CManager::GetInstance()->GetSound() != nullptr)
+	   CManager::GetInstance()->GetSound()->Stop();
 
 	if (m_pField != nullptr)
 	{
@@ -208,6 +209,9 @@ void CTitle::Update(void)
 	{
 		m_pPlayer->TitleWalk();
 	}
+
+	if (CManager::GetInstance()->GetDebugProc() == nullptr)
+		return;
 
 	CManager::GetInstance()->GetDebugProc()->Print("現在のシーン：タイトル");
 }

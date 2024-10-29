@@ -42,6 +42,7 @@ namespace
 	const int STAGGER_TIME = 600;       // よろめき状態でいる時間
 	const int RECOVER_DAMAGE_TIME = 15;  // ダメージ状態でいる時間
 	const int NUM_DAMAGE_TIME = 60;      // ダメージ状態だった合計時間
+	const float ENEMY_BOSS_RADIUS = 50.0f;  // 半径
 
 	const D3DXVECTOR3 CAMERA_ROT[CPlayer::HEAT_MAX] =
 	{
@@ -128,18 +129,26 @@ HRESULT CEnemyBoss::Init(void)
 {
 	CEnemy::Init();
 	SetType(BOSS);
+
+	// テキスト読込
 	ReadText(ENEMY_TEXT);
 
 	CMotion* pMotion = GetMotion();
 
 	if (pMotion != nullptr)
 	{
-		//pMotion->Set(MOTION_ONSTEGE);
+		// ステートの切り替え
 		ChangeState(new CEnemyBossAppear);
 	}
 
 	// 敵の情報取得
 	CEnemy::INFO* Info = GetInfo();
+
+	// 半径
+	Info->fRadius = ENEMY_BOSS_RADIUS;
+
+	// 高さ
+	Info->fHeight = GetCharcter()[0]->GetPosition().y + GetCharcter()[2]->GetPosition().y;
 
 	if (m_pLife2D == nullptr)
 	{
@@ -156,13 +165,22 @@ HRESULT CEnemyBoss::Init(void)
 void CEnemyBoss::Uninit(void)
 {
 	CEnemy::Uninit();
-	CObject::Release();
-
+	
+	// ライフゲージの破棄
 	if (m_pLife2D != nullptr)
 	{
 		m_pLife2D->Uninit();
 		m_pLife2D = nullptr;
 	}
+
+	// ステートの破棄
+	if (m_pState != nullptr)
+	{
+		delete m_pState;
+		m_pState = nullptr;
+	}
+
+	CObject::Release();
 }
 
 //===========================================================

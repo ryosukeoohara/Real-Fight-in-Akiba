@@ -63,12 +63,12 @@ public:
 	static CTutorial_Enemy* Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nlife, int nPriority = 5);    //生成
 	void ChangeState(CTutorialEnemyState* pState);  // ステイトの切り替え
 
-	void Damage(void) override;
-	void Grabbed(void) override;
-	void Denial(void) override;
-	bool GetbHeatDamageFlag(void) override { return m_bHeatDamage; }
-	bool GetbStaggerFlag(void) override { return m_bStagger; }
-	bool GetbDeathFlag(void) override { return m_bDeath; }
+	void Damage(void) override;                                        // ダメージ処理
+	void Grabbed(void) override;                                       // 捕まれた時の処理
+	void Denial(void) override;                                        // ヒートアクション：自転車を受けるの待ち
+	bool GetbDeathFlag(void) override { return m_bDeath; }             // 死亡フラグ
+	bool GetbHeatDamageFlag(void) override { return m_bHeatDamage; }   // ヒートアクションによってダメージを受けたかのフラグ
+	bool GetbStaggerFlag(void) override { return m_bStagger; }         // よろけているかのフラグ
 	void RestHeatDamageFrag(void) { m_bHeatDamage = false; }
 
 	// 設定系
@@ -79,16 +79,14 @@ public:
 
 private:
 
-	CGage3D* m_pLife3D;            // ゲージのポインタ
-	CTutorialEnemyState* m_pState;         // ステイト
-	int m_nDamageCounter;          // ダメージ状態でいるカウント
-	int m_nBiriBiriCount;
-	int m_nAtcCounter;             // 攻撃のインターバル
-	int m_nIdx;
-	bool m_bDamage;               // 攻撃を受けたかどうか
-	bool m_bDeath;                // 死亡フラグ
-	bool m_bHeatDamage;           // ヒートアクションをくらったかどうか
-	bool m_bStagger;              // よろけフラグ
+	CGage3D* m_pLife3D;             // ゲージのポインタ
+	CTutorialEnemyState* m_pState;  // ステイト
+	int m_nDamageCounter;           // ダメージ状態でいるカウント
+	int m_nAtcCounter;              // 攻撃のインターバル
+	bool m_bDamage;                 // 攻撃を受けたかどうか
+	bool m_bDeath;                  // 死亡フラグ
+	bool m_bHeatDamage;             // ヒートアクションをくらったかどうか
+	bool m_bStagger;                // よろけフラグ
 };
 
 //=================================================================

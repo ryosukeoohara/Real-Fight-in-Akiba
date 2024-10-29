@@ -65,21 +65,11 @@ public:
 		TYPE_MAX
 	};
 
-	void Init(void);          //カメラの初期化処理    
-	void Uninit(void);        //カメラの終了処理
-	void Update(void);        //カメラの更新処理
-	void CameraV(void);
-	void Tutorial(void);
-	void Edit(void);          //エディットのカメラ
-	void CameraR(void);
-	void Title(void);
-	void Scope(void);
+	void Init(void);          // 初期化処理    
+	void Uninit(void);        // 終了処理
+	void Update(void);        // 更新処理
 	void SetCamera(void);
 	void Reset(void);
-
-	void Boss(void);
-
-	//void GetInstance(void);
 
 	// 設定系
 	void SetMode(MODE type);
@@ -100,23 +90,14 @@ public:
 	static CCamera* GetInstance(void) { return m_pCamera; }
 
 private:
-	void Mode(void);
-	void Heat(void);
-	void Return(void);
-	void Debug(void);
-	void OnStage(void);
-	void Target(void);
-
+	
 	Info m_Info;
 	MODE m_mode;
 
-	bool m_bTarget = false;
-	CCameraState*m_pState = nullptr;
+	bool m_bTarget;
+	CCameraState* m_pState;
 	CEnemy* m_pEnemy;
 	static CCamera* m_pCamera;
-
-	// デバッグ用
-	D3DXVECTOR3 m_DebugPosR = {};
 
 };
 

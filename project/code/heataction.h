@@ -32,25 +32,18 @@ public:
 	void Uninit(void);
 	void Updata(void);
 
-	void BikeCrash(CPlayer* pPlayer, CEnemy* pEnemy);                         // 自転車を使用したアクション
-	void MicroWave(CPlayer* pPlayer, CEnemy* pEnemy);                         // 電子レンジを使用したアクション
 	void SetAction(CHeatActionState* pState, CPlayer* pPlayer, CEnemy* pEnemy);  // アクションを設定
 
 	// 取得系
 	CPlayer* GetPlayer(void) { return m_pPlayer; }  // プレイヤー
-	CEnemy* GetEnemy(void) { return m_pEnemy; }     // エネミー
+	CEnemy* GetEnemy(void) { return m_pEnemy; }     // 敵
 
 private:
 
 	void ChangeState(CHeatActionState* pState);  // ビヘイビアの切り替え
-	CHeatActionState *m_pState;
-	CPlayer::HEAT m_HeatAct;
-	CPlayer* m_pPlayer;
-	CEnemy* m_pEnemy;
-
-	int m_nHeatActTime;
-
-	bool m_bInMicroWave = false;;  // ヒートアクション:電子レンジで敵が電子レンジの中に入ったかどうか
+	CHeatActionState *m_pState;                  // ステート
+	CPlayer* m_pPlayer;                          // プレイヤーのポインタ
+	CEnemy* m_pEnemy;                            // 敵のポインタ
 };
 
 //===========================================================
